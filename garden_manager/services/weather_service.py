@@ -5,6 +5,7 @@ Provides weather data from OpenWeatherMap API with fallback to mock data.
 Includes gardening-specific weather analysis and recommendations.
 """
 
+import os
 import requests
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
@@ -22,9 +23,17 @@ class WeatherService:
         Initialize weather service.
 
         Args:
-            api_key: OpenWeatherMap API key. If None, uses demo mode with mock data.
+            api_key: OpenWeatherMap API key. If None, loads from environment variable
+                    OPENWEATHERMAP_API_KEY. Falls back to demo mode if not available.
         """
-        self.api_key = api_key or "76ec5beba2d47c58e249b1bb49ea783f"  # Users should provide their own OpenWeatherMap API key
+        # Priority: 1) Provided argument, 2) Environment variable, 3) Demo mode
+        self.api_key = api_key or os.getenv('OPENWEATHERMAP_API_KEY')
+
+        if not self.api_key:
+            print("⚠️  No OpenWeatherMap API key found. Using mock weather data.")
+            print("   To use real weather data, add OPENWEATHERMAP_API_KEY to your .env file")
+            self.api_key = "demo_key"
+
         self.base_url = "https://api.openweathermap.org/data/2.5"
         self.current_weather = None
         self.forecast = None

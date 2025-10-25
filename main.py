@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Garden Manager Application Entry Point
+Planted - Application Entry Point
 
-Main launcher script for the Garden Manager web application.
+Main launcher script for the Planted web application.
 Provides error handling and user-friendly troubleshooting messages.
 """
 
@@ -17,7 +17,7 @@ def main():
     """
     Main application entry point.
 
-    Launches the Garden Manager Flask web application with comprehensive
+    Launches the Planted Flask web application with comprehensive
     error handling and user-friendly troubleshooting guidance.
 
     Handles:
@@ -30,9 +30,9 @@ def main():
         from app import run_app
         run_app()
     except KeyboardInterrupt:
-        print("\n👋 Thanks for using Garden Manager!")
+        print("\n👋 Thanks for using Planted!")
     except Exception as e:
-        print(f"❌ Error starting Garden Manager: {e}")
+        print(f"❌ Error starting Planted: {e}")
         print("\n🔧 Troubleshooting:")
         print("1. Make sure you have Flask installed: pip install flask requests")
         print("2. Try running: python3 app.py")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Garden Manager Web Application
+Planted - Garden Management System
 
 A Flask-based web application for managing garden plots, plant care schedules,
 and gardening activities. Provides interfaces for tracking plants, weather conditions,
@@ -9,17 +9,23 @@ and care tasks with automated scheduling and reminders.
 
 import sys
 import os
+from pathlib import Path
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from datetime import datetime, timedelta
 import threading
 import webbrowser
 import time
+from dotenv import load_dotenv
 from garden_manager.database.plant_data import PlantDatabase
 from garden_manager.database.garden_db import GardenDatabase
 from garden_manager.services.weather_service import WeatherService
 from garden_manager.services.location_service import LocationService
 from garden_manager.services.scheduler import CareReminder
 from garden_manager.utils.date_utils import SeasonCalculator
+
+# Load environment variables from .env file
+env_path = Path(__file__).parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # Add the project root to the Python path
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -29,7 +35,7 @@ sys.path.insert(0, project_root)
 template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'garden_manager', 'web', 'templates')
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'garden_manager', 'web', 'static')
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
-app.config['SECRET_KEY'] = 'garden_manager_secret_key'
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'garden_manager_secret_key')
 
 # Global service instances - initialized in initialize_services()
 plant_db = None
@@ -601,7 +607,7 @@ def weather():
 def test_page():
     """Simple test page to verify Flask is working"""
     return """
-    <h1>🌱 Garden Manager Test Page</h1>
+    <h1>🌱 Planted Test Page</h1>
     <p>If you can see this, Flask is working!</p>
     <ul>
         <li><a href="/">Dashboard</a></li>
@@ -650,7 +656,7 @@ def run_app():
     The function handles service initialization failures gracefully and
     provides fallback functionality.
     """
-    print("🌱 Starting Garden Manager Web App...")
+    print("🌱 Starting Planted Web App...")
     
     try:
         initialize_services()

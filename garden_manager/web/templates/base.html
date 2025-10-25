@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Garden Manager{% endblock %}</title>
+    <title>{% block title %}Planted{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
     <header class="header">
-        <h1>🌱 Garden Manager</h1>
+        <h1>🌱 Planted</h1>
         <div class="subtitle">
             {% if location and season %}
                 📍 {{ location }} • 🍃 {{ season }} Season

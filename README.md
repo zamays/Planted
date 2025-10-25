@@ -1,6 +1,6 @@
-# Garden Manager - GrowIt Style (Web Version)
+# Planted - Garden Management System
 
-A comprehensive Python web application inspired by the popular GrowIt mobile app. This browser-based application helps you plan, plant, and maintain your garden with seasonal recommendations, weather integration, and automated care scheduling.
+A comprehensive Python web application for managing your garden. This browser-based application helps you plan, plant, and maintain your garden with seasonal recommendations, weather integration, and automated care scheduling.
 
 ## 🌱 Features
 
@@ -38,14 +38,27 @@ A comprehensive Python web application inspired by the popular GrowIt mobile app
 
 ### Setup
 
-1. Clone or download this repository
-2. Install dependencies:
+1. **Clone or download this repository**
+
+2. **Configure environment (for real weather data):**
 
    ```bash
-   pip install flask requests
+   # Copy the example environment file
+   cp .env.example .env
+
+   # Edit .env and add your OpenWeatherMap API key
+   # Get a free API key at: https://openweathermap.org/api
    ```
 
-3. Run the application:
+   > **Note:** The app works without an API key using mock weather data. See [SETUP.md](SETUP.md) for detailed instructions.
+
+3. **Install dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run the application:**
 
    ```bash
    python3 main.py
@@ -65,7 +78,7 @@ The application will automatically open in your default browser at `http://local
 
 The application features a responsive web design with:
 
-- **Green Color Scheme**: GrowIt-inspired earth tones and natural colors
+- **Green Color Scheme**: Earth tones and natural colors
 - **Mobile-Friendly**: Works on desktop, tablet, and mobile devices
 - **Intuitive Navigation**: Clean sidebar navigation
 - **Weather Integration**: Current conditions and recommendations
@@ -127,7 +140,7 @@ Automated reminders for:
 
 ## 🎨 Design
 
-The web interface follows GrowIt's design principles:
+The web interface follows clean design principles:
 
 - **Natural Colors**: Greens, earth tones, organic palette
 - **Card-Based Layout**: Clean, modern information display
