@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Plants - Garden Manager{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h2 style="color: #4A7C59;">Browse Plants</h2>
+    <a href="{{ url_for('add_plant') }}" class="btn">+ Add Custom Plant</a>
+</div>
+
+<div class="banner">
+    <h2>🌱 {{ current_season }} Recommendations for Climate Zone {{ climate_zone }}</h2>
+    <p>Showing {{ plants|length }} plants perfect for your location and season</p>
+    <p><strong>💡 Best to plant now:</strong> {{ recommendations.plant_now[:3]|join(', ') }}</p>
+</div>
+
+<div class="filters">
+    <form method="GET" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; width: 100%;">
+        <div>
+            <label for="season">Season:</label>
+            <select name="season" id="season" onchange="this.form.submit()">
+                <option value="current" {% if filters.season == 'current' %}selected{% endif %}>Current Season</option>
+                <option value="all" {% if filters.season == 'all' %}selected{% endif %}>All Seasons</option>
+                <option value="spring" {% if filters.season == 'spring' %}selected{% endif %}>Spring</option>
+                <option value="summer" {% if filters.season == 'summer' %}selected{% endif %}>Summer</option>
+                <option value="fall" {% if filters.season == 'fall' %}selected{% endif %}>Fall</option>
+                <option value="winter" {% if filters.season == 'winter' %}selected{% endif %}>Winter</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="type">Type:</label>
+            <select name="type" id="type" onchange="this.form.submit()">
+                <option value="all" {% if filters.type == 'all' %}selected{% endif %}>All Types</option>
+                <option value="vegetable" {% if filters.type == 'vegetable' %}selected{% endif %}>Vegetable</option>
+                <option value="herb" {% if filters.type == 'herb' %}selected{% endif %}>Herb</option>
+                <option value="fruit" {% if filters.type == 'fruit' %}selected{% endif %}>Fruit</option>
+            </select>
+        </div>
+        
+        <div style="flex-grow: 1;">
+            <label for="search">Search:</label>
+            <input type="text" name="search" id="search" placeholder="Plant name..." value="{{ filters.search }}" style="min-width: 200px;">
+        </div>
+        
+        <button type="submit" class="btn">🔍 Search</button>
+    </form>
+</div>
+
+{% if plants %}
+<div class="plant-grid">
+    {% for plant in plants %}
+    <div class="plant-card">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+            <h3 style="margin: 0;">{{ plant.name }}</h3>
+            {% if plant.is_custom %}
+            <span style="background: #4A7C59; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">CUSTOM</span>
+            {% endif %}
+        </div>
+        <div class="plant-meta">
+            <em>{{ plant.scientific_name }}</em><br>
+            {{ plant.plant_type.title() }} • {{ plant.season.title() }}
+        </div>
+        <div style="margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
+            🌱 {{ plant.days_to_germination }} days to germinate •
+            🌾 {{ plant.days_to_maturity }} days to harvest
+        </div>
+        
+        {% if plant.companion_plants %}
+        <div style="margin-bottom: 0.5rem; font-size: 0.9rem;">
+            <strong style="color: #28A745;">Good Companions:</strong> {{ plant.companion_plants[:3]|join(', ') }}
+        </div>
+        {% endif %}
+        
+        {% if plant.avoid_plants %}
+        <div style="margin-bottom: 1rem; font-size: 0.9rem;">
+            <strong style="color: #DC3545;">Avoid:</strong> {{ plant.avoid_plants[:2]|join(', ') }}
+        </div>
+        {% endif %}
+        
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 0.8rem; color: #666;">
+                {{ plant.sun_requirements.replace('_', ' ').title() }} • {{ plant.water_needs.title() }} water
+            </div>
+            <a href="{{ url_for('plant_detail', plant_id=plant.id) }}" class="btn" style="font-size: 0.8rem;">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body" style="text-align: center; color: #666;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+        <h3>No plants found</h3>
+        <p>Try adjusting your search filters or browse all plants.</p>
+        <a href="{{ url_for('plants', season='all', type='all') }}" class="btn">View All Plants</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

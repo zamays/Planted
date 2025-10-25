@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Add Custom Plant - Garden Manager{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{{ url_for('plants') }}" style="color: #4A7C59; text-decoration: none;">← Back to Plants</a>
+</div>
+
+<h2 style="margin-bottom: 2rem; color: #4A7C59;">Add Custom Plant</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <h3 style="color: #4A7C59; margin-bottom: 1.5rem;">Basic Information</h3>
+
+            <div class="form-group">
+                <label for="name">Plant Name: *</label>
+                <input type="text" id="name" name="name" placeholder="e.g., Heirloom Tomato" required>
+            </div>
+
+            <div class="form-group">
+                <label for="scientific_name">Scientific Name:</label>
+                <input type="text" id="scientific_name" name="scientific_name" placeholder="e.g., Solanum lycopersicum">
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label for="plant_type">Plant Type: *</label>
+                    <select id="plant_type" name="plant_type" required>
+                        <option value="vegetable">Vegetable</option>
+                        <option value="fruit">Fruit</option>
+                        <option value="herb">Herb</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="season">Planting Season: *</label>
+                    <select id="season" name="season" required>
+                        <option value="spring">Spring</option>
+                        <option value="summer">Summer</option>
+                        <option value="fall">Fall</option>
+                        <option value="winter">Winter</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="planting_method">Planting Method: *</label>
+                    <select id="planting_method" name="planting_method" required>
+                        <option value="seed">Seed</option>
+                        <option value="transplant">Transplant</option>
+                        <option value="bulb">Bulb</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 style="color: #4A7C59; margin: 2rem 0 1.5rem;">Growing Requirements</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label for="days_to_germination">Days to Germination: *</label>
+                    <input type="number" id="days_to_germination" name="days_to_germination" value="7" min="0" max="365" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="days_to_maturity">Days to Maturity: *</label>
+                    <input type="number" id="days_to_maturity" name="days_to_maturity" value="60" min="1" max="730" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="spacing_inches">Spacing (inches): *</label>
+                    <input type="number" id="spacing_inches" name="spacing_inches" value="12" min="1" max="96" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <div class="form-group">
+                    <label for="sun_requirements">Sun Requirements: *</label>
+                    <select id="sun_requirements" name="sun_requirements" required>
+                        <option value="full_sun">Full Sun</option>
+                        <option value="partial_shade">Partial Shade</option>
+                        <option value="shade">Shade</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="water_needs">Water Needs: *</label>
+                    <select id="water_needs" name="water_needs" required>
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 style="color: #4A7C59; margin: 2rem 0 1.5rem;">Companion Planting & Climate</h3>
+
+            <div class="form-group">
+                <label for="companion_plants">Companion Plants:</label>
+                <input type="text" id="companion_plants" name="companion_plants" placeholder="e.g., basil, marigolds, carrots (comma-separated)">
+                <small style="color: #666;">Enter plant names separated by commas</small>
+            </div>
+
+            <div class="form-group">
+                <label for="avoid_plants">Plants to Avoid:</label>
+                <input type="text" id="avoid_plants" name="avoid_plants" placeholder="e.g., fennel, brassicas (comma-separated)">
+                <small style="color: #666;">Enter plant names separated by commas</small>
+            </div>
+
+            <div class="form-group">
+                <label for="climate_zones">USDA Climate Zones:</label>
+                <input type="text" id="climate_zones" name="climate_zones" placeholder="e.g., 5,6,7,8,9 (comma-separated)">
+                <small style="color: #666;">Enter zone numbers separated by commas (1-13)</small>
+            </div>
+
+            <h3 style="color: #4A7C59; margin: 2rem 0 1.5rem;">Care Instructions</h3>
+
+            <div class="form-group">
+                <label for="care_notes">Care Notes:</label>
+                <textarea id="care_notes" name="care_notes" rows="4" placeholder="Enter any additional care instructions, tips, or notes about this plant..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn">Add Custom Plant</button>
+                <a href="{{ url_for('plants') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4A7C59;
+    box-shadow: 0 0 0 2px rgba(74, 124, 89, 0.1);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+</style>
+{% endblock %}

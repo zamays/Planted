@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ plot.name }} - Garden Manager{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{{ url_for('garden_layout') }}" style="color: #4A7C59; text-decoration: none;">← Back to Garden Layout</a>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-body">
+        <h2 style="color: #4A7C59; margin-bottom: 1rem;">{{ plot.name }}</h2>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Dimensions</div>
+                <div style="font-size: 1.2rem; font-weight: 600;">{{ plot.width }}×{{ plot.height }} squares</div>
+            </div>
+            <div>
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Location</div>
+                <div style="font-size: 1.2rem; font-weight: 600;">{{ plot.location }}</div>
+            </div>
+            <div>
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Created</div>
+                <div style="font-size: 1.2rem; font-weight: 600;">{{ plot.created_date.strftime('%B %d, %Y') }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h3 style="color: #4A7C59; margin: 0;">Plot Grid</h3>
+    <div style="font-size: 0.9rem; color: #666;">
+        💡 Click on any empty square to add a plant
+    </div>
+</div>
+
+<div style="margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div style="display: grid; grid-template-columns: repeat({{ plot.width }}, 60px); gap: 4px;">
+        {% for y in range(plot.height) %}
+            {% for x in range(plot.width) %}
+                {% set planted_here = None %}
+                {% for item_data in planted_items %}
+                    {% if item_data.item.x_position == x and item_data.item.y_position == y %}
+                        {% set planted_here = item_data %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if planted_here %}
+                <div class="grid-square planted" title="{{ planted_here.plant.name }}">
+                    <div style="font-size: 1.5rem;">🌱</div>
+                </div>
+                {% else %}
+                <a href="{{ url_for('plant_to_plot', plot_id=plot.id, x=x, y=y) }}" class="grid-square empty" title="Click to plant at ({{ x }}, {{ y }})">
+                    <div style="color: #ccc;">{{ x }},{{ y }}</div>
+                </a>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.grid-square {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.grid-square.planted {
+    background-color: #E8F5E9;
+    border-color: #4A7C59;
+    cursor: default;
+}
+
+.grid-square.empty {
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.grid-square.empty:hover {
+    background-color: #E8F5E9;
+    border-color: #4A7C59;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(74, 124, 89, 0.3);
+}
+
+.grid-square.empty:hover > div {
+    color: #4A7C59;
+    font-weight: 600;
+}
+</style>
+
+{% if planted_items %}
+<h3 style="color: #4A7C59; margin-bottom: 1rem;">Planted Items ({{ planted_items|length }})</h3>
+
+<div class="plant-grid">
+    {% for item_data in planted_items %}
+    <div class="plant-card">
+        <h3>{{ item_data.plant.name }}</h3>
+        <div class="plant-meta">
+            {{ item_data.plant.scientific_name }}
+        </div>
+        <div style="margin: 1rem 0;">
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">
+                📍 Position: ({{ item_data.item.x_position }}, {{ item_data.item.y_position }})
+            </div>
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">
+                📅 Planted: {{ item_data.item.planted_date.strftime('%B %d, %Y') }}
+            </div>
+            <div style="font-size: 0.9rem; color: #666;">
+                🌾 Expected harvest: {{ item_data.item.expected_harvest.strftime('%B %d, %Y') }}
+            </div>
+        </div>
+        {% if item_data.item.notes %}
+        <div style="padding: 0.75rem; background: #f5f5f5; border-radius: 4px; font-size: 0.9rem; margin-top: 1rem;">
+            {{ item_data.item.notes }}
+        </div>
+        {% endif %}
+        <a href="{{ url_for('plant_detail', plant_id=item_data.plant.id) }}" class="btn" style="margin-top: 1rem;">View Plant Info</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body" style="text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+        <h3>No plants yet</h3>
+        <p style="margin-bottom: 0;">This plot is ready for planting! Start adding plants to your garden.</p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

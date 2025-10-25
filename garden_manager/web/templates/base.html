@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Garden Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header class="header">
+        <h1>🌱 Garden Manager</h1>
+        <div class="subtitle">
+            {% if location and season %}
+                📍 {{ location }} • 🍃 {{ season }} Season
+            {% else %}
+                Your digital gardening companion
+            {% endif %}
+        </div>
+    </header>
+
+    <nav class="nav">
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>🏠 Dashboard</a></li>
+            <li><a href="{{ url_for('plants') }}" {% if request.endpoint == 'plants' or request.endpoint == 'plant_detail' %}class="active"{% endif %}>🌿 Browse Plants</a></li>
+            <li><a href="{{ url_for('garden_layout') }}" {% if request.endpoint in ['garden_layout', 'view_plot', 'create_plot'] %}class="active"{% endif %}>🗂️ Garden Layout</a></li>
+            <li><a href="{{ url_for('care_schedule') }}" {% if request.endpoint == 'care_schedule' %}class="active"{% endif %}>📅 Care Schedule</a></li>
+            <li><a href="{{ url_for('weather') }}" {% if request.endpoint == 'weather' %}class="active"{% endif %}>🌦️ Weather</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

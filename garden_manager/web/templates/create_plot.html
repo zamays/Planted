@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Create Garden Plot - Garden Manager{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 2rem; color: #4A7C59;">Create New Garden Plot</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Plot Name:</label>
+                <input type="text" id="name" name="name" placeholder="My Garden Plot" required>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="width">Width (squares):</label>
+                    <input type="number" id="width" name="width" value="4" min="1" max="12" required>
+                </div>
+                
+                <div class="form-group" style="flex: 1;">
+                    <label for="height">Height (squares):</label>
+                    <input type="number" id="height" name="height" value="4" min="1" max="12" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" placeholder="Backyard, Front yard, etc." required>
+            </div>
+
+            <div class="form-group" style="margin-top: 2rem; padding: 1rem; background: #E8F5E9; border-radius: 8px; border-left: 4px solid #4A7C59;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="add_plants" name="add_plants" value="yes" style="width: 20px; height: 20px; margin-right: 0.75rem; cursor: pointer;">
+                    <span style="font-weight: 600; color: #4A7C59;">Start adding plants to this plot immediately after creation</span>
+                </label>
+                <small style="display: block; margin-left: 2.5rem; margin-top: 0.5rem; color: #666;">
+                    Check this box to go directly to the plot grid and add plants to your garden.
+                </small>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn">Create Plot</button>
+                <a href="{{ url_for('garden_layout') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

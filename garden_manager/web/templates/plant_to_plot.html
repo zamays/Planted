@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Add Plant to {{ plot.name }} - Garden Manager{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{{ url_for('view_plot', plot_id=plot.id) }}" style="color: #4A7C59; text-decoration: none;">← Back to Plot</a>
+</div>
+
+<h2 style="margin-bottom: 2rem; color: #4A7C59;">Add Plant to {{ plot.name }}</h2>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-body" style="background: #E8F5E9; padding: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="background: white; border: 2px solid #4A7C59; border-radius: 8px; padding: 1rem; font-size: 1.2rem; font-weight: bold; color: #4A7C59;">
+                Position: ({{ x }}, {{ y }})
+            </div>
+            <div style="color: #666;">
+                Select a plant to add to this square in your garden plot.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="x_position" value="{{ x }}">
+            <input type="hidden" name="y_position" value="{{ y }}">
+
+            <div class="form-group">
+                <label for="plant_id">Select Plant: *</label>
+                <select id="plant_id" name="plant_id" required onchange="updatePlantInfo()" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                    <option value="">-- Choose a plant --</option>
+                    {% for plant in plants %}
+                    <option value="{{ plant.id }}"
+                            data-scientific="{{ plant.scientific_name }}"
+                            data-type="{{ plant.plant_type }}"
+                            data-season="{{ plant.season }}"
+                            data-spacing="{{ plant.spacing_inches }}"
+                            data-sun="{{ plant.sun_requirements }}"
+                            data-water="{{ plant.water_needs }}"
+                            data-germination="{{ plant.days_to_germination }}"
+                            data-maturity="{{ plant.days_to_maturity }}"
+                            data-custom="{{ plant.is_custom }}">
+                        {{ plant.name }}{% if plant.is_custom %} (Custom){% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="plant-preview" style="display: none; margin: 2rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #4A7C59;">
+                <h3 style="color: #4A7C59; margin-bottom: 1rem;">Plant Details</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Scientific Name</div>
+                        <div id="preview-scientific" style="font-weight: 600;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Type & Season</div>
+                        <div id="preview-type-season" style="font-weight: 600;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Spacing Required</div>
+                        <div id="preview-spacing" style="font-weight: 600;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Sun & Water</div>
+                        <div id="preview-sun-water" style="font-weight: 600;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Days to Germinate</div>
+                        <div id="preview-germination" style="font-weight: 600;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.25rem;">Days to Harvest</div>
+                        <div id="preview-maturity" style="font-weight: 600;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes (optional):</label>
+                <textarea id="notes" name="notes" rows="3" placeholder="Add any notes about this planting..." style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; font-family: inherit;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn">Plant Here</button>
+                <a href="{{ url_for('view_plot', plot_id=plot.id) }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+</style>
+
+<script>
+function updatePlantInfo() {
+    const select = document.getElementById('plant_id');
+    const preview = document.getElementById('plant-preview');
+    const option = select.options[select.selectedIndex];
+
+    if (!option.value) {
+        preview.style.display = 'none';
+        return;
+    }
+
+    preview.style.display = 'block';
+
+    document.getElementById('preview-scientific').textContent = option.dataset.scientific || 'N/A';
+    document.getElementById('preview-type-season').textContent =
+        (option.dataset.type || 'N/A').charAt(0).toUpperCase() + (option.dataset.type || 'N/A').slice(1) +
+        ' • ' +
+        (option.dataset.season || 'N/A').charAt(0).toUpperCase() + (option.dataset.season || 'N/A').slice(1);
+    document.getElementById('preview-spacing').textContent = (option.dataset.spacing || '0') + ' inches';
+    document.getElementById('preview-sun-water').textContent =
+        (option.dataset.sun || 'N/A').replace('_', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') +
+        ' • ' +
+        (option.dataset.water || 'N/A').charAt(0).toUpperCase() + (option.dataset.water || 'N/A').slice(1) + ' water';
+    document.getElementById('preview-germination').textContent = (option.dataset.germination || '0') + ' days';
+    document.getElementById('preview-maturity').textContent = (option.dataset.maturity || '0') + ' days';
+}
+</script>
+{% endblock %}

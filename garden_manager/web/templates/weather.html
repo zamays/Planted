@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Weather - Garden Manager{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 2rem; color: #4A7C59;">Weather Details</h2>
+
+{% if location %}
+<div style="margin-bottom: 1rem; color: #666;">
+    📍 Weather for {{ location }}
+</div>
+{% endif %}
+
+{% if current_weather %}
+<div class="card">
+    <div class="card-header">
+        🌦️ Current Conditions
+    </div>
+    <div class="card-body">
+        <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+            <div style="text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 0.5rem;">
+                    {% if 'clear' in current_weather.description or 'sunny' in current_weather.description %}☀️
+                    {% elif 'cloud' in current_weather.description %}☁️
+                    {% elif 'rain' in current_weather.description %}🌧️
+                    {% else %}🌤️{% endif %}
+                </div>
+                <div style="font-size: 2rem; font-weight: bold;">{{ current_weather.temperature }}°F</div>
+                <div style="color: #666;">{{ current_weather.description.title() }}</div>
+            </div>
+            
+            <div style="flex-grow: 1;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div style="font-weight: bold; color: #4A7C59;">Feels Like</div>
+                        <div>{{ current_weather.feels_like }}°F</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #4A7C59;">Humidity</div>
+                        <div>{{ current_weather.humidity }}%</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #4A7C59;">Wind Speed</div>
+                        <div>{{ current_weather.wind_speed }} mph</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #4A7C59;">Pressure</div>
+                        <div>{{ current_weather.pressure }} mb</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if forecast and forecast|length > 0 %}
+<div class="card">
+    <div class="card-header">
+        📅 5-Day Forecast
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            {% for day in forecast %}
+            <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                <div style="font-weight: bold; margin-bottom: 0.5rem;">
+                    {{ day.date.strftime('%a, %b %d') }}
+                </div>
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+                    {% if 'clear' in day.description or 'sunny' in day.description %}☀️
+                    {% elif 'cloud' in day.description %}☁️
+                    {% elif 'rain' in day.description %}🌧️
+                    {% else %}🌤️{% endif %}
+                </div>
+                <div style="font-size: 1.2rem; font-weight: bold;">{{ day.temperature }}°F</div>
+                <div style="color: #666; font-size: 0.9rem;">{{ day.description.title() }}</div>
+                <div style="color: #666; font-size: 0.8rem;">Humidity: {{ day.humidity }}%</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        🌱 Garden Recommendations
+    </div>
+    <div class="card-body">
+        {% if current_weather %}
+            {% if current_weather.temperature > 85 %}
+                <div style="color: #FF8C00; margin-bottom: 1rem;">
+                    <strong>🌡️ Hot Weather Alert:</strong> Check plant watering needs more frequently.
+                </div>
+            {% elif current_weather.temperature < 40 %}
+                <div style="color: #17A2B8; margin-bottom: 1rem;">
+                    <strong>🧊 Cold Weather:</strong> Protect sensitive plants from frost.
+                </div>
+            {% endif %}
+            
+            {% if 'rain' in current_weather.description %}
+                <div style="color: #28A745; margin-bottom: 1rem;">
+                    <strong>🌧️ Rainy Weather:</strong> Skip watering today - nature's got you covered!
+                </div>
+            {% elif current_weather.humidity < 30 %}
+                <div style="color: #DC3545; margin-bottom: 1rem;">
+                    <strong>🏜️ Low Humidity:</strong> Plants may need extra watering.
+                </div>
+            {% endif %}
+        {% endif %}
+        
+        <p style="color: #666;">
+            Weather conditions are automatically factored into your care schedule recommendations.
+            Check the Care Schedule page for personalized watering and care suggestions.
+        </p>
+        
+        <a href="{{ url_for('care_schedule') }}" class="btn">📅 View Care Schedule</a>
+    </div>
+</div>
+{% endblock %}

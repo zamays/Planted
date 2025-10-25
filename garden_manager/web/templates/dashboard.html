@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Garden Manager{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 2rem; color: #4A7C59;">Garden Dashboard</h2>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🗂️</div>
+        <div class="stat-value">{{ stats.plots }}</div>
+        <div class="stat-label">Garden Plots</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🌱</div>
+        <div class="stat-value">{{ stats.active_plants }}</div>
+        <div class="stat-label">Active Plants</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value">{{ stats.tasks_due }}</div>
+        <div class="stat-label">Tasks Due</div>
+    </div>
+</div>
+
+{% if weather %}
+<div class="card">
+    <div class="card-header">
+        🌦️ Current Weather
+    </div>
+    <div class="card-body">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2rem;">
+                {% if 'clear' in weather.description or 'sunny' in weather.description %}☀️
+                {% elif 'cloud' in weather.description %}☁️
+                {% elif 'rain' in weather.description %}🌧️
+                {% else %}🌤️{% endif %}
+            </div>
+            <div>
+                <div style="font-size: 1.5rem; font-weight: 600;">{{ weather.temperature }}°F</div>
+                <div style="color: #666;">{{ weather.description.title() }}</div>
+                <div style="color: #666; font-size: 0.9rem;">Humidity: {{ weather.humidity }}%</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        🌱 Welcome to Garden Manager!
+    </div>
+    <div class="card-body">
+        <h3 style="color: #4A7C59; margin-bottom: 1rem;">Getting Started:</h3>
+        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
+            <li>Click <strong>'Browse Plants'</strong> to see seasonal recommendations for your area</li>
+            <li>Visit <strong>'Garden Layout'</strong> to create your first garden plot</li>
+            <li>Check <strong>'Care Schedule'</strong> to see upcoming tasks</li>
+            <li>Weather information updates automatically</li>
+        </ul>
+        
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            This application includes 20+ plants with detailed growing guides,
+            automated care scheduling, and location-based recommendations.
+        </p>
+        
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="{{ url_for('plants') }}" class="btn">🌿 Browse Plants</a>
+            <a href="{{ url_for('garden_layout') }}" class="btn btn-secondary">🗂️ Create Garden</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

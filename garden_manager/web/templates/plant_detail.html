@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ plant.name }} - Garden Manager{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{{ url_for('plants') }}" class="btn btn-secondary">← Back to Plants</a>
+</div>
+
+<div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #4A7C59, #8FBC8F);">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h1 style="margin: 0; font-size: 1.5rem;">{{ plant.name }}</h1>
+                <div style="opacity: 0.9; font-style: italic;">{{ plant.scientific_name }}</div>
+            </div>
+            {% if plant.is_custom %}
+            <span style="background: rgba(255,255,255,0.3); color: white; padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.9rem; font-weight: 600;">CUSTOM PLANT</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+            <div>
+                <h3 style="color: #4A7C59; margin-bottom: 1rem;">Plant Information</h3>
+                <div style="display: grid; gap: 0.5rem;">
+                    <div><strong>Type:</strong> {{ plant.plant_type.title() }}</div>
+                    <div><strong>Season:</strong> {{ plant.season.title() }}</div>
+                    <div><strong>Sun Requirements:</strong> {{ plant.sun_requirements.replace('_', ' ').title() }}</div>
+                    <div><strong>Water Needs:</strong> {{ plant.water_needs.title() }}</div>
+                    <div><strong>Spacing:</strong> {{ plant.spacing_inches }} inches</div>
+                </div>
+            </div>
+            
+            <div>
+                <h3 style="color: #4A7C59; margin-bottom: 1rem;">Growing Timeline</h3>
+                <div style="display: grid; gap: 0.5rem;">
+                    <div><strong>Days to Germination:</strong> {{ plant.days_to_germination }} days</div>
+                    <div><strong>Days to Maturity:</strong> {{ plant.days_to_maturity }} days</div>
+                    <div><strong>Planting Method:</strong> {{ plant.planting_method.title() }}</div>
+                    {% if plant.climate_zones %}
+                    <div><strong>Climate Zones:</strong> {{ plant.climate_zones|join(', ') }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if plant.companion_plants or plant.avoid_plants %}
+        <div style="margin-bottom: 2rem;">
+            <h3 style="color: #4A7C59; margin-bottom: 1rem;">Companion Planting</h3>
+            
+            {% if plant.companion_plants %}
+            <div style="margin-bottom: 1rem; padding: 1rem; background: #d4edda; border-radius: 5px; border-left: 4px solid #28a745;">
+                <div style="font-weight: bold; color: #155724; margin-bottom: 0.5rem;">✅ Good Companions:</div>
+                <div style="color: #155724;">{{ plant.companion_plants|join(', ') }}</div>
+            </div>
+            {% endif %}
+            
+            {% if plant.avoid_plants %}
+            <div style="padding: 1rem; background: #f8d7da; border-radius: 5px; border-left: 4px solid #dc3545;">
+                <div style="font-weight: bold; color: #721c24; margin-bottom: 0.5rem;">❌ Avoid Planting With:</div>
+                <div style="color: #721c24;">{{ plant.avoid_plants|join(', ') }}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% if plant.care_notes %}
+        <div>
+            <h3 style="color: #4A7C59; margin-bottom: 1rem;">Care Notes</h3>
+            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; border-left: 4px solid #6c757d;">
+                {{ plant.care_notes }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

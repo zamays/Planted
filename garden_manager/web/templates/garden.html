@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Garden Layout - Garden Manager{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="color: #4A7C59;">Garden Layout Manager</h2>
+    <a href="{{ url_for('create_plot') }}" class="btn">+ Create New Plot</a>
+</div>
+
+{% if plots %}
+<div class="plant-grid">
+    {% for plot in plots %}
+    <div class="plant-card">
+        <h3>{{ plot.name }}</h3>
+        <div class="plant-meta">
+            {{ plot.width }}×{{ plot.height }} squares • {{ plot.location }}
+        </div>
+        <div style="margin: 1rem 0; color: #666; font-size: 0.9rem;">
+            Created: {{ plot.created_date.strftime('%B %d, %Y') }}
+        </div>
+        <a href="{{ url_for('view_plot', plot_id=plot.id) }}" class="btn">View Plot</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body" style="text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+        <h3>No garden plots yet</h3>
+        <p style="margin-bottom: 2rem;">Create your first garden plot to get started with planning your garden layout.</p>
+        <a href="{{ url_for('create_plot') }}" class="btn">Create Your First Plot</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

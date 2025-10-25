@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Care Schedule - Garden Manager{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 1rem; color: #4A7C59;">Care Schedule</h2>
+
+<div class="filters">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('care_schedule', filter='today') }}" 
+           class="btn {% if filter_type == 'today' %}{% else %}btn-secondary{% endif %}">Today</a>
+        <a href="{{ url_for('care_schedule', filter='week') }}" 
+           class="btn {% if filter_type == 'week' %}{% else %}btn-secondary{% endif %}">This Week</a>
+        <a href="{{ url_for('care_schedule', filter='all') }}" 
+           class="btn {% if filter_type == 'all' %}{% else %}btn-secondary{% endif %}">All Tasks</a>
+        <a href="{{ url_for('care_schedule', filter='overdue') }}" 
+           class="btn {% if filter_type == 'overdue' %}btn-danger{% else %}btn-secondary{% endif %}">Overdue</a>
+    </div>
+</div>
+
+{% if weather %}
+<div class="banner" style="background: linear-gradient(135deg, #4682B4, #87CEEB);">
+    <h3>🌦️ Weather Recommendation</h3>
+    <p>Current conditions: {{ weather.temperature }}°F, {{ weather.description }}</p>
+</div>
+{% endif %}
+
+{% if grouped_tasks %}
+    {% for date, tasks in grouped_tasks.items() %}
+    <div class="card">
+        <div class="card-header">{{ date }}</div>
+        <div class="card-body" style="padding: 0;">
+            {% for task in tasks %}
+            <div class="task-item {% if 'overdue' in date.lower() %}task-overdue{% elif date == 'Today' %}task-today{% endif %}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">
+                            {% if task.task_type == 'watering' %}💧
+                            {% elif task.task_type == 'fertilizing' %}🌿
+                            {% elif task.task_type == 'harvesting' %}🌾
+                            {% elif task.task_type == 'pruning' %}✂️
+                            {% else %}📋{% endif %}
+                            {{ task.task_type.title() }}
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">
+                            Due: {{ task.due_date.strftime('%B %d, %Y') }}
+                        </div>
+                    </div>
+                    <button onclick="completeTask({{ task.id }})" class="btn" style="font-size: 0.8rem;">
+                        ✓ Complete
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body" style="text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+        <h3>No tasks due!</h3>
+        <p>
+            {% if filter_type == 'today' %}
+                No tasks due today. Enjoy your free time!
+            {% elif filter_type == 'week' %}
+                No tasks due this week. Great job staying on top of your garden care!
+            {% elif filter_type == 'overdue' %}
+                No overdue tasks. You're doing excellent garden management!
+            {% else %}
+                No care tasks scheduled at this time.
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
