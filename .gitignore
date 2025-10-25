@@ -1,0 +1,9 @@
+*.db
+*.ipynb
+.venv
+.claude
+.vscode
+.python-version
+*code-workspace
+Claude.md
+.DS_Store
