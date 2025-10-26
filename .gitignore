@@ -84,6 +84,13 @@ ipython_config.py
 # pyenv
 .python-version
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables and secrets
 # pipenv
 Pipfile.lock
 

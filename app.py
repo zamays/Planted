@@ -728,6 +728,20 @@ def weather():
         return f"<h1>Weather Error</h1><p>{str(e)}</p><p>Current weather: {current_weather}</p>"
 
 
+@app.route("/help")
+def help_page():
+    """
+    Display help and user guide for the Planted application.
+    
+    Provides comprehensive documentation on how to use all features of the
+    garden management system, including keyboard shortcuts and tips.
+    
+    Returns:
+        str: Rendered help page HTML template
+    """
+    return render_template("help.html")
+
+
 @app.route("/test")
 def test_page():
     """Simple test page to verify Flask is working"""

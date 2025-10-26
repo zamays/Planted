@@ -3,33 +3,121 @@
 {% block title %}Garden Layout - Planted{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h2 style="color: #4A7C59;">Garden Layout Manager</h2>
-    <a href="{{ url_for('create_plot') }}" class="btn">+ Create New Plot</a>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <h2 style="color: var(--primary-green); margin: 0; font-size: 1.75rem;">🗂️ Garden Layout Manager</h2>
+    <a href="{{ url_for('create_plot') }}" class="btn" title="Create a new garden plot">
+        ➕ Create New Plot
+    </a>
 </div>
 
 {% if plots %}
+<!-- Summary Stats -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="stat-card" style="padding: 1.25rem;">
+        <div style="font-size: 1.25rem; margin-bottom: 0.5rem;">🗂️</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-green);">{{ plots|length }}</div>
+        <div style="font-size: 0.9rem; color: var(--text-gray);">Total Plots</div>
+    </div>
+    <div class="stat-card" style="padding: 1.25rem;">
+        <div style="font-size: 1.25rem; margin-bottom: 0.5rem;">📐</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-green);">
+            {% set total_squares = namespace(value=0) %}
+            {% for plot in plots %}
+                {% set total_squares.value = total_squares.value + (plot.width * plot.height) %}
+            {% endfor %}
+            {{ total_squares.value }}
+        </div>
+        <div style="font-size: 0.9rem; color: var(--text-gray);">Total Squares</div>
+    </div>
+</div>
+
+<!-- Plots Grid -->
 <div class="plant-grid">
     {% for plot in plots %}
-    <div class="plant-card">
-        <h3>{{ plot.name }}</h3>
-        <div class="plant-meta">
-            {{ plot.width }}×{{ plot.height }} squares • {{ plot.location }}
+    <div class="plant-card" style="position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+            <h3 style="margin: 0; color: var(--primary-green); font-size: 1.25rem;">{{ plot.name }}</h3>
+            <span class="badge badge-custom" style="background: var(--secondary-green);">
+                {{ plot.width }}×{{ plot.height }}
+            </span>
         </div>
-        <div style="margin: 1rem 0; color: #666; font-size: 0.9rem;">
-            Created: {{ plot.created_date.strftime('%B %d, %Y') }}
+        
+        <div class="plant-meta" style="margin-bottom: 1rem;">
+            📍 {{ plot.location }}
         </div>
-        <a href="{{ url_for('view_plot', plot_id=plot.id) }}" class="btn">View Plot</a>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; padding: 1rem; background: rgba(74, 124, 89, 0.05); border-radius: 6px;">
+            <div>
+                <div style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 0.25rem;">Dimensions</div>
+                <div style="font-weight: 600; color: var(--primary-green);">{{ plot.width }} × {{ plot.height }}</div>
+            </div>
+            <div>
+                <div style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 0.25rem;">Total Space</div>
+                <div style="font-weight: 600; color: var(--primary-green);">{{ plot.width * plot.height }} sq ft</div>
+            </div>
+        </div>
+        
+        <div style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>📅</span>
+            <span>Created {{ plot.created_date.strftime('%B %d, %Y') }}</span>
+        </div>
+        
+        <a href="{{ url_for('view_plot', plot_id=plot.id) }}" class="btn" style="width: 100%;" title="View and manage this plot">
+            🗺️ View Plot Details
+        </a>
     </div>
     {% endfor %}
 </div>
+
+<!-- Help Section -->
+<div class="alert alert-info" style="margin-top: 2rem;">
+    <span style="font-size: 1.5rem;">💡</span>
+    <div>
+        <strong>Garden Plot Tips:</strong>
+        <ul style="margin: 0.5rem 0 0 1.5rem; line-height: 1.6;">
+            <li><strong>Square-foot gardening:</strong> Each square represents 1 sq ft of garden space</li>
+            <li><strong>Organize by purpose:</strong> Create separate plots for vegetables, herbs, and flowers</li>
+            <li><strong>Consider location:</strong> Name plots by their physical location (e.g., "Front Yard", "Back Patio")</li>
+            <li><strong>Start small:</strong> A 4×4 plot (16 sq ft) is perfect for beginners</li>
+        </ul>
+    </div>
+</div>
+
 {% else %}
 <div class="card">
-    <div class="card-body" style="text-align: center;">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
-        <h3>No garden plots yet</h3>
-        <p style="margin-bottom: 2rem;">Create your first garden plot to get started with planning your garden layout.</p>
-        <a href="{{ url_for('create_plot') }}" class="btn">Create Your First Plot</a>
+    <div class="card-body" style="text-align: center; padding: 3rem 1.5rem;">
+        <div style="font-size: 5rem; margin-bottom: 1.5rem;">🌱</div>
+        <h3 style="color: var(--primary-green); margin-bottom: 1rem; font-size: 1.5rem;">No garden plots yet</h3>
+        <p style="color: var(--text-gray); margin-bottom: 2rem; font-size: 1.05rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Create your first garden plot to get started with planning your garden layout. 
+            Use our square-foot gardening system to organize your plants efficiently!
+        </p>
+        
+        <!-- Getting Started Guide -->
+        <div class="alert alert-info" style="text-align: left; margin: 0 auto 2rem; max-width: 700px;">
+            <span style="font-size: 1.5rem;">📚</span>
+            <div>
+                <strong>What is Square-Foot Gardening?</strong>
+                <p style="margin: 0.5rem 0;">
+                    Square-foot gardening is a method that divides your garden into 1-foot squares. 
+                    Each square can hold a specific number of plants based on their size:
+                </p>
+                <ul style="margin: 0.5rem 0 0 1.5rem;">
+                    <li><strong>Large plants</strong> (tomatoes, peppers): 1 per square</li>
+                    <li><strong>Medium plants</strong> (lettuce, spinach): 4 per square</li>
+                    <li><strong>Small plants</strong> (radishes, carrots): 16 per square</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('create_plot') }}" class="btn btn-large">
+                ➕ Create Your First Plot
+            </a>
+            <a href="{{ url_for('plants') }}" class="btn btn-secondary">
+                🌿 Browse Plants First
+            </a>
+        </div>
     </div>
 </div>
 {% endif %}

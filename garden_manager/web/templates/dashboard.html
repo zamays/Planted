@@ -3,43 +3,85 @@
 {% block title %}Dashboard - Planted{% endblock %}
 
 {% block content %}
-<h2 style="margin-bottom: 2rem; color: #4A7C59;">Garden Dashboard</h2>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="margin: 0; color: var(--primary-green); font-size: 1.75rem;">🏡 Garden Dashboard</h2>
+    <div style="display: flex; gap: 0.75rem;">
+        <a href="{{ url_for('plants') }}" class="btn btn-small" title="Browse plant catalog">
+            🌿 Browse Plants
+        </a>
+        <a href="{{ url_for('create_plot') }}" class="btn btn-secondary btn-small" title="Create new garden plot">
+            ➕ New Plot
+        </a>
+    </div>
+</div>
 
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-icon">🗂️</div>
         <div class="stat-value">{{ stats.plots }}</div>
         <div class="stat-label">Garden Plots</div>
+        {% if stats.plots == 0 %}
+        <div style="margin-top: 1rem;">
+            <a href="{{ url_for('create_plot') }}" class="btn btn-small" style="font-size: 0.8rem;">
+                Create First Plot
+            </a>
+        </div>
+        {% endif %}
     </div>
     <div class="stat-card">
         <div class="stat-icon">🌱</div>
         <div class="stat-value">{{ stats.active_plants }}</div>
         <div class="stat-label">Active Plants</div>
+        {% if stats.active_plants == 0 and stats.plots > 0 %}
+        <div style="margin-top: 1rem;">
+            <a href="{{ url_for('garden_layout') }}" class="btn btn-small" style="font-size: 0.8rem;">
+                Add Plants
+            </a>
+        </div>
+        {% endif %}
     </div>
     <div class="stat-card">
         <div class="stat-icon">📋</div>
         <div class="stat-value">{{ stats.tasks_due }}</div>
         <div class="stat-label">Tasks Due</div>
+        {% if stats.tasks_due > 0 %}
+        <div style="margin-top: 1rem;">
+            <a href="{{ url_for('care_schedule') }}" class="btn btn-danger btn-small" style="font-size: 0.8rem;">
+                View Tasks
+            </a>
+        </div>
+        {% endif %}
     </div>
 </div>
 
 {% if weather %}
 <div class="card">
     <div class="card-header">
-        🌦️ Current Weather
+        🌦️ Current Weather Conditions
     </div>
     <div class="card-body">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-size: 2rem;">
+        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+            <div style="font-size: 3rem;" role="img" aria-label="Weather icon">
                 {% if 'clear' in weather.description or 'sunny' in weather.description %}☀️
                 {% elif 'cloud' in weather.description %}☁️
                 {% elif 'rain' in weather.description %}🌧️
                 {% else %}🌤️{% endif %}
             </div>
+            <div style="flex: 1;">
+                <div style="font-size: 2rem; font-weight: 600; color: var(--primary-green);">
+                    {{ weather.temperature }}°F
+                </div>
+                <div style="color: var(--text-gray); font-size: 1.1rem;">
+                    {{ weather.description.title() }}
+                </div>
+                <div style="color: var(--text-gray); font-size: 0.95rem; margin-top: 0.5rem;">
+                    💧 Humidity: {{ weather.humidity }}%
+                </div>
+            </div>
             <div>
-                <div style="font-size: 1.5rem; font-weight: 600;">{{ weather.temperature }}°F</div>
-                <div style="color: #666;">{{ weather.description.title() }}</div>
-                <div style="color: #666; font-size: 0.9rem;">Humidity: {{ weather.humidity }}%</div>
+                <a href="{{ url_for('weather') }}" class="btn btn-secondary btn-small">
+                    View Forecast →
+                </a>
             </div>
         </div>
     </div>
@@ -51,22 +93,71 @@
         🌱 Welcome to Planted!
     </div>
     <div class="card-body">
-        <h3 style="color: #4A7C59; margin-bottom: 1rem;">Getting Started:</h3>
-        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
-            <li>Click <strong>'Browse Plants'</strong> to see seasonal recommendations for your area</li>
-            <li>Visit <strong>'Garden Layout'</strong> to create your first garden plot</li>
-            <li>Check <strong>'Care Schedule'</strong> to see upcoming tasks</li>
-            <li>Weather information updates automatically</li>
+        <h3 style="color: var(--primary-green); margin-bottom: 1rem; font-size: 1.25rem;">
+            Getting Started:
+        </h3>
+        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; line-height: 1.8;">
+            <li>
+                <strong>Browse Plants:</strong> Discover 20+ plants with seasonal recommendations for your climate zone
+            </li>
+            <li>
+                <strong>Create Gardens:</strong> Design your garden plots with our square-foot gardening system
+            </li>
+            <li>
+                <strong>Track Care:</strong> Get automated watering, fertilizing, and harvest reminders
+            </li>
+            <li>
+                <strong>Monitor Weather:</strong> Weather-based recommendations help optimize your garden care
+            </li>
         </ul>
         
-        <p style="color: #666; margin-bottom: 1.5rem;">
-            This application includes 20+ plants with detailed growing guides,
-            automated care scheduling, and location-based recommendations.
-        </p>
+        <div class="alert alert-info" style="margin-bottom: 1.5rem;">
+            <span style="font-size: 1.5rem;">💡</span>
+            <div>
+                <strong>Pro Tip:</strong> Start by browsing plants suited to your {{ season }} season and climate zone. 
+                Then create a garden plot and start planning your layout!
+            </div>
+        </div>
         
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="{{ url_for('plants') }}" class="btn">🌿 Browse Plants</a>
-            <a href="{{ url_for('garden_layout') }}" class="btn btn-secondary">🗂️ Create Garden</a>
+            <a href="{{ url_for('plants') }}" class="btn">
+                🌿 Browse Plants
+            </a>
+            <a href="{{ url_for('create_plot') }}" class="btn btn-secondary">
+                🗂️ Create Garden Plot
+            </a>
+            <a href="{{ url_for('care_schedule') }}" class="btn btn-secondary">
+                📅 View Care Schedule
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Section -->
+<div class="card">
+    <div class="card-header">
+        ⚡ Quick Actions
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="{{ url_for('plants') }}" class="btn" style="padding: 1rem;">
+                <div style="text-align: center; width: 100%;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+                    <div>Search Plants</div>
+                </div>
+            </a>
+            <a href="{{ url_for('garden_layout') }}" class="btn btn-secondary" style="padding: 1rem;">
+                <div style="text-align: center; width: 100%;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗺️</div>
+                    <div>View Gardens</div>
+                </div>
+            </a>
+            <a href="{{ url_for('add_plant') }}" class="btn btn-secondary" style="padding: 1rem;">
+                <div style="text-align: center; width: 100%;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">➕</div>
+                    <div>Add Custom Plant</div>
+                </div>
+            </a>
         </div>
     </div>
 </div>

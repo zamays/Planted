@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Help & Guide - Planted{% endblock %}
+
+{% block content %}
+<h1 style="color: var(--primary-green); margin-bottom: 1rem; font-size: 2rem;">📚 Planted User Guide</h1>
+<p style="color: var(--text-gray); margin-bottom: 2rem; font-size: 1.1rem;">
+    Everything you need to know about using Planted to manage your garden effectively.
+</p>
+
+<!-- Quick Start -->
+<div class="card">
+    <div class="card-header">
+        🚀 Quick Start Guide
+    </div>
+    <div class="card-body">
+        <div style="display: grid; gap: 1.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="background: var(--primary-green); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 0.5rem;">Browse Plants</h3>
+                    <p style="color: var(--text-gray);">Start by exploring the plant catalog. Filter by season, type, or search for specific plants. Each plant includes growing information, companion planting suggestions, and care requirements.</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="background: var(--primary-green); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 0.5rem;">Create a Garden Plot</h3>
+                    <p style="color: var(--text-gray);">Design your garden using square-foot gardening. Create a plot with your desired dimensions (e.g., 4×4 for 16 square feet). Each square represents 1 sq ft of garden space.</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="background: var(--primary-green); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 0.5rem;">Add Plants to Your Plot</h3>
+                    <p style="color: var(--text-gray);">Click on any empty square in your garden grid to add a plant. The system will track planting dates and calculate harvest times automatically.</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="background: var(--primary-green); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary-green); margin-bottom: 0.5rem;">Track Care Tasks</h3>
+                    <p style="color: var(--text-gray);">Visit the Care Schedule to see automated reminders for watering, fertilizing, and harvesting. Complete tasks to keep your garden healthy and organized.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Keyboard Shortcuts -->
+<div class="card">
+    <div class="card-header">
+        ⌨️ Keyboard Shortcuts
+    </div>
+    <div class="card-body">
+        <p style="margin-bottom: 1.5rem; color: var(--text-gray);">Use these keyboard shortcuts to navigate quickly:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            <div style="padding: 1rem; background: rgba(74, 124, 89, 0.05); border-radius: var(--radius-sm); border-left: 3px solid var(--primary-green);">
+                <kbd style="background: var(--primary-green); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight: 600;">Alt + D</kbd>
+                <div style="margin-top: 0.5rem; color: var(--text-gray);">Go to Dashboard</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(74, 124, 89, 0.05); border-radius: var(--radius-sm); border-left: 3px solid var(--primary-green);">
+                <kbd style="background: var(--primary-green); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight: 600;">Alt + P</kbd>
+                <div style="margin-top: 0.5rem; color: var(--text-gray);">Browse Plants</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(74, 124, 89, 0.05); border-radius: var(--radius-sm); border-left: 3px solid var(--primary-green);">
+                <kbd style="background: var(--primary-green); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight: 600;">Alt + G</kbd>
+                <div style="margin-top: 0.5rem; color: var(--text-gray);">Garden Layout</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(74, 124, 89, 0.05); border-radius: var(--radius-sm); border-left: 3px solid var(--primary-green);">
+                <kbd style="background: var(--primary-green); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight: 600;">Alt + C</kbd>
+                <div style="margin-top: 0.5rem; color: var(--text-gray);">Care Schedule</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(74, 124, 89, 0.05); border-radius: var(--radius-sm); border-left: 3px solid var(--primary-green);">
+                <kbd style="background: var(--primary-green); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight: 600;">Alt + W</kbd>
+                <div style="margin-top: 0.5rem; color: var(--text-gray);">Weather Info</div>
+            </div>
+            <div style="padding: 1rem; background: rgba(74, 124, 89, 0.05); border-radius: var(--radius-sm); border-left: 3px solid var(--primary-green);">
+                <kbd style="background: var(--primary-green); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight: 600;">Escape</kbd>
+                <div style="margin-top: 0.5rem; color: var(--text-gray);">Clear Search</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Overview -->
+<div class="card">
+    <div class="card-header">
+        ✨ Features Overview
+    </div>
+    <div class="card-body">
+        <div style="display: grid; gap: 2rem;">
+            <!-- Plants Feature -->
+            <div>
+                <h3 style="color: var(--primary-green); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">🌿</span> Plant Database
+                </h3>
+                <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-gray);">
+                    <li><strong>20+ Plants:</strong> Vegetables, herbs, and fruits with detailed growing information</li>
+                    <li><strong>Seasonal Recommendations:</strong> See plants perfect for your current season and climate</li>
+                    <li><strong>Companion Planting:</strong> Learn which plants grow well together</li>
+                    <li><strong>Custom Plants:</strong> Add your own plants with custom growing information</li>
+                    <li><strong>Search & Filter:</strong> Find plants by name, type, or season</li>
+                </ul>
+            </div>
+            
+            <!-- Garden Layout Feature -->
+            <div>
+                <h3 style="color: var(--primary-green); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">🗂️</span> Garden Layout
+                </h3>
+                <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-gray);">
+                    <li><strong>Square-Foot Gardening:</strong> Visual grid-based planning system</li>
+                    <li><strong>Multiple Plots:</strong> Create and manage multiple garden areas</li>
+                    <li><strong>Easy Planting:</strong> Click any square to add a plant</li>
+                    <li><strong>Track Progress:</strong> See what's planted where and when</li>
+                    <li><strong>Harvest Dates:</strong> Automatic calculation of expected harvest times</li>
+                </ul>
+            </div>
+            
+            <!-- Care Schedule Feature -->
+            <div>
+                <h3 style="color: var(--primary-green); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">📅</span> Care Schedule
+                </h3>
+                <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-gray);">
+                    <li><strong>Automated Tasks:</strong> Watering, fertilizing, and harvest reminders</li>
+                    <li><strong>Weather Integration:</strong> Adjust care based on weather conditions</li>
+                    <li><strong>Task Tracking:</strong> Mark tasks as complete to stay organized</li>
+                    <li><strong>Smart Filtering:</strong> View today's tasks, weekly schedule, or overdue items</li>
+                    <li><strong>Notifications:</strong> Never miss important garden care</li>
+                </ul>
+            </div>
+            
+            <!-- Weather Feature -->
+            <div>
+                <h3 style="color: var(--primary-green); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">🌦️</span> Weather Integration
+                </h3>
+                <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-gray);">
+                    <li><strong>Current Conditions:</strong> Real-time weather data for your location</li>
+                    <li><strong>Climate Zone:</strong> Automatic detection of your hardiness zone</li>
+                    <li><strong>Smart Recommendations:</strong> Weather-based care suggestions</li>
+                    <li><strong>Location Detection:</strong> Automatic or manual location setting</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tips & Best Practices -->
+<div class="card">
+    <div class="card-header">
+        💡 Tips & Best Practices
+    </div>
+    <div class="card-body">
+        <div style="display: grid; gap: 1.5rem;">
+            <div>
+                <h4 style="color: var(--primary-green); margin-bottom: 0.5rem;">🌱 Getting Started</h4>
+                <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-gray);">
+                    <li>Start with a small 4×4 plot to learn square-foot gardening</li>
+                    <li>Choose plants suited to your current season and climate zone</li>
+                    <li>Pay attention to companion planting recommendations</li>
+                    <li>Read care notes before planting each species</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 style="color: var(--primary-green); margin-bottom: 0.5rem;">🗺️ Garden Planning</h4>
+                <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-gray);">
+                    <li>Place taller plants on the north side to avoid shading shorter plants</li>
+                    <li>Group plants with similar water needs together</li>
+                    <li>Leave space for plant growth - don't overcrowd squares</li>
+                    <li>Consider succession planting for continuous harvests</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 style="color: var(--primary-green); margin-bottom: 0.5rem;">💧 Care & Maintenance</h4>
+                <ul style="margin-left: 1.5rem; line-height: 1.8; color: var(--text-gray);">
+                    <li>Check the care schedule daily for tasks</li>
+                    <li>Adjust watering based on weather conditions</li>
+                    <li>Complete harvest tasks promptly for best flavor</li>
+                    <li>Mark tasks as complete to track your garden work</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Troubleshooting -->
+<div class="card">
+    <div class="card-header">
+        🔧 Troubleshooting
+    </div>
+    <div class="card-body">
+        <div style="display: grid; gap: 1.25rem;">
+            <div>
+                <h4 style="color: var(--primary-green); margin-bottom: 0.5rem;">Can't find a plant?</h4>
+                <p style="color: var(--text-gray);">Use the search bar or filter by season and type. You can also add custom plants if your desired plant isn't in the database.</p>
+            </div>
+            
+            <div>
+                <h4 style="color: var(--primary-green); margin-bottom: 0.5rem;">Weather not loading?</h4>
+                <p style="color: var(--text-gray);">The app works with mock weather data by default. To use real weather, add your OpenWeatherMap API key to the .env file (see SETUP.md).</p>
+            </div>
+            
+            <div>
+                <h4 style="color: var(--primary-green); margin-bottom: 0.5rem;">How do I delete a plant from my plot?</h4>
+                <p style="color: var(--text-gray);">Currently, you need to create a new plot to reorganize plants. A delete feature will be added in a future update.</p>
+            </div>
+            
+            <div>
+                <h4 style="color: var(--primary-green); margin-bottom: 0.5rem;">Can I use this on mobile?</h4>
+                <p style="color: var(--text-gray);">Yes! Planted is fully responsive and works great on phones and tablets. The interface adapts to your screen size.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Support -->
+<div class="alert alert-info">
+    <span style="font-size: 1.5rem;">📧</span>
+    <div>
+        <strong>Need More Help?</strong>
+        <p style="margin: 0.5rem 0 0;">
+            Check out the README.md and SETUP.md files in the project directory for detailed documentation, 
+            or visit the GitHub repository for updates and community support.
+        </p>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="{{ url_for('dashboard') }}" class="btn">
+        ← Back to Dashboard
+    </a>
+</div>
+{% endblock %}
