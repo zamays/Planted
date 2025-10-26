@@ -7,6 +7,7 @@ Welcome to the Planted documentation directory!
 - [Architecture](architecture.md) - System architecture and design decisions
 - [API Reference](api.md) - API documentation for developers
 - [Deployment](deployment.md) - Deployment guide for web hosting
+- [Plant Data Sources](plant_data_sources.md) - Information about plant database sources and reliability
 
 ## Quick Links
 
@@ -21,6 +22,7 @@ This documentation is organized to help different audiences:
 ### For Users
 - [README.md](../README.md) - Getting started with Planted
 - [SETUP.md](../SETUP.md) - Installation and configuration
+- [Plant Data Sources](plant_data_sources.md) - Plant information sources and reliability
 - User guides (coming soon)
 
 ### For Contributors

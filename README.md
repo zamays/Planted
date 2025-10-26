@@ -6,10 +6,11 @@ A comprehensive Python web application for managing your garden. This browser-ba
 
 ### Plant Database & Recommendations
 
-- **20+ Plants**: Vegetables, herbs, and fruits with detailed growing information
+- **38 Plants**: Vegetables, herbs, and fruits with detailed growing information from reliable sources
 - **Seasonal Recommendations**: Location and climate zone-based plant suggestions
 - **Companion Planting**: Smart recommendations for plant compatibility
 - **Growing Guides**: Days to germination, maturity, spacing, and care notes
+- **Verified Data**: All plant information sourced from USDA, university extensions, and reputable horticultural organizations
 
 ### Garden Planning & Layout
 
@@ -116,21 +117,23 @@ garden_manager/
 
 ## 🌿 Available Plants
 
-### Vegetables
+The database includes 38 plants with scientifically verified growing information:
 
-- **Spring**: Lettuce, Spinach, Peas, Radishes
-- **Summer**: Tomatoes, Peppers, Cucumbers, Zucchini, Green Beans, Corn
-- **Fall**: Broccoli, Cauliflower, Carrots, Kale
+### Vegetables (21 plants)
 
-### Herbs
+- **Spring**: Lettuce, Spinach, Peas, Radishes, Onions, Beets, Swiss Chard, Arugula
+- **Summer**: Tomatoes, Peppers, Cucumbers, Zucchini, Green Beans, Corn, Eggplant, Pumpkin, Watermelon, Cantaloupe
+- **Fall**: Broccoli, Cauliflower, Carrots, Kale, Garlic
 
-- Basil, Oregano, Thyme, Rosemary
+### Herbs (10 plants)
 
-### Fruits
+- Basil, Oregano, Thyme, Rosemary, Parsley, Cilantro, Mint, Dill, Chives, Sage
 
-- Strawberries, Blueberries
+### Fruits (7 plants)
 
-Each plant includes complete growing information, companion planting guides, and care schedules.
+- Strawberries, Blueberries, Raspberries, Blackberries, Grapes, Watermelon, Cantaloupe
+
+Each plant includes complete growing information, companion planting guides, and care schedules. All data is sourced from reliable authorities including USDA, university extension programs, and established horticultural organizations. See [Plant Data Sources](docs/plant_data_sources.md) for detailed information about our data sources.
 
 ## 🌦️ Weather Integration
 
@@ -210,6 +213,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed information on:
 
 - [Setup Guide](SETUP.md) - Detailed installation and configuration
 - [Contributing Guide](CONTRIBUTING.md) - How to contribute to the project
+- [Plant Data Sources](docs/plant_data_sources.md) - Information about plant database sources
 - [Architecture Documentation](docs/architecture.md) - System design and structure
 - [Deployment Guide](docs/deployment.md) - How to deploy to the web
 - [Changelog](CHANGELOG.md) - Version history and updates
