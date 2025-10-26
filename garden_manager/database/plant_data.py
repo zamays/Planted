@@ -11,6 +11,7 @@ import json
 from typing import List, Dict, Any, Optional
 from .models import Plant
 
+
 class PlantDatabase:
     """
     Database interface for plant species information.
@@ -19,6 +20,7 @@ class PlantDatabase:
     characteristics, companion planting data, and care requirements.
     Includes pre-populated data for common garden plants.
     """
+
     def __init__(self, db_path: str = "garden.db"):
         """
         Initialize plant database with schema and default data.
@@ -29,7 +31,7 @@ class PlantDatabase:
         self.db_path = db_path
         self.init_database()
         self.populate_plant_data()
-    
+
     def init_database(self):
         """
         Create database tables if they don't exist.
@@ -38,7 +40,7 @@ class PlantDatabase:
         and care tasks with proper foreign key relationships.
         """
         with sqlite3.connect(self.db_path) as conn:
-            conn.execute('''
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS plants (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
@@ -57,9 +59,9 @@ class PlantDatabase:
                     care_notes TEXT,
                     is_custom BOOLEAN DEFAULT FALSE
                 )
-            ''')
-            
-            conn.execute('''
+            """)
+
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS garden_plots (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
@@ -68,9 +70,9 @@ class PlantDatabase:
                     location TEXT,
                     created_date DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
-            ''')
-            
-            conn.execute('''
+            """)
+
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS planted_items (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     plant_id INTEGER,
@@ -83,9 +85,9 @@ class PlantDatabase:
                     FOREIGN KEY (plant_id) REFERENCES plants (id),
                     FOREIGN KEY (plot_id) REFERENCES garden_plots (id)
                 )
-            ''')
-            
-            conn.execute('''
+            """)
+
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS care_tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     planted_item_id INTEGER,
@@ -95,8 +97,8 @@ class PlantDatabase:
                     notes TEXT,
                     FOREIGN KEY (planted_item_id) REFERENCES planted_items (id)
                 )
-            ''')
-    
+            """)
+
     def populate_plant_data(self):
         """
         Populate database with default plant data if empty.
@@ -109,206 +111,738 @@ class PlantDatabase:
             cursor.execute("SELECT COUNT(*) FROM plants")
             if cursor.fetchone()[0] > 0:
                 return  # Skip if plants already exist
-            
+
             # Pre-defined plant data with comprehensive growing information
             plants_data = [
                 # Spring vegetables - cool season crops
-                ("Lettuce", "Lactuca sativa", "vegetable", "spring", "seed", 7, 60, 6, "partial_shade", "medium", 
-                 json.dumps(["carrots", "radishes", "onions"]), json.dumps(["broccoli"]), json.dumps([3,4,5,6,7,8,9]), 
-                 "Cool weather crop, plant 2 weeks before last frost"),
-                
-                ("Spinach", "Spinacia oleracea", "vegetable", "spring", "seed", 7, 45, 4, "partial_shade", "medium",
-                 json.dumps(["lettuce", "peas", "radishes"]), json.dumps(["fennel"]), json.dumps([2,3,4,5,6,7,8,9]),
-                 "Bolts in hot weather, successive plantings every 2 weeks"),
-                
-                ("Peas", "Pisum sativum", "vegetable", "spring", "seed", 10, 70, 3, "full_sun", "medium",
-                 json.dumps(["carrots", "radishes", "lettuce"]), json.dumps(["onions", "garlic"]), json.dumps([2,3,4,5,6,7,8]),
-                 "Plant as soon as soil can be worked, nitrogen fixer"),
-                
-                ("Radishes", "Raphanus sativus", "vegetable", "spring", "seed", 4, 30, 2, "full_sun", "medium",
-                 json.dumps(["lettuce", "spinach", "carrots"]), json.dumps(["hyssop"]), json.dumps([2,3,4,5,6,7,8,9]),
-                 "Fast growing, helps break up soil for root vegetables"),
-                
+                (
+                    "Lettuce",
+                    "Lactuca sativa",
+                    "vegetable",
+                    "spring",
+                    "seed",
+                    7,
+                    60,
+                    6,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["carrots", "radishes", "onions"]),
+                    json.dumps(["broccoli"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Cool weather crop, plant 2 weeks before last frost",
+                ),
+                (
+                    "Spinach",
+                    "Spinacia oleracea",
+                    "vegetable",
+                    "spring",
+                    "seed",
+                    7,
+                    45,
+                    4,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["lettuce", "peas", "radishes"]),
+                    json.dumps(["fennel"]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8, 9]),
+                    "Bolts in hot weather, successive plantings every 2 weeks",
+                ),
+                (
+                    "Peas",
+                    "Pisum sativum",
+                    "vegetable",
+                    "spring",
+                    "seed",
+                    10,
+                    70,
+                    3,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["carrots", "radishes", "lettuce"]),
+                    json.dumps(["onions", "garlic"]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8]),
+                    "Plant as soon as soil can be worked, nitrogen fixer",
+                ),
+                (
+                    "Radishes",
+                    "Raphanus sativus",
+                    "vegetable",
+                    "spring",
+                    "seed",
+                    4,
+                    30,
+                    2,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["lettuce", "spinach", "carrots"]),
+                    json.dumps(["hyssop"]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8, 9]),
+                    "Fast growing, helps break up soil for root vegetables",
+                ),
                 # Summer vegetables - warm season crops
-                ("Tomatoes", "Solanum lycopersicum", "vegetable", "summer", "transplant", 7, 80, 18, "full_sun", "high",
-                 json.dumps(["basil", "peppers", "marigolds"]), json.dumps(["fennel", "brassicas"]), json.dumps([3,4,5,6,7,8,9,10]),
-                 "Plant after last frost, stake or cage for support"),
-                
-                ("Peppers", "Capsicum annuum", "vegetable", "summer", "transplant", 10, 70, 12, "full_sun", "medium",
-                 json.dumps(["tomatoes", "basil", "onions"]), json.dumps(["fennel"]), json.dumps([4,5,6,7,8,9,10]),
-                 "Heat-loving crop, harvest when fully colored"),
-                
-                ("Cucumbers", "Cucumis sativus", "vegetable", "summer", "seed", 7, 60, 12, "full_sun", "high",
-                 json.dumps(["beans", "corn", "radishes"]), json.dumps(["aromatic herbs"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Provide trellis for vertical growth"),
-                
-                ("Zucchini", "Cucurbita pepo", "vegetable", "summer", "seed", 7, 50, 24, "full_sun", "high",
-                 json.dumps(["beans", "corn", "nasturtiums"]), json.dumps(["potatoes"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Very productive, harvest when 6-8 inches long"),
-                
-                ("Green Beans", "Phaseolus vulgaris", "vegetable", "summer", "seed", 8, 60, 6, "full_sun", "medium",
-                 json.dumps(["corn", "cucumbers", "tomatoes"]), json.dumps(["onions", "garlic"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Bush varieties don't need support, nitrogen fixer"),
-                
-                ("Corn", "Zea mays", "vegetable", "summer", "seed", 7, 80, 12, "full_sun", "medium",
-                 json.dumps(["beans", "squash", "cucumbers"]), json.dumps(["tomatoes"]), json.dumps([4,5,6,7,8,9]),
-                 "Plant in blocks for better pollination"),
-                
+                (
+                    "Tomatoes",
+                    "Solanum lycopersicum",
+                    "vegetable",
+                    "summer",
+                    "transplant",
+                    7,
+                    80,
+                    18,
+                    "full_sun",
+                    "high",
+                    json.dumps(["basil", "peppers", "marigolds"]),
+                    json.dumps(["fennel", "brassicas"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9, 10]),
+                    "Plant after last frost, stake or cage for support",
+                ),
+                (
+                    "Peppers",
+                    "Capsicum annuum",
+                    "vegetable",
+                    "summer",
+                    "transplant",
+                    10,
+                    70,
+                    12,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["tomatoes", "basil", "onions"]),
+                    json.dumps(["fennel"]),
+                    json.dumps([4, 5, 6, 7, 8, 9, 10]),
+                    "Heat-loving crop, harvest when fully colored",
+                ),
+                (
+                    "Cucumbers",
+                    "Cucumis sativus",
+                    "vegetable",
+                    "summer",
+                    "seed",
+                    7,
+                    60,
+                    12,
+                    "full_sun",
+                    "high",
+                    json.dumps(["beans", "corn", "radishes"]),
+                    json.dumps(["aromatic herbs"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Provide trellis for vertical growth",
+                ),
+                (
+                    "Zucchini",
+                    "Cucurbita pepo",
+                    "vegetable",
+                    "summer",
+                    "seed",
+                    7,
+                    50,
+                    24,
+                    "full_sun",
+                    "high",
+                    json.dumps(["beans", "corn", "nasturtiums"]),
+                    json.dumps(["potatoes"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Very productive, harvest when 6-8 inches long",
+                ),
+                (
+                    "Green Beans",
+                    "Phaseolus vulgaris",
+                    "vegetable",
+                    "summer",
+                    "seed",
+                    8,
+                    60,
+                    6,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["corn", "cucumbers", "tomatoes"]),
+                    json.dumps(["onions", "garlic"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Bush varieties don't need support, nitrogen fixer",
+                ),
+                (
+                    "Corn",
+                    "Zea mays",
+                    "vegetable",
+                    "summer",
+                    "seed",
+                    7,
+                    80,
+                    12,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["beans", "squash", "cucumbers"]),
+                    json.dumps(["tomatoes"]),
+                    json.dumps([4, 5, 6, 7, 8, 9]),
+                    "Plant in blocks for better pollination",
+                ),
                 # Fall vegetables - cool season crops for autumn planting
-                ("Broccoli", "Brassica oleracea", "vegetable", "fall", "transplant", 7, 70, 12, "full_sun", "medium",
-                 json.dumps(["onions", "lettuce", "carrots"]), json.dumps(["tomatoes", "peppers"]), json.dumps([2,3,4,5,6,7,8]),
-                 "Cool weather crop, harvest before flowers open"),
-                
-                ("Cauliflower", "Brassica oleracea", "vegetable", "fall", "transplant", 7, 75, 15, "full_sun", "medium",
-                 json.dumps(["onions", "celery", "beans"]), json.dumps(["tomatoes"]), json.dumps([2,3,4,5,6,7,8]),
-                 "Blanch heads by tying leaves over developing curds"),
-                
-                ("Carrots", "Daucus carota", "vegetable", "fall", "seed", 14, 70, 2, "full_sun", "medium",
-                 json.dumps(["onions", "leeks", "rosemary"]), json.dumps(["dill"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Direct sow, thin seedlings to prevent crowding"),
-                
-                ("Kale", "Brassica oleracea", "vegetable", "fall", "seed", 7, 60, 12, "partial_shade", "medium",
-                 json.dumps(["onions", "garlic", "nasturtiums"]), json.dumps(["tomatoes"]), json.dumps([2,3,4,5,6,7,8,9]),
-                 "Frost improves flavor, harvest outer leaves first"),
-                
+                (
+                    "Broccoli",
+                    "Brassica oleracea",
+                    "vegetable",
+                    "fall",
+                    "transplant",
+                    7,
+                    70,
+                    12,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["onions", "lettuce", "carrots"]),
+                    json.dumps(["tomatoes", "peppers"]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8]),
+                    "Cool weather crop, harvest before flowers open",
+                ),
+                (
+                    "Cauliflower",
+                    "Brassica oleracea",
+                    "vegetable",
+                    "fall",
+                    "transplant",
+                    7,
+                    75,
+                    15,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["onions", "celery", "beans"]),
+                    json.dumps(["tomatoes"]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8]),
+                    "Blanch heads by tying leaves over developing curds",
+                ),
+                (
+                    "Carrots",
+                    "Daucus carota",
+                    "vegetable",
+                    "fall",
+                    "seed",
+                    14,
+                    70,
+                    2,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["onions", "leeks", "rosemary"]),
+                    json.dumps(["dill"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Direct sow, thin seedlings to prevent crowding",
+                ),
+                (
+                    "Kale",
+                    "Brassica oleracea",
+                    "vegetable",
+                    "fall",
+                    "seed",
+                    7,
+                    60,
+                    12,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["onions", "garlic", "nasturtiums"]),
+                    json.dumps(["tomatoes"]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8, 9]),
+                    "Frost improves flavor, harvest outer leaves first",
+                ),
                 # Culinary and medicinal herbs
-                ("Basil", "Ocimum basilicum", "herb", "summer", "transplant", 7, 60, 8, "full_sun", "medium",
-                 json.dumps(["tomatoes", "peppers", "oregano"]), json.dumps(["rue"]), json.dumps([4,5,6,7,8,9,10]),
-                 "Pinch flowers to keep leaves tender"),
-                
-                ("Oregano", "Origanum vulgare", "herb", "spring", "transplant", 7, 80, 10, "full_sun", "low",
-                 json.dumps(["tomatoes", "peppers", "basil"]), json.dumps([]), json.dumps([4,5,6,7,8,9]),
-                 "Perennial herb, drought tolerant once established"),
-                
-                ("Thyme", "Thymus vulgaris", "herb", "spring", "transplant", 14, 90, 8, "full_sun", "low",
-                 json.dumps(["rosemary", "sage", "lavender"]), json.dumps([]), json.dumps([4,5,6,7,8,9]),
-                 "Perennial, excellent ground cover"),
-                
-                ("Rosemary", "Rosmarinus officinalis", "herb", "spring", "transplant", 21, 120, 18, "full_sun", "low",
-                 json.dumps(["thyme", "sage", "carrots"]), json.dumps([]), json.dumps([6,7,8,9,10]),
-                 "Perennial evergreen, drought tolerant"),
-                
+                (
+                    "Basil",
+                    "Ocimum basilicum",
+                    "herb",
+                    "summer",
+                    "transplant",
+                    7,
+                    60,
+                    8,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["tomatoes", "peppers", "oregano"]),
+                    json.dumps(["rue"]),
+                    json.dumps([4, 5, 6, 7, 8, 9, 10]),
+                    "Pinch flowers to keep leaves tender",
+                ),
+                (
+                    "Oregano",
+                    "Origanum vulgare",
+                    "herb",
+                    "spring",
+                    "transplant",
+                    7,
+                    80,
+                    10,
+                    "full_sun",
+                    "low",
+                    json.dumps(["tomatoes", "peppers", "basil"]),
+                    json.dumps([]),
+                    json.dumps([4, 5, 6, 7, 8, 9]),
+                    "Perennial herb, drought tolerant once established",
+                ),
+                (
+                    "Thyme",
+                    "Thymus vulgaris",
+                    "herb",
+                    "spring",
+                    "transplant",
+                    14,
+                    90,
+                    8,
+                    "full_sun",
+                    "low",
+                    json.dumps(["rosemary", "sage", "lavender"]),
+                    json.dumps([]),
+                    json.dumps([4, 5, 6, 7, 8, 9]),
+                    "Perennial, excellent ground cover",
+                ),
+                (
+                    "Rosemary",
+                    "Rosmarinus officinalis",
+                    "herb",
+                    "spring",
+                    "transplant",
+                    21,
+                    120,
+                    18,
+                    "full_sun",
+                    "low",
+                    json.dumps(["thyme", "sage", "carrots"]),
+                    json.dumps([]),
+                    json.dumps([6, 7, 8, 9, 10]),
+                    "Perennial evergreen, drought tolerant",
+                ),
                 # Fruit plants and berry bushes
-                ("Strawberries", "Fragaria × ananassa", "fruit", "spring", "transplant", 0, 60, 12, "full_sun", "medium",
-                 json.dumps(["thyme", "borage", "lettuce"]), json.dumps(["brassicas"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Perennial, remove runners for larger berries"),
-                
-                ("Blueberries", "Vaccinium corymbosum", "fruit", "spring", "transplant", 0, 730, 48, "full_sun", "high",
-                 json.dumps(["azaleas", "rhododendrons"]), json.dumps([]), json.dumps([3,4,5,6,7,8]),
-                 "Perennial shrub, needs acidic soil"),
-
+                (
+                    "Strawberries",
+                    "Fragaria × ananassa",
+                    "fruit",
+                    "spring",
+                    "transplant",
+                    0,
+                    60,
+                    12,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["thyme", "borage", "lettuce"]),
+                    json.dumps(["brassicas"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Perennial, remove runners for larger berries",
+                ),
+                (
+                    "Blueberries",
+                    "Vaccinium corymbosum",
+                    "fruit",
+                    "spring",
+                    "transplant",
+                    0,
+                    730,
+                    48,
+                    "full_sun",
+                    "high",
+                    json.dumps(["azaleas", "rhododendrons"]),
+                    json.dumps([]),
+                    json.dumps([3, 4, 5, 6, 7, 8]),
+                    "Perennial shrub, needs acidic soil",
+                ),
                 # Winter vegetables - hardy crops for cold season
-                ("Winter Kale", "Brassica oleracea", "vegetable", "winter", "transplant", 7, 65, 12, "full_sun", "medium",
-                 json.dumps(["onions", "garlic", "beets"]), json.dumps(["tomatoes", "peppers"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Extremely cold hardy, harvest all winter"),
-
-                ("Brussels Sprouts", "Brassica oleracea", "vegetable", "winter", "transplant", 7, 90, 18, "full_sun", "medium",
-                 json.dumps(["thyme", "sage", "carrots"]), json.dumps(["strawberries"]), json.dumps([3,4,5,6,7,8]),
-                 "Frost improves flavor, harvest from bottom up"),
-
-                ("Leeks", "Allium ampeloprasum", "vegetable", "winter", "transplant", 14, 120, 6, "full_sun", "medium",
-                 json.dumps(["carrots", "celery", "onions"]), json.dumps(["beans", "peas"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Cold hardy, hill soil around stems for blanching"),
-
-                ("Garlic", "Allium sativum", "vegetable", "winter", "bulb", 0, 240, 4, "full_sun", "low",
-                 json.dumps(["tomatoes", "roses", "lettuce"]), json.dumps(["peas", "beans"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Plant in fall, harvest next summer, natural pest repellent"),
-
-                ("Winter Lettuce", "Lactuca sativa", "vegetable", "winter", "seed", 7, 50, 6, "partial_shade", "medium",
-                 json.dumps(["carrots", "radishes", "beets"]), json.dumps(["broccoli"]), json.dumps([4,5,6,7,8,9]),
-                 "Choose cold-hardy varieties, use row covers"),
-
+                (
+                    "Winter Kale",
+                    "Brassica oleracea",
+                    "vegetable",
+                    "winter",
+                    "transplant",
+                    7,
+                    65,
+                    12,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["onions", "garlic", "beets"]),
+                    json.dumps(["tomatoes", "peppers"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Extremely cold hardy, harvest all winter",
+                ),
+                (
+                    "Brussels Sprouts",
+                    "Brassica oleracea",
+                    "vegetable",
+                    "winter",
+                    "transplant",
+                    7,
+                    90,
+                    18,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["thyme", "sage", "carrots"]),
+                    json.dumps(["strawberries"]),
+                    json.dumps([3, 4, 5, 6, 7, 8]),
+                    "Frost improves flavor, harvest from bottom up",
+                ),
+                (
+                    "Leeks",
+                    "Allium ampeloprasum",
+                    "vegetable",
+                    "winter",
+                    "transplant",
+                    14,
+                    120,
+                    6,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["carrots", "celery", "onions"]),
+                    json.dumps(["beans", "peas"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Cold hardy, hill soil around stems for blanching",
+                ),
+                (
+                    "Garlic",
+                    "Allium sativum",
+                    "vegetable",
+                    "winter",
+                    "bulb",
+                    0,
+                    240,
+                    4,
+                    "full_sun",
+                    "low",
+                    json.dumps(["tomatoes", "roses", "lettuce"]),
+                    json.dumps(["peas", "beans"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Plant in fall, harvest next summer, natural pest repellent",
+                ),
+                (
+                    "Winter Lettuce",
+                    "Lactuca sativa",
+                    "vegetable",
+                    "winter",
+                    "seed",
+                    7,
+                    50,
+                    6,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["carrots", "radishes", "beets"]),
+                    json.dumps(["broccoli"]),
+                    json.dumps([4, 5, 6, 7, 8, 9]),
+                    "Choose cold-hardy varieties, use row covers",
+                ),
                 # Additional summer crops
-                ("Eggplant", "Solanum melongena", "vegetable", "summer", "transplant", 10, 80, 18, "full_sun", "medium",
-                 json.dumps(["beans", "peppers", "thyme"]), json.dumps(["fennel"]), json.dumps([5,6,7,8,9,10]),
-                 "Heat-loving crop, stake for support"),
-
-                ("Watermelon", "Citrullus lanatus", "fruit", "summer", "seed", 7, 90, 36, "full_sun", "high",
-                 json.dumps(["corn", "beans", "radishes"]), json.dumps(["cucumbers"]), json.dumps([4,5,6,7,8,9,10]),
-                 "Needs lots of space, tap for ripeness check"),
-
-                ("Cantaloupe", "Cucumis melo", "fruit", "summer", "seed", 7, 80, 24, "full_sun", "medium",
-                 json.dumps(["corn", "beans", "radishes"]), json.dumps(["potatoes"]), json.dumps([4,5,6,7,8,9,10]),
-                 "Sweet melon, sniff stem end for ripeness"),
-
-                ("Okra", "Abelmoschus esculentus", "vegetable", "summer", "seed", 7, 60, 12, "full_sun", "medium",
-                 json.dumps(["peppers", "eggplant", "basil"]), json.dumps([]), json.dumps([5,6,7,8,9,10,11]),
-                 "Very heat tolerant, harvest young pods"),
-
+                (
+                    "Eggplant",
+                    "Solanum melongena",
+                    "vegetable",
+                    "summer",
+                    "transplant",
+                    10,
+                    80,
+                    18,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["beans", "peppers", "thyme"]),
+                    json.dumps(["fennel"]),
+                    json.dumps([5, 6, 7, 8, 9, 10]),
+                    "Heat-loving crop, stake for support",
+                ),
+                (
+                    "Watermelon",
+                    "Citrullus lanatus",
+                    "fruit",
+                    "summer",
+                    "seed",
+                    7,
+                    90,
+                    36,
+                    "full_sun",
+                    "high",
+                    json.dumps(["corn", "beans", "radishes"]),
+                    json.dumps(["cucumbers"]),
+                    json.dumps([4, 5, 6, 7, 8, 9, 10]),
+                    "Needs lots of space, tap for ripeness check",
+                ),
+                (
+                    "Cantaloupe",
+                    "Cucumis melo",
+                    "fruit",
+                    "summer",
+                    "seed",
+                    7,
+                    80,
+                    24,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["corn", "beans", "radishes"]),
+                    json.dumps(["potatoes"]),
+                    json.dumps([4, 5, 6, 7, 8, 9, 10]),
+                    "Sweet melon, sniff stem end for ripeness",
+                ),
+                (
+                    "Okra",
+                    "Abelmoschus esculentus",
+                    "vegetable",
+                    "summer",
+                    "seed",
+                    7,
+                    60,
+                    12,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["peppers", "eggplant", "basil"]),
+                    json.dumps([]),
+                    json.dumps([5, 6, 7, 8, 9, 10, 11]),
+                    "Very heat tolerant, harvest young pods",
+                ),
                 # Additional spring crops
-                ("Arugula", "Eruca vesicaria", "vegetable", "spring", "seed", 5, 40, 4, "partial_shade", "medium",
-                 json.dumps(["lettuce", "carrots", "beets"]), json.dumps([]), json.dumps([2,3,4,5,6,7,8,9]),
-                 "Fast growing, peppery flavor, bolts in heat"),
-
-                ("Swiss Chard", "Beta vulgaris", "vegetable", "spring", "seed", 7, 60, 8, "partial_shade", "medium",
-                 json.dumps(["beans", "onions", "brassicas"]), json.dumps([]), json.dumps([3,4,5,6,7,8,9]),
-                 "Heat tolerant, colorful stems, harvest outer leaves"),
-
-                ("Beets", "Beta vulgaris", "vegetable", "spring", "seed", 7, 60, 3, "full_sun", "medium",
-                 json.dumps(["onions", "lettuce", "brassicas"]), json.dumps(["pole beans"]), json.dumps([2,3,4,5,6,7,8,9]),
-                 "Both roots and greens edible, needs loose soil"),
-
+                (
+                    "Arugula",
+                    "Eruca vesicaria",
+                    "vegetable",
+                    "spring",
+                    "seed",
+                    5,
+                    40,
+                    4,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["lettuce", "carrots", "beets"]),
+                    json.dumps([]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8, 9]),
+                    "Fast growing, peppery flavor, bolts in heat",
+                ),
+                (
+                    "Swiss Chard",
+                    "Beta vulgaris",
+                    "vegetable",
+                    "spring",
+                    "seed",
+                    7,
+                    60,
+                    8,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["beans", "onions", "brassicas"]),
+                    json.dumps([]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Heat tolerant, colorful stems, harvest outer leaves",
+                ),
+                (
+                    "Beets",
+                    "Beta vulgaris",
+                    "vegetable",
+                    "spring",
+                    "seed",
+                    7,
+                    60,
+                    3,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["onions", "lettuce", "brassicas"]),
+                    json.dumps(["pole beans"]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8, 9]),
+                    "Both roots and greens edible, needs loose soil",
+                ),
                 # Additional fall crops
-                ("Turnips", "Brassica rapa", "vegetable", "fall", "seed", 7, 50, 4, "full_sun", "medium",
-                 json.dumps(["peas", "beans", "onions"]), json.dumps([]), json.dumps([2,3,4,5,6,7,8,9]),
-                 "Quick growing, both roots and greens edible"),
-
-                ("Rutabaga", "Brassica napus", "vegetable", "fall", "seed", 7, 90, 6, "full_sun", "medium",
-                 json.dumps(["peas", "onions", "beans"]), json.dumps([]), json.dumps([3,4,5,6,7,8,9]),
-                 "Needs cool weather, stores well through winter"),
-
-                ("Parsnips", "Pastinaca sativa", "vegetable", "fall", "seed", 14, 120, 4, "full_sun", "medium",
-                 json.dumps(["peas", "beans", "peppers"]), json.dumps([]), json.dumps([2,3,4,5,6,7,8,9]),
-                 "Frost improves flavor, long growing season"),
-
+                (
+                    "Turnips",
+                    "Brassica rapa",
+                    "vegetable",
+                    "fall",
+                    "seed",
+                    7,
+                    50,
+                    4,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["peas", "beans", "onions"]),
+                    json.dumps([]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8, 9]),
+                    "Quick growing, both roots and greens edible",
+                ),
+                (
+                    "Rutabaga",
+                    "Brassica napus",
+                    "vegetable",
+                    "fall",
+                    "seed",
+                    7,
+                    90,
+                    6,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["peas", "onions", "beans"]),
+                    json.dumps([]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Needs cool weather, stores well through winter",
+                ),
+                (
+                    "Parsnips",
+                    "Pastinaca sativa",
+                    "vegetable",
+                    "fall",
+                    "seed",
+                    14,
+                    120,
+                    4,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["peas", "beans", "peppers"]),
+                    json.dumps([]),
+                    json.dumps([2, 3, 4, 5, 6, 7, 8, 9]),
+                    "Frost improves flavor, long growing season",
+                ),
                 # Additional herbs
-                ("Cilantro", "Coriandrum sativum", "herb", "spring", "seed", 7, 50, 6, "partial_shade", "medium",
-                 json.dumps(["tomatoes", "peppers", "beans"]), json.dumps(["fennel"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Cool weather herb, bolts quickly in heat"),
-
-                ("Parsley", "Petroselinum crispum", "herb", "spring", "seed", 14, 80, 8, "partial_shade", "medium",
-                 json.dumps(["tomatoes", "asparagus", "carrots"]), json.dumps([]), json.dumps([3,4,5,6,7,8,9]),
-                 "Biennial herb, slow to germinate"),
-
-                ("Dill", "Anethum graveolens", "herb", "spring", "seed", 7, 70, 8, "full_sun", "medium",
-                 json.dumps(["lettuce", "onions", "cucumbers"]), json.dumps(["carrots"]), json.dumps([3,4,5,6,7,8,9]),
-                 "Self-seeding annual, attracts beneficial insects"),
-
-                ("Chives", "Allium schoenoprasum", "herb", "spring", "transplant", 10, 80, 6, "partial_shade", "low",
-                 json.dumps(["carrots", "tomatoes", "roses"]), json.dumps([]), json.dumps([3,4,5,6,7,8,9]),
-                 "Perennial herb, edible flowers, pest deterrent"),
-
-                ("Mint", "Mentha", "herb", "spring", "transplant", 7, 90, 18, "partial_shade", "high",
-                 json.dumps(["brassicas", "tomatoes"]), json.dumps([]), json.dumps([3,4,5,6,7,8,9,10]),
-                 "Very invasive, grow in containers, aromatic leaves"),
-
-                ("Sage", "Salvia officinalis", "herb", "spring", "transplant", 14, 100, 18, "full_sun", "low",
-                 json.dumps(["rosemary", "thyme", "brassicas"]), json.dumps(["cucumbers"]), json.dumps([4,5,6,7,8,9]),
-                 "Perennial herb, drought tolerant, silvery leaves"),
-
+                (
+                    "Cilantro",
+                    "Coriandrum sativum",
+                    "herb",
+                    "spring",
+                    "seed",
+                    7,
+                    50,
+                    6,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["tomatoes", "peppers", "beans"]),
+                    json.dumps(["fennel"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Cool weather herb, bolts quickly in heat",
+                ),
+                (
+                    "Parsley",
+                    "Petroselinum crispum",
+                    "herb",
+                    "spring",
+                    "seed",
+                    14,
+                    80,
+                    8,
+                    "partial_shade",
+                    "medium",
+                    json.dumps(["tomatoes", "asparagus", "carrots"]),
+                    json.dumps([]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Biennial herb, slow to germinate",
+                ),
+                (
+                    "Dill",
+                    "Anethum graveolens",
+                    "herb",
+                    "spring",
+                    "seed",
+                    7,
+                    70,
+                    8,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["lettuce", "onions", "cucumbers"]),
+                    json.dumps(["carrots"]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Self-seeding annual, attracts beneficial insects",
+                ),
+                (
+                    "Chives",
+                    "Allium schoenoprasum",
+                    "herb",
+                    "spring",
+                    "transplant",
+                    10,
+                    80,
+                    6,
+                    "partial_shade",
+                    "low",
+                    json.dumps(["carrots", "tomatoes", "roses"]),
+                    json.dumps([]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9]),
+                    "Perennial herb, edible flowers, pest deterrent",
+                ),
+                (
+                    "Mint",
+                    "Mentha",
+                    "herb",
+                    "spring",
+                    "transplant",
+                    7,
+                    90,
+                    18,
+                    "partial_shade",
+                    "high",
+                    json.dumps(["brassicas", "tomatoes"]),
+                    json.dumps([]),
+                    json.dumps([3, 4, 5, 6, 7, 8, 9, 10]),
+                    "Very invasive, grow in containers, aromatic leaves",
+                ),
+                (
+                    "Sage",
+                    "Salvia officinalis",
+                    "herb",
+                    "spring",
+                    "transplant",
+                    14,
+                    100,
+                    18,
+                    "full_sun",
+                    "low",
+                    json.dumps(["rosemary", "thyme", "brassicas"]),
+                    json.dumps(["cucumbers"]),
+                    json.dumps([4, 5, 6, 7, 8, 9]),
+                    "Perennial herb, drought tolerant, silvery leaves",
+                ),
                 # Additional fruits
-                ("Raspberries", "Rubus idaeus", "fruit", "spring", "transplant", 0, 365, 24, "full_sun", "medium",
-                 json.dumps(["garlic", "tansy", "turnips"]), json.dumps(["blackberries"]), json.dumps([3,4,5,6,7,8]),
-                 "Perennial canes, needs support, summer and fall varieties"),
-
-                ("Blackberries", "Rubus fruticosus", "fruit", "spring", "transplant", 0, 365, 36, "full_sun", "medium",
-                 json.dumps(["tansy", "mint"]), json.dumps(["raspberries"]), json.dumps([4,5,6,7,8,9]),
-                 "Very vigorous, thorny varieties available, perennial"),
-
-                ("Grapes", "Vitis vinifera", "fruit", "spring", "transplant", 0, 730, 96, "full_sun", "medium",
-                 json.dumps(["basil", "oregano", "geraniums"]), json.dumps([]), json.dumps([4,5,6,7,8,9]),
-                 "Perennial vine, needs strong trellis, prune annually"),
+                (
+                    "Raspberries",
+                    "Rubus idaeus",
+                    "fruit",
+                    "spring",
+                    "transplant",
+                    0,
+                    365,
+                    24,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["garlic", "tansy", "turnips"]),
+                    json.dumps(["blackberries"]),
+                    json.dumps([3, 4, 5, 6, 7, 8]),
+                    "Perennial canes, needs support, summer and fall varieties",
+                ),
+                (
+                    "Blackberries",
+                    "Rubus fruticosus",
+                    "fruit",
+                    "spring",
+                    "transplant",
+                    0,
+                    365,
+                    36,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["tansy", "mint"]),
+                    json.dumps(["raspberries"]),
+                    json.dumps([4, 5, 6, 7, 8, 9]),
+                    "Very vigorous, thorny varieties available, perennial",
+                ),
+                (
+                    "Grapes",
+                    "Vitis vinifera",
+                    "fruit",
+                    "spring",
+                    "transplant",
+                    0,
+                    730,
+                    96,
+                    "full_sun",
+                    "medium",
+                    json.dumps(["basil", "oregano", "geraniums"]),
+                    json.dumps([]),
+                    json.dumps([4, 5, 6, 7, 8, 9]),
+                    "Perennial vine, needs strong trellis, prune annually",
+                ),
             ]
-            
+
             for plant_data in plants_data:
-                cursor.execute('''
+                cursor.execute(
+                    """
                     INSERT INTO plants (name, scientific_name, plant_type, season, planting_method,
                                       days_to_germination, days_to_maturity, spacing_inches,
                                       sun_requirements, water_needs, companion_plants, avoid_plants,
                                       climate_zones, care_notes)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', plant_data)
-    
+                """,
+                    plant_data,
+                )
+
     def get_plants_by_season(self, season: str) -> List[Plant]:
         """
         Retrieve plants suitable for a specific planting season.
@@ -323,7 +857,7 @@ class PlantDatabase:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM plants WHERE season = ?", (season,))
             return [self._row_to_plant(row) for row in cursor.fetchall()]
-    
+
     def get_plants_by_type(self, plant_type: str) -> List[Plant]:
         """
         Retrieve plants of a specific type.
@@ -338,7 +872,7 @@ class PlantDatabase:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM plants WHERE plant_type = ?", (plant_type,))
             return [self._row_to_plant(row) for row in cursor.fetchall()]
-    
+
     def search_plants(self, query: str) -> List[Plant]:
         """
         Search plants by name or scientific name.
@@ -353,15 +887,27 @@ class PlantDatabase:
             cursor = conn.cursor()
             cursor.execute(
                 "SELECT * FROM plants WHERE name LIKE ? OR scientific_name LIKE ?",
-                (f"%{query}%", f"%{query}%")
+                (f"%{query}%", f"%{query}%"),
             )
             return [self._row_to_plant(row) for row in cursor.fetchall()]
 
-    def add_custom_plant(self, name: str, scientific_name: str, plant_type: str,
-                        season: str, planting_method: str, days_to_germination: int,
-                        days_to_maturity: int, spacing_inches: int, sun_requirements: str,
-                        water_needs: str, companion_plants: List[str], avoid_plants: List[str],
-                        climate_zones: List[int], care_notes: str) -> int:
+    def add_custom_plant(
+        self,
+        name: str,
+        scientific_name: str,
+        plant_type: str,
+        season: str,
+        planting_method: str,
+        days_to_germination: int,
+        days_to_maturity: int,
+        spacing_inches: int,
+        sun_requirements: str,
+        water_needs: str,
+        companion_plants: List[str],
+        avoid_plants: List[str],
+        climate_zones: List[int],
+        care_notes: str,
+    ) -> int:
         """
         Add a custom plant to the database.
 
@@ -392,24 +938,35 @@ class PlantDatabase:
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute('''
+            cursor.execute(
+                """
                 INSERT INTO plants (name, scientific_name, plant_type, season, planting_method,
                                   days_to_germination, days_to_maturity, spacing_inches,
                                   sun_requirements, water_needs, companion_plants, avoid_plants,
                                   climate_zones, care_notes, is_custom)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE)
-            ''', (name, scientific_name, plant_type, season, planting_method,
-                  days_to_germination, days_to_maturity, spacing_inches,
-                  sun_requirements, water_needs,
-                  json.dumps(companion_plants),
-                  json.dumps(avoid_plants),
-                  json.dumps(climate_zones),
-                  care_notes))
+            """,
+                (
+                    name,
+                    scientific_name,
+                    plant_type,
+                    season,
+                    planting_method,
+                    days_to_germination,
+                    days_to_maturity,
+                    spacing_inches,
+                    sun_requirements,
+                    water_needs,
+                    json.dumps(companion_plants),
+                    json.dumps(avoid_plants),
+                    json.dumps(climate_zones),
+                    care_notes,
+                ),
+            )
 
             plant_id = cursor.lastrowid
             conn.commit()
             return plant_id
-
 
     def _row_to_plant(self, row) -> Plant:
         """Convert a database row to a Plant object.
@@ -443,7 +1000,7 @@ class PlantDatabase:
                 avoid_plants=json.loads(row[12]) if row[12] else [],
                 climate_zones=json.loads(row[13]) if row[13] else [],
                 care_notes=row[14],
-                is_custom=bool(row[15]) if len(row) > 15 else False
+                is_custom=bool(row[15]) if len(row) > 15 else False,
             )
         except (IndexError, json.JSONDecodeError) as e:
             raise ValueError(f"Error converting row to plant: {str(e)}")

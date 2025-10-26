@@ -7,6 +7,9 @@
 *code-workspace
 Claude.md
 .DS_Store
+bin
+lib
+settings.json
 
 # Environment variables and secrets
 .env

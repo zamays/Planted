@@ -10,9 +10,9 @@ and care tasks with automated scheduling and reminders.
 import sys
 import os
 from pathlib import Path
+import threading
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from datetime import datetime, timedelta
-import threading
 import webbrowser
 import time
 from dotenv import load_dotenv

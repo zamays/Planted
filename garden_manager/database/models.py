@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 from datetime import datetime
 
+
 @dataclass
 class Plant:
     """
@@ -34,6 +35,7 @@ class Plant:
         care_notes: Additional care instructions and tips
         is_custom: Whether this is a user-added custom plant
     """
+
     id: int
     name: str
     scientific_name: str
@@ -51,6 +53,7 @@ class Plant:
     care_notes: str
     is_custom: bool = False
 
+
 @dataclass
 class GardenPlot:
     """
@@ -64,12 +67,14 @@ class GardenPlot:
         location: Physical location description
         created_date: When the plot was created
     """
+
     id: int
     name: str
     width: int
     height: int
     location: str
     created_date: datetime
+
 
 @dataclass
 class PlantedItem:
@@ -86,6 +91,7 @@ class PlantedItem:
         expected_harvest: Calculated expected harvest date
         notes: User notes about this specific plant instance
     """
+
     id: int
     plant_id: int
     plot_id: int
@@ -94,6 +100,7 @@ class PlantedItem:
     planted_date: datetime
     expected_harvest: datetime
     notes: str
+
 
 @dataclass
 class CareTask:
@@ -108,6 +115,7 @@ class CareTask:
         completed: Whether the task has been completed
         notes: Additional notes about the task or completion
     """
+
     id: int
     planted_item_id: int
     task_type: str
