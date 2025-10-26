@@ -68,7 +68,9 @@ class GardenDatabase:
                 return plot_id
             except sqlite3.Error as e:
                 conn.rollback()
-                raise ValueError(f"Database error while creating garden plot: {e}")
+                raise ValueError(
+                    f"Database error while creating garden plot: {e}"
+                ) from e
 
     def get_garden_plots(self) -> List[GardenPlot]:
         """
@@ -167,12 +169,33 @@ class GardenDatabase:
         days_to_maturity: int,
         notes: str = "",
     ) -> int:
+        """
+        Adds a planted item to the database with specified plant, plot, position, date, and notes.
+
+        Args:
+            plant_id (int): The ID of the plant being planted.
+            plot_id (int): The ID of the plot where the plant is placed.
+            x_pos (int): The x-coordinate position within the plot.
+            y_pos (int): The y-coordinate position within the plot.
+            planted_date (datetime): The date the plant was planted.
+            days_to_maturity (int): Number of days until the plant is expected to mature.
+            notes (str, optional): Additional notes about the planted item. Defaults to "".
+
+        Returns:
+            int: The ID of the newly created planted item.
+
+        Raises:
+            ValueError: If any of the required integer arguments are not integers.
+            ValueError: If days_to_maturity is not positive.
+            ValueError: If planted_date is not a datetime object.
+            ValueError: If the planted item could not be created in the database.
+        """
         if not all(
             isinstance(x, int)
             for x in (plant_id, plot_id, x_pos, y_pos, days_to_maturity)
         ):
             raise ValueError(
-                "Invalid input: plant_id, plot_id, x_pos, y_pos, and days_to_maturity " \
+                "Invalid input: plant_id, plot_id, x_pos, y_pos, and days_to_maturity "
                 "must be integers"
             )
         if days_to_maturity <= 0:
@@ -211,6 +234,24 @@ class GardenDatabase:
             return planted_item_id
 
     def get_planted_items(self, plot_id: int) -> List[PlantedItem]:
+        """
+        Retrieves all planted items associated with a specific plot from the database.
+
+        Args:
+            plot_id (int): The unique identifier of the plot to query planted items for.
+
+        Returns:
+            List[PlantedItem]: A list of PlantedItem objects representing all plants in the 
+            specified plot.
+            Returns an empty list if no planted items are found.
+
+        Example:
+            >>> db = GardenDatabase('garden.db')
+            >>> planted_items = db.get_planted_items(1)
+            >>> print(planted_items)
+            [PlantedItem(id=1, plot_id=1, plant_id=2, ...), 
+             PlantedItem(id=2, plot_id=1, plant_id=3, ...)]
+        """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM planted_items WHERE plot_id = ?", (plot_id,))

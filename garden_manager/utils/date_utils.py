@@ -43,13 +43,13 @@ class SeasonCalculator:
                 or (month == 6 and day < 21)
             ):
                 return "spring"
-            elif (
+            if (
                 (month == 6 and day >= 21)
                 or (month in [7, 8])
                 or (month == 9 and day < 23)
             ):
                 return "summer"
-            elif (
+            if (
                 (month == 9 and day >= 23)
                 or (month in [10, 11])
                 or (month == 12 and day < 21)
@@ -57,27 +57,26 @@ class SeasonCalculator:
                 return "fall"
             else:
                 return "winter"
-        else:  # Southern Hemisphere - seasons are reversed
+        else:  # Southern Hemisphere or fallback - seasons are reversed
             if (
                 (month == 3 and day >= 20)
                 or (month in [4, 5])
                 or (month == 6 and day < 21)
             ):
                 return "fall"
-            elif (
+            if (
                 (month == 6 and day >= 21)
                 or (month in [7, 8])
                 or (month == 9 and day < 23)
             ):
                 return "winter"
-            elif (
+            if (
                 (month == 9 and day >= 23)
                 or (month in [10, 11])
                 or (month == 12 and day < 21)
             ):
                 return "spring"
-            else:
-                return "summer"
+            return "summer"
 
     @staticmethod
     def get_seasonal_recommendations(

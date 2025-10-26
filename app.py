@@ -778,7 +778,7 @@ def run_app():
     print("   📄 Test page available at: http://127.0.0.1:5000/test")
 
     try:
-        app.run(debug=True, host="127.0.0.1", port=5000, use_reloader=False)
+        app.run(debug=False, host="127.0.0.1", port=5000, use_reloader=False)
     except (OSError, RuntimeError) as e:
         print(f"   ❌ Flask server error: {e}")
 

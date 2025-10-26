@@ -31,14 +31,13 @@ class GardenLayoutCalculator:
         """
         if plant_spacing_inches <= 3:
             return 16  # 16 plants per square foot
-        elif plant_spacing_inches <= 4:
+        if plant_spacing_inches <= 4:
             return 9  # 9 plants per square foot
-        elif plant_spacing_inches <= 6:
+        if plant_spacing_inches <= 6:
             return 4  # 4 plants per square foot
-        elif plant_spacing_inches <= 12:
+        if plant_spacing_inches <= 12:
             return 1  # 1 plant per square foot
-        else:
-            return 1  # Large plants take full square or more
+        return 1  # Large plants take full square or more
 
     @staticmethod
     def can_plants_coexist(
@@ -166,12 +165,11 @@ class PlantCareCalculator:
 
         if need_score >= 3.5:
             return "Water daily - high stress conditions"
-        elif need_score >= 2.5:
+        if need_score >= 2.5:
             return "Water every 2-3 days"
-        elif need_score >= 1.5:
+        if need_score >= 1.5:
             return "Water weekly"
-        else:
-            return "Water when soil is dry"
+        return "Water when soil is dry"
 
     @staticmethod
     def get_fertilizer_schedule(

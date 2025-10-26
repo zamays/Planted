@@ -1003,7 +1003,7 @@ class PlantDatabase:
                 is_custom=bool(row[15]) if len(row) > 15 else False,
             )
         except (IndexError, json.JSONDecodeError) as e:
-            raise ValueError(f"Error converting row to plant: {str(e)}")
+            raise ValueError(f"Error converting row to plant: {str(e)}") from e
 
     def get_plant_by_id(self, plant_id: int) -> Optional[Plant]:
         """
