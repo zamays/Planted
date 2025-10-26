@@ -52,11 +52,13 @@ app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "garden_manager_secret_key")
 
 # Global service instances - initialized in initialize_services()
-PLANT_DB = None
-GARDEN_DB = None
-LOCATION_SERVICE = None
-WEATHER_SERVICE = None
-CARE_REMINDER = None
+# pylint: disable=invalid-name
+plant_db = None
+garden_db = None
+location_service = None
+weather_service = None
+care_reminder = None
+# pylint: enable=invalid-name
 
 
 def initialize_services():
@@ -70,21 +72,21 @@ def initialize_services():
         Exception: If critical service initialization fails
     """
     # pylint: disable=global-statement
-    global PLANT_DB, GARDEN_DB, LOCATION_SERVICE, WEATHER_SERVICE, CARE_REMINDER
+    global plant_db, garden_db, location_service, weather_service, care_reminder
 
     print("🔧 Initializing services...")
 
     try:
         # Initialize core database services
-        PLANT_DB = PlantDatabase()
-        GARDEN_DB = GardenDatabase()
-        LOCATION_SERVICE = LocationService()
-        WEATHER_SERVICE = WeatherService()
+        plant_db = PlantDatabase()
+        garden_db = GardenDatabase()
+        location_service = LocationService()
+        weather_service = WeatherService()
 
         print("   ✅ Database services initialized")
 
         # Set default location (New York) as fallback
-        LOCATION_SERVICE.set_manual_location(
+        location_service.set_manual_location(
             40.7128, -74.0060, {"city": "New York", "state": "NY", "country": "USA"}
         )
 
@@ -92,14 +94,14 @@ def initialize_services():
         def load_location():
             """Background task to load user's actual location and weather data."""
             try:
-                if LOCATION_SERVICE is not None:
-                    LOCATION_SERVICE.get_location_by_ip()
-                    if LOCATION_SERVICE.current_location:
-                        lat = LOCATION_SERVICE.current_location["latitude"]
-                        lon = LOCATION_SERVICE.current_location["longitude"]
-                        if WEATHER_SERVICE is not None:
-                            WEATHER_SERVICE.get_current_weather(lat, lon)
-                            WEATHER_SERVICE.get_forecast(lat, lon)
+                if location_service is not None:
+                    location_service.get_location_by_ip()
+                    if location_service.current_location:
+                        lat = location_service.current_location["latitude"]
+                        lon = location_service.current_location["longitude"]
+                        if weather_service is not None:
+                            weather_service.get_current_weather(lat, lon)
+                            weather_service.get_forecast(lat, lon)
                 print("   ✅ Location and weather data loaded")
             except (OSError, KeyError, ValueError, ConnectionError) as e:
                 print(f"   ⚠️ Location/weather loading failed: {e}")
@@ -108,8 +110,8 @@ def initialize_services():
 
         # Initialize care reminder system
         try:
-            CARE_REMINDER = CareReminder(GARDEN_DB, WEATHER_SERVICE)
-            CARE_REMINDER.start()
+            care_reminder = CareReminder(garden_db, weather_service)
+            care_reminder.start()
             print("   ✅ Care reminder system started")
         except (sqlite3.Error, ValueError, AttributeError, OSError) as e:
             print(f"   ⚠️ Care reminder failed: {e}")
@@ -131,19 +133,19 @@ def dashboard():
         str: Rendered dashboard HTML template or error message
     """
     try:
-        plots = GARDEN_DB.get_garden_plots() if GARDEN_DB is not None else []
+        plots = garden_db.get_garden_plots() if garden_db is not None else []
         due_tasks = (
-            GARDEN_DB.get_care_tasks(due_within_days=7) if GARDEN_DB is not None else []
+            garden_db.get_care_tasks(due_within_days=7) if garden_db is not None else []
         )
 
         location_text = (
-            LOCATION_SERVICE.get_location_display()
-            if LOCATION_SERVICE is not None
+            location_service.get_location_display()
+            if location_service is not None
             else "Unknown Location"
         )
         current_season = SeasonCalculator.get_current_season(
-            LOCATION_SERVICE.current_location["latitude"]
-            if LOCATION_SERVICE is not None and LOCATION_SERVICE.current_location
+            location_service.current_location["latitude"]
+            if location_service is not None and location_service.current_location
             else 40.0
         )
 
@@ -154,8 +156,8 @@ def dashboard():
             stats=stats,
             location=location_text,
             season=current_season.title(),
-            weather=WEATHER_SERVICE.current_weather
-            if WEATHER_SERVICE is not None
+            weather=weather_service.current_weather
+            if weather_service is not None
             else None,
         )
     except (sqlite3.Error, AttributeError, KeyError) as e:
@@ -187,18 +189,18 @@ def plants():
         type_filter = request.args.get("type", "all")
         search = request.args.get("search", "")
 
-        if PLANT_DB is not None:
+        if plant_db is not None:
             if season_filter == "current":
                 current_season = SeasonCalculator.get_current_season()
-                plants_list = PLANT_DB.get_plants_by_season(current_season.lower())
+                plants_list = plant_db.get_plants_by_season(current_season.lower())
             elif season_filter == "all":
                 # Get all plants
                 all_plants = []
                 for season in ["spring", "summer", "fall", "winter"]:
-                    all_plants.extend(PLANT_DB.get_plants_by_season(season))
+                    all_plants.extend(plant_db.get_plants_by_season(season))
                 plants_list = all_plants
             else:
-                plants_list = PLANT_DB.get_plants_by_season(season_filter.lower())
+                plants_list = plant_db.get_plants_by_season(season_filter.lower())
         else:
             plants_list = []
 
@@ -219,8 +221,8 @@ def plants():
 
         # Filter plants by climate zone compatibility
         climate_zone = (
-            LOCATION_SERVICE.get_climate_zone()
-            if LOCATION_SERVICE is not None
+            location_service.get_climate_zone()
+            if location_service is not None
             else "Unknown"
         )
         suitable_plants = []
@@ -323,7 +325,7 @@ def add_plant():
                         "(e.g., 5,6,7)</p>"
                     )
 
-            if PLANT_DB is None:
+            if plant_db is None:
                 return "<h1>Error</h1><p>Plant database is not initialized.</p>"
 
             growing = PlantGrowingInfo(
@@ -354,7 +356,7 @@ def add_plant():
                 care=care,
                 compatibility=compatibility,
             )
-            PLANT_DB.add_custom_plant(plant_spec)
+            plant_db.add_custom_plant(plant_spec)
             return redirect(url_for("plants"))
 
         return render_template("add_plant.html")
@@ -375,7 +377,7 @@ def plant_detail(plant_id):
         str: Rendered plant detail HTML template or error message
     """
     try:
-        plant = PLANT_DB.get_plant_by_id(plant_id) if PLANT_DB is not None else None
+        plant = plant_db.get_plant_by_id(plant_id) if plant_db is not None else None
         if not plant:
             return "<h1>Plant Not Found</h1><p>The requested plant does not exist.</p>"
 
@@ -397,7 +399,7 @@ def garden_layout():
         str: Rendered garden layout HTML template or error message
     """
     try:
-        plots = GARDEN_DB.get_garden_plots() if GARDEN_DB is not None else []
+        plots = garden_db.get_garden_plots() if garden_db is not None else []
         return render_template("garden.html", plots=plots)
     except (sqlite3.Error, AttributeError) as e:
         print(f"Garden error: {e}")
@@ -418,21 +420,21 @@ def view_plot(plot_id):
         str: Rendered plot detail HTML template or error message
     """
     try:
-        if GARDEN_DB is None:
+        if garden_db is None:
             return "<h1>Error</h1><p>Garden database is not initialized.</p>"
 
-        plot = GARDEN_DB.get_garden_plot(plot_id)
+        plot = garden_db.get_garden_plot(plot_id)
         if not plot:
             return "<h1>Plot Not Found</h1><p>The requested garden plot does not exist.</p>"
 
-        planted_items = GARDEN_DB.get_planted_items(plot_id)
+        planted_items = garden_db.get_planted_items(plot_id)
 
         # Get plant details for each planted item
         items_with_plants = []
         for item in planted_items:
             plant = (
-                PLANT_DB.get_plant_by_id(item.plant_id)
-                if PLANT_DB is not None
+                plant_db.get_plant_by_id(item.plant_id)
+                if plant_db is not None
                 else None
             )
             if plant:
@@ -469,10 +471,10 @@ def plant_to_plot(plot_id):
     """
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
     try:
-        if GARDEN_DB is None or PLANT_DB is None:
+        if garden_db is None or plant_db is None:
             return "<h1>Error</h1><p>Database is not initialized.</p>"
 
-        plot = GARDEN_DB.get_garden_plot(plot_id)
+        plot = garden_db.get_garden_plot(plot_id)
         if not plot:
             return "<h1>Plot Not Found</h1><p>The requested garden plot does not exist.</p>"
 
@@ -498,7 +500,7 @@ def plant_to_plot(plot_id):
                 return "<h1>Error</h1><p>Position is outside plot bounds.</p>"
 
             # Check if position is already occupied
-            existing_items = GARDEN_DB.get_planted_items(plot_id)
+            existing_items = garden_db.get_planted_items(plot_id)
             for item in existing_items:
                 if item.position.x == x_position and item.position.y == y_position:
                     return (
@@ -507,7 +509,7 @@ def plant_to_plot(plot_id):
                     )
 
             # Get plant details for days_to_maturity
-            plant = PLANT_DB.get_plant_by_id(plant_id)
+            plant = plant_db.get_plant_by_id(plant_id)
             if not plant:
                 return "<h1>Error</h1><p>Plant not found.</p>"
 
@@ -521,7 +523,7 @@ def plant_to_plot(plot_id):
                 planted_date=datetime.now(),
                 days_to_maturity=plant.growing.days_to_maturity,
             )
-            GARDEN_DB.add_planted_item(planting_info)
+            garden_db.add_planted_item(planting_info)
 
             return redirect(url_for("view_plot", plot_id=plot_id))
 
@@ -534,7 +536,7 @@ def plant_to_plot(plot_id):
             return "<h1>Error</h1><p>Invalid position.</p>"
 
         # Check if position is already occupied
-        existing_items = GARDEN_DB.get_planted_items(plot_id)
+        existing_items = garden_db.get_planted_items(plot_id)
         for item in existing_items:
             if item.position.x == x and item.position.y == y:
                 return redirect(url_for("view_plot", plot_id=plot_id))
@@ -542,7 +544,7 @@ def plant_to_plot(plot_id):
         # Get all available plants
         all_plants = []
         for season in ["spring", "summer", "fall", "winter"]:
-            all_plants.extend(PLANT_DB.get_plants_by_season(season))
+            all_plants.extend(plant_db.get_plants_by_season(season))
 
         # Remove duplicates and sort
         seen_ids = set()
@@ -591,8 +593,8 @@ def create_plot():
             location = request.form.get("location", "Garden")
             add_plants = request.form.get("add_plants", "no")
 
-            if GARDEN_DB is not None:
-                plot_id = GARDEN_DB.create_garden_plot(name, width, height, location)
+            if garden_db is not None:
+                plot_id = garden_db.create_garden_plot(name, width, height, location)
 
                 # If user wants to add plants immediately, redirect to plot view
                 if add_plants == "yes":
@@ -624,26 +626,26 @@ def care_schedule():
     try:
         filter_type = request.args.get("filter", "week")
 
-        if GARDEN_DB is None:
+        if garden_db is None:
             tasks = []
         else:
             if filter_type == "today":
                 tasks = [
                     t
-                    for t in GARDEN_DB.get_care_tasks(due_within_days=1)
+                    for t in garden_db.get_care_tasks(due_within_days=1)
                     if t.due_date.date() == datetime.now().date()
                 ]
             elif filter_type == "week":
-                tasks = GARDEN_DB.get_care_tasks(due_within_days=7)
+                tasks = garden_db.get_care_tasks(due_within_days=7)
             elif filter_type == "overdue":
-                all_tasks = GARDEN_DB.get_care_tasks(due_within_days=-365)
+                all_tasks = garden_db.get_care_tasks(due_within_days=-365)
                 tasks = [
                     t
                     for t in all_tasks
                     if t.due_date < datetime.now() and not t.completed
                 ]
             else:
-                tasks = GARDEN_DB.get_care_tasks(due_within_days=30)
+                tasks = garden_db.get_care_tasks(due_within_days=30)
 
         # Group care tasks by relative date for better organization
         grouped_tasks = {}
@@ -671,7 +673,7 @@ def care_schedule():
             grouped_tasks[date_key].append(task)
 
         current_weather = (
-            WEATHER_SERVICE.current_weather if WEATHER_SERVICE is not None else None
+            weather_service.current_weather if weather_service is not None else None
         )
         return render_template(
             "care.html",
@@ -697,16 +699,16 @@ def weather():
     """
     try:
         current_weather = (
-            WEATHER_SERVICE.current_weather if WEATHER_SERVICE is not None else None
+            weather_service.current_weather if weather_service is not None else None
         )
         forecast = (
-            WEATHER_SERVICE.forecast
-            if WEATHER_SERVICE is not None and WEATHER_SERVICE.forecast
+            weather_service.forecast
+            if weather_service is not None and weather_service.forecast
             else []
         )
         location_text = (
-            LOCATION_SERVICE.get_location_display()
-            if LOCATION_SERVICE is not None
+            location_service.get_location_display()
+            if location_service is not None
             else "Unknown Location"
         )
 
@@ -719,8 +721,8 @@ def weather():
     except (AttributeError, KeyError) as e:
         print(f"Weather error: {e}")
         current_weather = (
-            WEATHER_SERVICE.current_weather
-            if WEATHER_SERVICE is not None
+            weather_service.current_weather
+            if weather_service is not None
             else "Unavailable"
         )
         return f"<h1>Weather Error</h1><p>{str(e)}</p><p>Current weather: {current_weather}</p>"
@@ -762,12 +764,12 @@ def complete_task():
         task_id = data.get("task_id")
         notes = data.get("notes", "Completed via web app")
 
-        if GARDEN_DB is None:
+        if garden_db is None:
             return jsonify(
                 {"status": "error", "message": "Garden database is not initialized."}
             )
 
-        GARDEN_DB.complete_care_task(task_id, notes)
+        garden_db.complete_care_task(task_id, notes)
         return jsonify({"status": "success"})
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
         return jsonify({"status": "error", "message": str(e)})
