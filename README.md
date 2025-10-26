@@ -60,11 +60,21 @@ A comprehensive Python web application for managing your garden. This browser-ba
 
 4. **Run the application:**
 
+   **On Windows:**
    ```bash
+   run.bat
+   ```
+
+   **On macOS/Linux:**
+   ```bash
+   ./run.sh
+   # or
    python3 main.py
    ```
 
 The application will automatically open in your default browser at `http://localhost:5000`.
+
+> **Note:** The startup scripts (`run.bat` and `run.sh`) automatically check for dependencies and provide helpful error messages if anything is missing.
 
 ## 🚀 Quick Start
 
@@ -188,12 +198,33 @@ python3 main.py
 
 ## 🤝 Contributing
 
-Feel free to enhance the application:
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
 
-- Add more plants to the database
-- Improve the web interface design
-- Add new features (pest tracking, harvest logging, etc.)
-- Optimize performance
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed information on:
+- Development workflow
+- Code style guidelines
+- Testing requirements
+- How to add new plants
+
+## 📚 Documentation
+
+- [Setup Guide](SETUP.md) - Detailed installation and configuration
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute to the project
+- [Architecture Documentation](docs/architecture.md) - System design and structure
+- [Deployment Guide](docs/deployment.md) - How to deploy to the web
+- [Changelog](CHANGELOG.md) - Version history and updates
+
+## 📋 Project Structure
+
+See [Architecture Documentation](docs/architecture.md) for detailed information about the codebase structure and design decisions.
+
+## 🚀 Deployment
+
+Ready to host Planted on the web? Check out our [Deployment Guide](docs/deployment.md) for instructions on deploying to various platforms including Heroku, PythonAnywhere, and your own server.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 

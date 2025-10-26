@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "planted"
+version = "0.1.0"
+description = "A comprehensive Python web application for managing your garden"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Planted Contributors"}
+]
+keywords = ["garden", "gardening", "plant-management", "flask", "web-app"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Flask",
+    "Topic :: Home Automation",
+]
+
+dependencies = [
+    "blinker>=1.9.0",
+    "certifi>=2024.0.0",
+    "charset-normalizer>=3.0.0",
+    "click>=8.0.0",
+    "Flask>=3.0.0",
+    "idna>=3.0",
+    "itsdangerous>=2.0.0",
+    "Jinja2>=3.0.0",
+    "MarkupSafe>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+    "urllib3>=2.0.0",
+    "Werkzeug>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pylint>=4.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+planted = "main:main"
+
+[project.urls]
+Homepage = "https://github.com/zamays/Planted"
+Repository = "https://github.com/zamays/Planted"
+Issues = "https://github.com/zamays/Planted/issues"
+
+[tool.setuptools]
+packages = ["garden_manager", "garden_manager.database", "garden_manager.services", "garden_manager.utils", "garden_manager.web"]
+
+[tool.setuptools.package-data]
+garden_manager = ["web/templates/*.html", "web/static/css/*.css", "web/static/js/*.js", "database/seeds/*.json"]
+
+[tool.pylint.main]
+jobs = 2
+persistent = true
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring", 
+    "missing-function-docstring",
+]
+
+[tool.pylint.format]
+max-line-length = 120
+max-module-lines = 1000
+
+[tool.pylint.design]
+max-args = 7
+max-attributes = 12
+max-bool-expr = 5
+max-branches = 12
+max-locals = 15
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=garden_manager --cov-report=html --cov-report=term"
