@@ -8,7 +8,7 @@ and filtering capabilities for plant selection.
 
 import sqlite3
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Optional
 from .models import Plant
 
 
@@ -907,7 +907,7 @@ class PlantDatabase:
         avoid_plants: List[str],
         climate_zones: List[int],
         care_notes: str,
-    ) -> int:
+    ) -> Optional[int]:
         """
         Add a custom plant to the database.
 

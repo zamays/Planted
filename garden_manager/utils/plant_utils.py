@@ -1,10 +1,34 @@
+"""
+Plant Care and Garden Layout Utilities
+
+Provides calculators for garden layout optimization, plant spacing,
+companion planting, and care scheduling based on plant needs.
+"""
+
 from typing import List, Dict, Tuple
-import math
 
 
 class GardenLayoutCalculator:
+    """
+    Utility class for garden layout calculations and optimization.
+
+    Provides methods for calculating optimal plant spacing, companion
+    planting compatibility, and garden space utilization metrics.
+    """
+
     @staticmethod
     def calculate_square_foot_spacing(plant_spacing_inches: int) -> int:
+        """
+        Calculate how many plants fit in one square foot based on spacing needs.
+
+        Uses square-foot gardening principles to determine plant density.
+
+        Args:
+            plant_spacing_inches: Required spacing between plants in inches
+
+        Returns:
+            int: Number of plants that can fit in one square foot
+        """
         if plant_spacing_inches <= 3:
             return 16  # 16 plants per square foot
         elif plant_spacing_inches <= 4:
@@ -20,6 +44,22 @@ class GardenLayoutCalculator:
     def can_plants_coexist(
         plant1_companions: List[str], plant1_avoid: List[str], plant2_name: str
     ) -> Tuple[bool, str]:
+        """
+        Check if two plants can be planted together based on companion planting rules.
+
+        Evaluates compatibility using companion and avoid lists to determine
+        if plants benefit from proximity or should be kept apart.
+
+        Args:
+            plant1_companions: List of beneficial companion plants for plant1
+            plant1_avoid: List of plants to avoid planting near plant1
+            plant2_name: Name of the second plant to check compatibility with
+
+        Returns:
+            Tuple[bool, str]: (can_coexist, compatibility_message)
+                - can_coexist: True if plants are compatible
+                - compatibility_message: Description of relationship
+        """
         plant2_lower = plant2_name.lower()
 
         if any(
@@ -40,6 +80,26 @@ class GardenLayoutCalculator:
     def calculate_garden_efficiency(
         plot_width: int, plot_height: int, planted_items: List[Dict]
     ) -> Dict[str, object]:
+        """
+        Calculate garden plot utilization and diversity metrics.
+
+        Analyzes how effectively garden space is being used and tracks
+        plant diversity for healthy garden ecosystems.
+
+        Args:
+            plot_width: Width of the garden plot in squares
+            plot_height: Height of the garden plot in squares
+            planted_items: List of planted items with plant_type information
+
+        Returns:
+            Dict[str, object]: Metrics including:
+                - utilization_percentage: Percentage of squares being used
+                - total_squares: Total available garden squares
+                - used_squares: Number of squares with plants
+                - available_squares: Number of empty squares
+                - plant_diversity: Number of different plant types
+                - plant_distribution: Count of each plant type
+        """
         total_squares = plot_width * plot_height
         used_squares = len(planted_items)
 
@@ -59,6 +119,13 @@ class GardenLayoutCalculator:
 
 
 class PlantCareCalculator:
+    """
+    Utility class for calculating plant care requirements.
+
+    Provides methods for determining watering needs, fertilizer schedules,
+    and plant health assessments based on growing conditions.
+    """
+
     @staticmethod
     def calculate_water_needs(
         plant_water_needs: str,
@@ -66,6 +133,21 @@ class PlantCareCalculator:
         humidity: float,
         days_since_planted: int,
     ) -> str:
+        """
+        Calculate watering recommendation based on plant needs and weather.
+
+        Considers plant water requirements, temperature, humidity, and plant age
+        to provide specific watering guidance.
+
+        Args:
+            plant_water_needs: Plant's water requirement level (low, medium, high)
+            weather_temp: Current temperature in Fahrenheit
+            humidity: Current humidity percentage
+            days_since_planted: Number of days since plant was planted
+
+        Returns:
+            str: Specific watering recommendation
+        """
         base_needs = {"low": 1, "medium": 2, "high": 3}
         need_score = base_needs.get(plant_water_needs, 2)
 
@@ -95,6 +177,19 @@ class PlantCareCalculator:
     def get_fertilizer_schedule(
         plant_type: str, days_to_maturity: int
     ) -> List[Dict[str, str]]:
+        """
+        Generate fertilizer application schedule based on plant type and growth cycle.
+
+        Provides customized fertilizer schedules with timing and type recommendations
+        for optimal plant growth.
+
+        Args:
+            plant_type: Type of plant (vegetable, herb, fruit)
+            days_to_maturity: Total days from planting to harvest
+
+        Returns:
+            List[Dict[str, str]]: Schedule entries with 'days', 'type', and 'description'
+        """
         schedules = {
             "vegetable": [
                 {
@@ -154,6 +249,25 @@ class PlantCareCalculator:
         expected_maturity: int,
         care_completed: float,
     ) -> Dict[str, object]:
+        """
+        Assess plant health status and provide care recommendations.
+
+        Evaluates plant progress against expected growth milestones and
+        care task completion to determine health status.
+
+        Args:
+            days_planted: Number of days since plant was planted
+            expected_germination: Expected days to germination
+            expected_maturity: Expected days to maturity/harvest
+            care_completed: Percentage of care tasks completed (0.0 to 1.0)
+
+        Returns:
+            Dict[str, object]: Health assessment with:
+                - status: Plant health status (healthy, needs_attention, ready_harvest)
+                - progress_percentage: Growth progress percentage
+                - recommendations: List of care recommendations
+                - care_score: Care completion score (0-100)
+        """
         status = "healthy"
         recommendations = []
 

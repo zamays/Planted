@@ -1,11 +1,27 @@
+"""
+Task Scheduling and Care Reminder Service
+
+Provides automated task scheduling, care reminders, and notification
+system for garden management activities.
+"""
+
 from datetime import datetime, timedelta
 from typing import List, Dict, Callable
 import threading
 import time
+import sqlite3
 
 
 class TaskScheduler:
+    """
+    Generic task scheduler for running recurring and one-time tasks.
+
+    Manages task execution in a background thread with configurable
+    intervals and execution times.
+    """
+
     def __init__(self):
+        """Initialize the task scheduler with empty task list."""
         self.scheduled_tasks = []
         self.running = False
         self.scheduler_thread = None
@@ -17,6 +33,15 @@ class TaskScheduler:
         interval_hours: int,
         start_immediately: bool = True,
     ):
+        """
+        Add a recurring task that runs at specified intervals.
+
+        Args:
+            name: Descriptive name for the task
+            callback: Function to call when task runs
+            interval_hours: Hours between task executions
+            start_immediately: If True, run task immediately on first check
+        """
         task = {
             "name": name,
             "callback": callback,
@@ -29,6 +54,14 @@ class TaskScheduler:
         self.scheduled_tasks.append(task)
 
     def add_one_time_task(self, name: str, callback: Callable, run_at: datetime):
+        """
+        Add a one-time task that runs at a specific datetime.
+
+        Args:
+            name: Descriptive name for the task
+            callback: Function to call when task runs
+            run_at: Datetime when task should execute
+        """
         task = {
             "name": name,
             "callback": callback,
@@ -39,6 +72,12 @@ class TaskScheduler:
         self.scheduled_tasks.append(task)
 
     def start_scheduler(self):
+        """
+        Start the scheduler in a background thread.
+
+        Begins checking for and executing scheduled tasks.
+        Does nothing if scheduler is already running.
+        """
         if self.running:
             return
 
@@ -49,11 +88,22 @@ class TaskScheduler:
         self.scheduler_thread.start()
 
     def stop_scheduler(self):
+        """
+        Stop the scheduler and wait for thread to finish.
+
+        Sets running flag to False and waits for scheduler thread to complete.
+        """
         self.running = False
         if self.scheduler_thread:
             self.scheduler_thread.join()
 
     def _run_scheduler(self):
+        """
+        Internal scheduler loop that runs in background thread.
+
+        Checks for due tasks every minute and executes them.
+        Handles recurring task rescheduling and one-time task removal.
+        """
         while self.running:
             now = datetime.now()
             tasks_to_run = []
@@ -72,12 +122,21 @@ class TaskScheduler:
                     else:
                         self.scheduled_tasks.remove(task)
 
-                except Exception as e:
+                except (sqlite3.Error, AttributeError, KeyError, ValueError, TypeError) as e:
                     print(f"Error running scheduled task '{task['name']}': {e}")
 
             time.sleep(60)  # Check every minute
 
     def get_upcoming_tasks(self, hours_ahead: int = 24) -> List[Dict]:
+        """
+        Get list of tasks scheduled to run within specified timeframe.
+
+        Args:
+            hours_ahead: Number of hours to look ahead (default 24)
+
+        Returns:
+            List[Dict]: Upcoming tasks sorted by next_run time
+        """
         cutoff = datetime.now() + timedelta(hours=hours_ahead)
         upcoming = []
 
@@ -95,13 +154,33 @@ class TaskScheduler:
 
 
 class CareReminder:
+    """
+    Garden care reminder system for automated notifications.
+
+    Manages daily care checks, weather-based recommendations, and
+    weekly planning summaries using the TaskScheduler.
+    """
+
     def __init__(self, garden_db, weather_service):
+        """
+        Initialize care reminder system.
+
+        Args:
+            garden_db: GardenDatabase instance for accessing tasks and plants
+            weather_service: WeatherService instance for weather-based alerts
+        """
         self.garden_db = garden_db
         self.weather_service = weather_service
         self.scheduler = TaskScheduler()
         self.setup_reminders()
 
     def setup_reminders(self):
+        """
+        Configure recurring reminder tasks.
+
+        Sets up daily care checks, weather updates, and weekly planning
+        tasks with appropriate intervals.
+        """
         self.scheduler.add_recurring_task(
             "daily_care_check",
             self.check_daily_care_tasks,
@@ -121,6 +200,12 @@ class CareReminder:
         )
 
     def check_daily_care_tasks(self):
+        """
+        Check for garden tasks due today and send notifications.
+
+        Retrieves tasks due within 24 hours and sends reminders
+        for each task with plant information.
+        """
         due_tasks = self.garden_db.get_care_tasks(due_within_days=1)
 
         if due_tasks:
@@ -134,6 +219,11 @@ class CareReminder:
                 self.send_notification(message)
 
     def update_weather_recommendations(self):
+        """
+        Check weather conditions and send alerts for extreme conditions.
+
+        Monitors temperature and frost warnings to protect plants.
+        """
         current_weather = self.weather_service.current_weather
         if current_weather:
             if current_weather["temperature"] > 90:
@@ -143,6 +233,11 @@ class CareReminder:
                 self.send_notification("Frost warning! Protect sensitive plants.")
 
     def generate_weekly_recommendations(self):
+        """
+        Generate weekly garden summary with overdue tasks and upcoming harvests.
+
+        Compiles recommendations for garden maintenance and planning.
+        """
         recommendations = []
 
         overdue_tasks = self.garden_db.get_care_tasks(
@@ -165,10 +260,20 @@ class CareReminder:
             self.send_notification(message)
 
     def send_notification(self, message: str):
+        """
+        Send a notification message to the user.
+
+        Currently prints to console. Can be extended for email, SMS, or push notifications.
+
+        Args:
+            message: Notification message to send
+        """
         print(f"🌱 Garden Reminder: {message}")
 
     def start(self):
+        """Start the care reminder system."""
         self.scheduler.start_scheduler()
 
     def stop(self):
+        """Stop the care reminder system."""
         self.scheduler.stop_scheduler()

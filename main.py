@@ -9,6 +9,8 @@ Provides error handling and user-friendly troubleshooting messages.
 import sys
 import os
 
+from app import run_app
+
 # Add the project root to the Python path for module imports
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
@@ -27,18 +29,23 @@ def main():
         - Other startup errors with debugging information
     """
     try:
-        # Import and run the Flask app
-        from app import run_app
-
+        # Run the Flask app
         run_app()
     except KeyboardInterrupt:
         print("\n👋 Thanks for using Planted!")
-    except Exception as e:
+    except (ImportError, ModuleNotFoundError) as e:
         print(f"❌ Error starting Planted: {e}")
         print("\n🔧 Troubleshooting:")
         print("1. Make sure you have Flask installed: pip install flask requests")
         print("2. Try running: python3 app.py")
         print("3. Check that all files are in the correct location")
+        sys.exit(1)
+    except (OSError, RuntimeError) as e:
+        print(f"❌ Error starting Planted: {e}")
+        print("\n🔧 Troubleshooting:")
+        print("1. Check if port 5000 is already in use")
+        print("2. Verify file permissions")
+        print("3. Try running: python3 app.py")
         sys.exit(1)
 
 

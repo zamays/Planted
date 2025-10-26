@@ -5,8 +5,9 @@ Handles user location detection and climate zone determination for gardening
 recommendations. Uses IP-based geolocation with manual location override.
 """
 
+
+from typing import Dict, Optional
 import requests
-from typing import Dict, Optional, Tuple
 
 
 class LocationService:
@@ -37,7 +38,7 @@ class LocationService:
                                     coordinates, and timezone. Returns None if detection fails.
         """
         try:
-            response = requests.get("http://ip-api.com/json/")
+            response = requests.get("http://ip-api.com/json/", timeout=5)
             if response.status_code == 200:
                 data = response.json()
                 if data["status"] == "success":
@@ -51,7 +52,7 @@ class LocationService:
                     }
                     self.climate_zone = self._determine_climate_zone(data["lat"])
                     return self.current_location
-        except Exception as e:
+        except (requests.RequestException, KeyError, ValueError) as e:
             print(f"Error getting location: {e}")
         return None
 
@@ -157,4 +158,7 @@ class LocationService:
         elif country:
             return country
         else:
-            return f"Lat: {self.current_location['latitude']:.2f}, Lon: {self.current_location['longitude']:.2f}"
+            return (
+                f"Lat: {self.current_location['latitude']:.2f}, "
+                f"Lon: {self.current_location['longitude']:.2f}"
+            )

@@ -172,7 +172,8 @@ class GardenDatabase:
             for x in (plant_id, plot_id, x_pos, y_pos, days_to_maturity)
         ):
             raise ValueError(
-                "Invalid input: plant_id, plot_id, x_pos, y_pos, and days_to_maturity must be integers"
+                "Invalid input: plant_id, plot_id, x_pos, y_pos, and days_to_maturity " \
+                "must be integers"
             )
         if days_to_maturity <= 0:
             raise ValueError("days_to_maturity must be positive")

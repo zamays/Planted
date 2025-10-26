@@ -6,9 +6,9 @@ Includes gardening-specific weather analysis and recommendations.
 """
 
 import os
-import requests
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+import requests
 
 
 class WeatherService:
@@ -67,7 +67,7 @@ class WeatherService:
                 "units": "imperial",
             }
 
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=5)
             if response.status_code == 200:
                 data = response.json()
                 self.current_weather = {
@@ -80,7 +80,7 @@ class WeatherService:
                     "timestamp": datetime.now(),
                 }
                 return self.current_weather
-        except Exception as e:
+        except (requests.RequestException, KeyError, ValueError) as e:
             print(f"Error fetching weather: {e}")
             return self._get_mock_weather()
 
@@ -113,7 +113,7 @@ class WeatherService:
                 "cnt": days * 8,  # 8 forecasts per day (every 3 hours)
             }
 
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=5)
             if response.status_code == 200:
                 data = response.json()
                 forecast = []
@@ -132,7 +132,7 @@ class WeatherService:
 
                 self.forecast = forecast
                 return forecast
-        except Exception as e:
+        except (requests.RequestException, KeyError, ValueError, IndexError) as e:
             print(f"Error fetching forecast: {e}")
             return self._get_mock_forecast(days)
 

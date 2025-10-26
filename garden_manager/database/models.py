@@ -6,9 +6,8 @@ garden plots, planted items, and care tasks. These models provide type safety
 and structured data representation throughout the application.
 """
 
-import sqlite3
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 
 
