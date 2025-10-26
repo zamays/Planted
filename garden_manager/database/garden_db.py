@@ -101,6 +101,56 @@ class GardenDatabase:
             row = cursor.fetchone()
             return self._row_to_plot(row) if row else None
 
+    def delete_garden_plot(self, plot_id: int) -> bool:
+        """
+        Delete a garden plot and all associated data.
+
+        Deletes the plot along with all planted items and their care tasks
+        in a cascading manner to maintain database integrity.
+
+        Args:
+            plot_id: Unique identifier of the plot to delete
+
+        Returns:
+            bool: True if plot was deleted, False if plot was not found
+
+        Raises:
+            ValueError: If database operation fails
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            try:
+                cursor = conn.cursor()
+
+                # Check if plot exists
+                cursor.execute("SELECT id FROM garden_plots WHERE id = ?", (plot_id,))
+                if cursor.fetchone() is None:
+                    return False
+
+                # Get all planted items in this plot
+                cursor.execute("SELECT id FROM planted_items WHERE plot_id = ?", (plot_id,))
+                planted_items = cursor.fetchall()
+
+                # Delete care tasks for each planted item
+                for (planted_item_id,) in planted_items:
+                    cursor.execute(
+                        "DELETE FROM care_tasks WHERE planted_item_id = ?",
+                        (planted_item_id,),
+                    )
+
+                # Delete all planted items in this plot
+                cursor.execute("DELETE FROM planted_items WHERE plot_id = ?", (plot_id,))
+
+                # Delete the plot itself
+                cursor.execute("DELETE FROM garden_plots WHERE id = ?", (plot_id,))
+
+                conn.commit()
+                return True
+            except sqlite3.Error as e:
+                conn.rollback()
+                raise ValueError(
+                    f"Database error while deleting garden plot: {e}"
+                ) from e
+
     def plant_item(self, planting_info: PlantingInfo) -> int:
         """
         Plant a new item in a garden plot and create care tasks.
