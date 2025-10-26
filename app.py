@@ -448,6 +448,31 @@ def view_plot(plot_id):
         return f"<h1>View Plot Error</h1><p>{str(e)}</p>"
 
 
+@app.route("/garden/<int:plot_id>/delete", methods=["POST"])
+def delete_plot(plot_id):
+    """
+    Delete a garden plot and all its associated data.
+
+    Args:
+        plot_id: ID of the plot to delete
+
+    Returns:
+        str: Redirect to garden layout page
+    """
+    try:
+        if garden_db is None:
+            return "<h1>Error</h1><p>Garden database is not initialized.</p>"
+
+        success = garden_db.delete_garden_plot(plot_id)
+        if not success:
+            return "<h1>Plot Not Found</h1><p>The requested garden plot does not exist.</p>"
+
+        return redirect(url_for("garden_layout"))
+    except (sqlite3.Error, ValueError) as e:
+        print(f"Delete plot error: {e}")
+        return f"<h1>Delete Plot Error</h1><p>{str(e)}</p>"
+
+
 @app.route("/garden/<int:plot_id>/plant", methods=["GET", "POST"])
 def plant_to_plot(plot_id):
     """
