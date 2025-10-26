@@ -84,6 +84,11 @@ class Plant:
         return self.growing.spacing_inches
 
     @property
+    def planting_method(self) -> str:
+        """Get planting method."""
+        return self.growing.planting_method
+
+    @property
     def sun_requirements(self) -> str:
         """Get sun requirements."""
         return self.care.sun_requirements
@@ -92,6 +97,11 @@ class Plant:
     def water_needs(self) -> str:
         """Get water needs."""
         return self.care.water_needs
+
+    @property
+    def care_notes(self) -> str:
+        """Get care notes."""
+        return self.care.care_notes
 
     @property
     def companion_plants(self) -> List[str]:
