@@ -98,6 +98,9 @@ ignore-docstrings=yes
 # List of decorators that produce context managers
 contextmanager-decorators=contextlib.contextmanager
 
+# List of module names for which member attributes should not be checked
+ignored-modules=pytest
+
 [IMPORTS]
 # Allow wildcard imports from certain modules
 allow-wildcard-with-all=no

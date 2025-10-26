@@ -52,11 +52,13 @@ app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "garden_manager_secret_key")
 
 # Global service instances - initialized in initialize_services()
+# pylint: disable=invalid-name
 plant_db = None
 garden_db = None
 location_service = None
 weather_service = None
 care_reminder = None
+# pylint: enable=invalid-name
 
 
 def initialize_services():

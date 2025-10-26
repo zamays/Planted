@@ -7,7 +7,7 @@ This file provides common fixtures and configuration for pytest.
 import sys
 import os
 
-import pytest
+import pytest  # pylint: disable=import-error
 
 # Add the project root to the Python path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
