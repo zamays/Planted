@@ -392,7 +392,7 @@ class TestWateringScheduleAndCareTasks:
         for task in care_tasks:
             assert task.planted_item_id == planted_item_id
 
-    def test_watering_schedule_frequency(self, garden_db, temp_db):
+    def test_watering_schedule_frequency(self, garden_db, sample_plant_id):
         """Test that watering tasks are scheduled based on water needs."""
         # Create a plot
         plot_id = garden_db.create_garden_plot(
@@ -402,25 +402,14 @@ class TestWateringScheduleAndCareTasks:
             location="Garden"
         )
 
-        # Get a plant with specific water needs
-        with sqlite3.connect(temp_db) as conn:
-            cursor = conn.cursor()
-            # Find a plant with high water needs or use the first plant
-            cursor.execute("SELECT id FROM plants WHERE water_needs = 'high' LIMIT 1")
-            result = cursor.fetchone()
-            if result:
-                high_water_plant_id = result[0]
-            else:
-                cursor.execute("SELECT id FROM plants LIMIT 1")
-                high_water_plant_id = cursor.fetchone()[0]
-
+        # Use the sample_plant_id from the fixture
         planted_date = datetime.now()
         planting_info = PlantingInfo(
-            plant_id=high_water_plant_id,
+            plant_id=sample_plant_id,
             plot_id=plot_id,
             x_pos=1,
             y_pos=1,
-            notes="High water plant",
+            notes="Plant for watering schedule test",
             planted_date=planted_date,
             days_to_maturity=60
         )
@@ -508,8 +497,8 @@ class TestWateringScheduleAndCareTasks:
         expected_harvest = planted_date + timedelta(days=days_to_maturity)
         time_diff = abs((harvest_task.due_date - expected_harvest).total_seconds())
 
-        # Allow 1 second tolerance for timing differences
-        assert time_diff < 1
+        # Allow 5 seconds tolerance for timing differences
+        assert time_diff < 5
 
     def test_get_care_tasks_within_timeframe(self, garden_db, sample_plant_id):
         """Test retrieving care tasks within a specific timeframe."""

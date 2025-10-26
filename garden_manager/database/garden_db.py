@@ -148,7 +148,7 @@ class GardenDatabase:
             except sqlite3.Error as e:
                 conn.rollback()
                 raise ValueError(
-                    f"Database error while deleting garden plot: {e}"
+                    f"Failed to delete garden plot {plot_id}: {e}"
                 ) from e
 
     def plant_item(self, planting_info: PlantingInfo) -> int:
