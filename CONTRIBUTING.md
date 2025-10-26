@@ -6,16 +6,21 @@ Thank you for your interest in contributing to Planted! We welcome contributions
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/Planted.git
    cd Planted
    ```
+
 3. **Create a virtual environment**:
+
    ```bash
    python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
+
 4. **Install dependencies**:
+
    ```bash
    pip install -r requirements.txt
    pip install pylint pytest pytest-cov  # For development
@@ -24,6 +29,7 @@ Thank you for your interest in contributing to Planted! We welcome contributions
 ## Development Workflow
 
 1. **Create a new branch** for your feature or bugfix:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -35,6 +41,7 @@ Thank you for your interest in contributing to Planted! We welcome contributions
    - Keep changes focused and atomic
 
 3. **Test your changes**:
+
    ```bash
    # Run the application
    python3 main.py
@@ -44,12 +51,14 @@ Thank you for your interest in contributing to Planted! We welcome contributions
    ```
 
 4. **Commit your changes**:
+
    ```bash
    git add .
    git commit -m "Brief description of your changes"
    ```
 
 5. **Push to your fork**:
+
    ```bash
    git push origin feature/your-feature-name
    ```
