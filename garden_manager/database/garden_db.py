@@ -8,7 +8,7 @@ Provides CRUD operations with proper error handling and data validation.
 import sqlite3
 from datetime import datetime, timedelta
 from typing import List, Optional
-from .models import GardenPlot, PlantedItem, CareTask
+from .models import GardenPlot, PlantedItem, CareTask, PlantingInfo, PlotPosition, PlantTimeline
 
 
 class GardenDatabase:
@@ -101,9 +101,7 @@ class GardenDatabase:
             row = cursor.fetchone()
             return self._row_to_plot(row) if row else None
 
-    def plant_item(
-        self, plant_id: int, plot_id: int, x_pos: int, y_pos: int, notes: str = ""
-    ) -> int:
+    def plant_item(self, planting_info: PlantingInfo) -> int:
         """
         Plant a new item in a garden plot and create care tasks.
 
@@ -111,11 +109,7 @@ class GardenDatabase:
         and harvesting tasks based on plant requirements.
 
         Args:
-            plant_id: ID of the plant species to plant
-            plot_id: ID of the garden plot
-            x_pos: X coordinate in the plot grid
-            y_pos: Y coordinate in the plot grid
-            notes: Optional planting notes
+            planting_info: PlantingInfo containing all planting parameters
 
         Returns:
             int: ID of the newly planted item
@@ -129,25 +123,26 @@ class GardenDatabase:
             cursor = conn.cursor()
 
             cursor.execute(
-                "SELECT days_to_maturity FROM plants WHERE id = ?", (plant_id,)
+                "SELECT days_to_maturity FROM plants WHERE id = ?",
+                (planting_info.plant_id,),
             )
             days_to_maturity = cursor.fetchone()[0]
             expected_harvest = planted_date + timedelta(days=days_to_maturity)
 
             cursor.execute(
                 """
-                INSERT INTO planted_items (plant_id, plot_id, x_position, y_position, 
+                INSERT INTO planted_items (plant_id, plot_id, x_position, y_position,
                                          planted_date, expected_harvest, notes)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    plant_id,
-                    plot_id,
-                    x_pos,
-                    y_pos,
+                    planting_info.plant_id,
+                    planting_info.plot_id,
+                    planting_info.x_pos,
+                    planting_info.y_pos,
                     planted_date,
                     expected_harvest,
-                    notes,
+                    planting_info.notes,
                 ),
             )
 
@@ -155,73 +150,59 @@ class GardenDatabase:
             if planted_item_id is None:
                 raise ValueError("Failed to create planted item: no ID returned")
 
-            self._create_care_tasks(cursor, planted_item_id, plant_id, planted_date)
+            self._create_care_tasks(
+                cursor, planted_item_id, planting_info.plant_id, planted_date
+            )
 
             return planted_item_id
 
-    def add_planted_item(
-        self,
-        plant_id: int,
-        plot_id: int,
-        x_pos: int,
-        y_pos: int,
-        planted_date: datetime,
-        days_to_maturity: int,
-        notes: str = "",
-    ) -> int:
+    def add_planted_item(self, planting_info: PlantingInfo) -> int:
         """
-        Adds a planted item to the database with specified plant, plot, position, date, and notes.
+        Adds a planted item to the database with specified parameters.
 
         Args:
-            plant_id (int): The ID of the plant being planted.
-            plot_id (int): The ID of the plot where the plant is placed.
-            x_pos (int): The x-coordinate position within the plot.
-            y_pos (int): The y-coordinate position within the plot.
-            planted_date (datetime): The date the plant was planted.
-            days_to_maturity (int): Number of days until the plant is expected to mature.
-            notes (str, optional): Additional notes about the planted item. Defaults to "".
+            planting_info: PlantingInfo containing all planting parameters including
+                          planted_date and days_to_maturity
 
         Returns:
             int: The ID of the newly created planted item.
 
         Raises:
-            ValueError: If any of the required integer arguments are not integers.
             ValueError: If days_to_maturity is not positive.
             ValueError: If planted_date is not a datetime object.
             ValueError: If the planted item could not be created in the database.
         """
-        if not all(
-            isinstance(x, int)
-            for x in (plant_id, plot_id, x_pos, y_pos, days_to_maturity)
-        ):
-            raise ValueError(
-                "Invalid input: plant_id, plot_id, x_pos, y_pos, and days_to_maturity "
-                "must be integers"
-            )
-        if days_to_maturity <= 0:
+        if planting_info.days_to_maturity is None:
+            raise ValueError("days_to_maturity is required")
+        if planting_info.planted_date is None:
+            raise ValueError("planted_date is required")
+
+        if planting_info.days_to_maturity <= 0:
             raise ValueError("days_to_maturity must be positive")
-        if not isinstance(planted_date, datetime):
+        if not isinstance(planting_info.planted_date, datetime):
             raise ValueError("planted_date must be a datetime object")
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
-            expected_harvest = planted_date + timedelta(days=days_to_maturity)
+            expected_harvest = planting_info.planted_date + timedelta(
+                days=planting_info.days_to_maturity
+            )
 
             cursor.execute(
                 """
-                INSERT INTO planted_items (plant_id, plot_id, x_position, y_position, 
+                INSERT INTO planted_items (plant_id, plot_id, x_position, y_position,
                                          planted_date, expected_harvest, notes)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    plant_id,
-                    plot_id,
-                    x_pos,
-                    y_pos,
-                    planted_date,
+                    planting_info.plant_id,
+                    planting_info.plot_id,
+                    planting_info.x_pos,
+                    planting_info.y_pos,
+                    planting_info.planted_date,
                     expected_harvest,
-                    notes,
+                    planting_info.notes,
                 ),
             )
 
@@ -229,7 +210,12 @@ class GardenDatabase:
             if planted_item_id is None:
                 raise ValueError("Failed to create planted item: no ID returned")
 
-            self._create_care_tasks(cursor, planted_item_id, plant_id, planted_date)
+            self._create_care_tasks(
+                cursor,
+                planted_item_id,
+                planting_info.plant_id,
+                planting_info.planted_date,
+            )
 
             return planted_item_id
 
@@ -376,14 +362,17 @@ class GardenDatabase:
         )
 
     def _row_to_planted_item(self, row) -> PlantedItem:
+        position = PlotPosition(x=row[3], y=row[4])
+        timeline = PlantTimeline(
+            planted_date=datetime.fromisoformat(row[5]),
+            expected_harvest=datetime.fromisoformat(row[6]),
+        )
         return PlantedItem(
             id=row[0],
             plant_id=row[1],
             plot_id=row[2],
-            x_position=row[3],
-            y_position=row[4],
-            planted_date=datetime.fromisoformat(row[5]),
-            expected_harvest=datetime.fromisoformat(row[6]),
+            position=position,
+            timeline=timeline,
             notes=row[7],
         )
 

@@ -21,6 +21,13 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 from dotenv import load_dotenv
 from garden_manager.database.plant_data import PlantDatabase
 from garden_manager.database.garden_db import GardenDatabase
+from garden_manager.database.models import (
+    PlantingInfo,
+    PlantSpec,
+    PlantGrowingInfo,
+    PlantCareRequirements,
+    PlantCompatibility,
+)
 from garden_manager.services.weather_service import WeatherService
 from garden_manager.services.location_service import LocationService
 from garden_manager.services.scheduler import CareReminder
@@ -62,6 +69,7 @@ def initialize_services():
     Raises:
         Exception: If critical service initialization fails
     """
+    # pylint: disable=global-statement
     global PLANT_DB, GARDEN_DB, LOCATION_SERVICE, WEATHER_SERVICE, CARE_REMINDER
 
     print("🔧 Initializing services...")
@@ -76,7 +84,10 @@ def initialize_services():
         print("   ✅ Database services initialized")
 
         # Set default location (New York) as fallback
-        LOCATION_SERVICE.set_manual_location(40.7128, -74.0060, "New York", "NY", "USA")
+        LOCATION_SERVICE.set_manual_location(
+            40.7128, -74.0060,
+            {"city": "New York", "state": "NY", "country": "USA"}
+        )
 
         # Try to get actual location in background to avoid blocking startup
         def load_location():
@@ -171,6 +182,7 @@ def plants():
     Returns:
         str: Rendered plants catalog HTML template or error message
     """
+    # pylint: disable=too-many-branches
     try:
         season_filter = request.args.get("season", "current")
         type_filter = request.args.get("type", "all")
@@ -215,7 +227,7 @@ def plants():
         suitable_plants = []
         for plant in plants_list:
             # Include plant if it matches current climate zone or has no zone restrictions
-            if climate_zone in plant.climate_zones or not plant.climate_zones:
+            if climate_zone in plant.compatibility.climate_zones or not plant.compatibility.climate_zones:
                 suitable_plants.append(plant)
 
         current_season = SeasonCalculator.get_current_season()
@@ -270,6 +282,7 @@ def add_plant():
     Returns:
         str: Redirect to plants page on success, or form on GET/error
     """
+    # pylint: disable=too-many-locals
     try:
         if request.method == "POST":
             name = request.form.get("name", "").strip()
@@ -306,26 +319,39 @@ def add_plant():
                     return ("<h1>Error</h1><p>Climate zones must be numbers separated by commas "
                     "(e.g., 5,6,7)</p>")
 
-            if PLANT_DB is not None:
-                PLANT_DB.add_custom_plant(
-                    name=name,
-                    scientific_name=scientific_name,
-                    plant_type=plant_type,
-                    season=season,
-                    planting_method=planting_method,
-                    days_to_germination=days_to_germination,
-                    days_to_maturity=days_to_maturity,
-                    spacing_inches=spacing_inches,
-                    sun_requirements=sun_requirements,
-                    water_needs=water_needs,
-                    companion_plants=companion_plants,
-                    avoid_plants=avoid_plants,
-                    climate_zones=climate_zones,
-                    care_notes=care_notes,
-                )
-                return redirect(url_for("plants"))
-            else:
+            if PLANT_DB is None:
                 return "<h1>Error</h1><p>Plant database is not initialized.</p>"
+
+            growing = PlantGrowingInfo(
+                season=season,
+                planting_method=planting_method,
+                days_to_germination=days_to_germination,
+                days_to_maturity=days_to_maturity,
+                spacing_inches=spacing_inches,
+            )
+
+            care = PlantCareRequirements(
+                sun_requirements=sun_requirements,
+                water_needs=water_needs,
+                care_notes=care_notes,
+            )
+
+            compatibility = PlantCompatibility(
+                companion_plants=companion_plants,
+                avoid_plants=avoid_plants,
+                climate_zones=climate_zones,
+            )
+
+            plant_spec = PlantSpec(
+                name=name,
+                scientific_name=scientific_name,
+                plant_type=plant_type,
+                growing=growing,
+                care=care,
+                compatibility=compatibility,
+            )
+            PLANT_DB.add_custom_plant(plant_spec)
+            return redirect(url_for("plants"))
 
         return render_template("add_plant.html")
     except (sqlite3.Error, ValueError, KeyError) as e:
@@ -437,6 +463,7 @@ def plant_to_plot(plot_id):
     Returns:
         str: Redirect to plot view on success, or form on GET/error
     """
+    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
     try:
         if GARDEN_DB is None or PLANT_DB is None:
             return "<h1>Error</h1><p>Database is not initialized.</p>"
@@ -469,7 +496,7 @@ def plant_to_plot(plot_id):
             # Check if position is already occupied
             existing_items = GARDEN_DB.get_planted_items(plot_id)
             for item in existing_items:
-                if item.x_position == x_position and item.y_position == y_position:
+                if item.position.x == x_position and item.position.y == y_position:
                     return "<h1>Error</h1><p>This position is already occupied. " \
                     "Please choose another square.</p>"
 
@@ -479,15 +506,16 @@ def plant_to_plot(plot_id):
                 return "<h1>Error</h1><p>Plant not found.</p>"
 
             # Add the planted item
-            GARDEN_DB.add_planted_item(
+            planting_info = PlantingInfo(
                 plant_id=plant_id,
                 plot_id=plot_id,
                 x_pos=x_position,
                 y_pos=y_position,
-                planted_date=datetime.now(),
-                days_to_maturity=plant.days_to_maturity,
                 notes=notes,
+                planted_date=datetime.now(),
+                days_to_maturity=plant.growing.days_to_maturity,
             )
+            GARDEN_DB.add_planted_item(planting_info)
 
             return redirect(url_for("view_plot", plot_id=plot_id))
 
@@ -502,7 +530,7 @@ def plant_to_plot(plot_id):
         # Check if position is already occupied
         existing_items = GARDEN_DB.get_planted_items(plot_id)
         for item in existing_items:
-            if item.x_position == x and item.y_position == y:
+            if item.position.x == x and item.position.y == y:
                 return redirect(url_for("view_plot", plot_id=plot_id))
 
         # Get all available plants
@@ -563,10 +591,9 @@ def create_plot():
                 # If user wants to add plants immediately, redirect to plot view
                 if add_plants == "yes":
                     return redirect(url_for("view_plot", plot_id=plot_id))
-                else:
-                    return redirect(url_for("garden_layout"))
-            else:
-                return "<h1>Error</h1><p>Garden database is not initialized.</p>"
+                return redirect(url_for("garden_layout"))
+
+            return "<h1>Error</h1><p>Garden database is not initialized.</p>"
 
         return render_template("create_plot.html")
     except (sqlite3.Error, ValueError, KeyError) as e:

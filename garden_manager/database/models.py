@@ -7,8 +7,34 @@ and structured data representation throughout the application.
 """
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 from datetime import datetime
+
+
+@dataclass
+class PlantGrowingInfo:
+    """Growing parameters for a plant species."""
+    season: str
+    planting_method: str
+    days_to_germination: int
+    days_to_maturity: int
+    spacing_inches: int
+
+
+@dataclass
+class PlantCareRequirements:
+    """Care requirements for a plant species."""
+    sun_requirements: str
+    water_needs: str
+    care_notes: str
+
+
+@dataclass
+class PlantCompatibility:
+    """Companion planting and climate compatibility information."""
+    companion_plants: List[str]
+    avoid_plants: List[str]
+    climate_zones: List[int]
 
 
 @dataclass
@@ -21,17 +47,9 @@ class Plant:
         name: Common name of the plant
         scientific_name: Scientific/botanical name
         plant_type: Category (vegetable, fruit, herb)
-        season: Optimal planting season (spring, summer, fall, winter)
-        planting_method: How to plant (seed, transplant)
-        days_to_germination: Days from planting to germination
-        days_to_maturity: Days from planting to harvest
-        spacing_inches: Required spacing between plants in inches
-        sun_requirements: Light needs (full_sun, partial_shade, shade)
-        water_needs: Water requirements (low, medium, high)
-        companion_plants: List of beneficial companion plants
-        avoid_plants: List of plants to avoid growing nearby
-        climate_zones: List of suitable USDA hardiness zones
-        care_notes: Additional care instructions and tips
+        growing: Growing parameters
+        care: Care requirements
+        compatibility: Companion planting info
         is_custom: Whether this is a user-added custom plant
     """
 
@@ -39,17 +57,9 @@ class Plant:
     name: str
     scientific_name: str
     plant_type: str
-    season: str
-    planting_method: str
-    days_to_germination: int
-    days_to_maturity: int
-    spacing_inches: int
-    sun_requirements: str
-    water_needs: str
-    companion_plants: List[str]
-    avoid_plants: List[str]
-    climate_zones: List[int]
-    care_notes: str
+    growing: PlantGrowingInfo
+    care: PlantCareRequirements
+    compatibility: PlantCompatibility
     is_custom: bool = False
 
 
@@ -76,6 +86,20 @@ class GardenPlot:
 
 
 @dataclass
+class PlotPosition:
+    """Position coordinates within a garden plot grid."""
+    x: int
+    y: int
+
+
+@dataclass
+class PlantTimeline:
+    """Timeline information for a planted item."""
+    planted_date: datetime
+    expected_harvest: datetime
+
+
+@dataclass
 class PlantedItem:
     """
     Represents a specific plant instance placed in a garden plot.
@@ -84,20 +108,16 @@ class PlantedItem:
         id: Unique identifier for the planted item
         plant_id: Reference to the Plant species
         plot_id: Reference to the GardenPlot containing this item
-        x_position: X coordinate within the plot grid
-        y_position: Y coordinate within the plot grid
-        planted_date: When the plant was planted
-        expected_harvest: Calculated expected harvest date
+        position: Position coordinates within the plot
+        timeline: Planting and harvest timeline
         notes: User notes about this specific plant instance
     """
 
     id: int
     plant_id: int
     plot_id: int
-    x_position: int
-    y_position: int
-    planted_date: datetime
-    expected_harvest: datetime
+    position: PlotPosition
+    timeline: PlantTimeline
     notes: str
 
 
@@ -121,3 +141,55 @@ class CareTask:
     due_date: datetime
     completed: bool
     notes: str
+
+
+@dataclass
+class PlantingInfo:
+    """
+    Container for planting operation parameters.
+
+    Groups related parameters for planting operations to reduce
+    method argument counts.
+
+    Attributes:
+        plant_id: ID of the plant species to plant
+        plot_id: ID of the garden plot
+        x_pos: X coordinate in the plot grid
+        y_pos: Y coordinate in the plot grid
+        notes: Optional planting notes
+        planted_date: Date the plant was planted (optional)
+        days_to_maturity: Days until maturity (optional)
+    """
+
+    plant_id: int
+    plot_id: int
+    x_pos: int
+    y_pos: int
+    notes: str = ""
+    planted_date: Optional[datetime] = None
+    days_to_maturity: Optional[int] = None
+
+
+@dataclass
+class PlantSpec:
+    """
+    Specification for creating a new plant species.
+
+    Groups all plant characteristics for custom plant creation
+    to reduce method argument counts.
+
+    Attributes:
+        name: Common name of the plant
+        scientific_name: Scientific/botanical name
+        plant_type: Category (vegetable, fruit, herb)
+        growing: Growing parameters
+        care: Care requirements
+        compatibility: Companion planting info
+    """
+
+    name: str
+    scientific_name: str
+    plant_type: str
+    growing: PlantGrowingInfo
+    care: PlantCareRequirements
+    compatibility: PlantCompatibility

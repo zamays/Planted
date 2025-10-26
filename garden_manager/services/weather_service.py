@@ -80,6 +80,7 @@ class WeatherService:
                     "timestamp": datetime.now(),
                 }
                 return self.current_weather
+            return self._get_mock_weather()
         except (requests.RequestException, KeyError, ValueError) as e:
             print(f"Error fetching weather: {e}")
             return self._get_mock_weather()
@@ -132,6 +133,7 @@ class WeatherService:
 
                 self.forecast = forecast
                 return forecast
+            return self._get_mock_forecast(days)
         except (requests.RequestException, KeyError, ValueError, IndexError) as e:
             print(f"Error fetching forecast: {e}")
             return self._get_mock_forecast(days)
@@ -173,12 +175,11 @@ class WeatherService:
 
         if need_score >= 3.5:
             return "Water immediately - hot and dry conditions"
-        elif need_score >= 2.5:
+        if need_score >= 2.5:
             return "Water today"
-        elif need_score >= 1.5:
+        if need_score >= 1.5:
             return "Water if soil feels dry"
-        else:
-            return "Skip watering today"
+        return "Skip watering today"
 
     def check_frost_warning(self) -> bool:
         """
@@ -216,26 +217,25 @@ class WeatherService:
                 "status": "poor",
                 "recommendation": "Too cold for most plants. Wait for warmer weather.",
             }
-        elif temp > 95:
+        if temp > 95:
             return {
                 "status": "poor",
                 "recommendation": "Too hot for planting. Wait for cooler temperatures.",
             }
-        elif 50 <= temp <= 80 and 40 <= humidity <= 70:
+        if 50 <= temp <= 80 and 40 <= humidity <= 70:
             return {
                 "status": "excellent",
                 "recommendation": "Perfect conditions for planting!",
             }
-        elif 45 <= temp <= 85:
+        if 45 <= temp <= 85:
             return {
                 "status": "good",
                 "recommendation": "Good conditions for planting most crops.",
             }
-        else:
-            return {
-                "status": "fair",
-                "recommendation": "Acceptable for planting hardy varieties.",
-            }
+        return {
+            "status": "fair",
+            "recommendation": "Acceptable for planting hardy varieties.",
+        }
 
     def _get_mock_weather(self) -> Dict:
         """

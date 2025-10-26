@@ -60,9 +60,7 @@ class LocationService:
         self,
         latitude: float,
         longitude: float,
-        city: str = "",
-        region: str = "",
-        country: str = "",
+        location_details: Optional[Dict[str, str]] = None,
     ) -> Dict[str, str]:
         """
         Manually set user location with coordinates.
@@ -70,17 +68,18 @@ class LocationService:
         Args:
             latitude: Geographic latitude (-90 to 90)
             longitude: Geographic longitude (-180 to 180)
-            city: City name (optional)
-            region: State/region name (optional)
-            country: Country name (optional)
+            location_details: Optional dictionary with keys 'city', 'region', 'country'
 
         Returns:
             Dict[str, str]: The set location data
         """
+        if location_details is None:
+            location_details = {}
+
         self.current_location = {
-            "city": city,
-            "region": region,
-            "country": country,
+            "city": location_details.get("city", ""),
+            "region": location_details.get("region", ""),
+            "country": location_details.get("country", ""),
             "latitude": latitude,
             "longitude": longitude,
             "timezone": "",
@@ -118,22 +117,23 @@ class LocationService:
 
         # Map latitude bands to USDA hardiness zones
         # Higher latitudes = colder climates = lower zone numbers
-        if lat >= 60:  # Arctic regions
-            return 3
-        elif lat >= 50:  # Northern Canada, Alaska
-            return 4
-        elif lat >= 45:  # Northern US border states
-            return 5
-        elif lat >= 40:  # Northern US (New York, Chicago)
-            return 6
-        elif lat >= 35:  # Mid-latitude US (North Carolina, Tennessee)
-            return 7
-        elif lat >= 30:  # Southern US (Texas, Georgia)
-            return 8
-        elif lat >= 25:  # Subtropical (South Florida, Hawaii)
-            return 9
-        else:  # Tropical regions
-            return 10
+        # Tuples of (min_latitude, zone, description)
+        zone_bands = [
+            (60, 3, "Arctic regions"),
+            (50, 4, "Northern Canada, Alaska"),
+            (45, 5, "Northern US border states"),
+            (40, 6, "Northern US (New York, Chicago)"),
+            (35, 7, "Mid-latitude US (North Carolina, Tennessee)"),
+            (30, 8, "Southern US (Texas, Georgia)"),
+            (25, 9, "Subtropical (South Florida, Hawaii)"),
+            (0, 10, "Tropical regions"),
+        ]
+
+        for min_lat, zone, _ in zone_bands:
+            if lat >= min_lat:
+                return zone
+
+        return 10  # Default to tropical
 
     def get_location_display(self) -> str:
         """
@@ -151,14 +151,13 @@ class LocationService:
 
         if city and region:
             return f"{city}, {region}"
-        elif city and country:
+        if city and country:
             return f"{city}, {country}"
-        elif region and country:
+        if region and country:
             return f"{region}, {country}"
-        elif country:
+        if country:
             return country
-        else:
-            return (
-                f"Lat: {self.current_location['latitude']:.2f}, "
-                f"Lon: {self.current_location['longitude']:.2f}"
-            )
+        return (
+            f"Lat: {self.current_location['latitude']:.2f}, "
+            f"Lon: {self.current_location['longitude']:.2f}"
+        )

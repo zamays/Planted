@@ -36,47 +36,27 @@ class SeasonCalculator:
         month = now.month
         day = now.day
 
-        if latitude >= 0:  # Northern Hemisphere - standard seasons
-            if (
-                (month == 3 and day >= 20)
-                or (month in [4, 5])
-                or (month == 6 and day < 21)
-            ):
-                return "spring"
-            if (
-                (month == 6 and day >= 21)
-                or (month in [7, 8])
-                or (month == 9 and day < 23)
-            ):
-                return "summer"
-            if (
-                (month == 9 and day >= 23)
-                or (month in [10, 11])
-                or (month == 12 and day < 21)
-            ):
-                return "fall"
-            else:
-                return "winter"
-        else:  # Southern Hemisphere or fallback - seasons are reversed
-            if (
-                (month == 3 and day >= 20)
-                or (month in [4, 5])
-                or (month == 6 and day < 21)
-            ):
-                return "fall"
-            if (
-                (month == 6 and day >= 21)
-                or (month in [7, 8])
-                or (month == 9 and day < 23)
-            ):
-                return "winter"
-            if (
-                (month == 9 and day >= 23)
-                or (month in [10, 11])
-                or (month == 12 and day < 21)
-            ):
-                return "spring"
-            return "summer"
+        # Determine season for Northern Hemisphere
+        northern_season = "winter"  # Default
+
+        if (month == 3 and day >= 20) or (month in [4, 5]) or (month == 6 and day < 21):
+            northern_season = "spring"
+        elif (month == 6 and day >= 21) or (month in [7, 8]) or (month == 9 and day < 23):
+            northern_season = "summer"
+        elif (month == 9 and day >= 23) or (month in [10, 11]) or (month == 12 and day < 21):
+            northern_season = "fall"
+
+        # If Southern Hemisphere, reverse the seasons
+        if latitude < 0:
+            season_reversal = {
+                "spring": "fall",
+                "summer": "winter",
+                "fall": "spring",
+                "winter": "summer"
+            }
+            return season_reversal[northern_season]
+
+        return northern_season
 
     @staticmethod
     def get_seasonal_recommendations(
@@ -191,19 +171,19 @@ class PlantingScheduler:
 
     @staticmethod
     def calculate_optimal_planting_date(
-        plant_name: str,
+        _plant_name: str,
         target_harvest: datetime,
         days_to_maturity: int,
-        climate_zone: int,
+        _climate_zone: int,
     ) -> datetime:
         """
         Calculate when to plant for a target harvest date.
 
         Args:
-            plant_name: Name of the plant (for reference)
+            _plant_name: Name of the plant (for reference, currently unused)
             target_harvest: Desired harvest date
             days_to_maturity: Plant's days from planting to harvest
-            climate_zone: USDA hardiness zone
+            _climate_zone: USDA hardiness zone (for reference, currently unused)
 
         Returns:
             datetime: Recommended planting date
@@ -212,13 +192,13 @@ class PlantingScheduler:
 
     @staticmethod
     def get_succession_planting_dates(
-        plant_name: str, start_date: datetime, interval_days: int = 14, count: int = 4
+        _plant_name: str, start_date: datetime, interval_days: int = 14, count: int = 4
     ) -> List[datetime]:
         """
         Generate succession planting schedule for continuous harvest.
 
         Args:
-            plant_name: Name of the plant (for reference)
+            _plant_name: Name of the plant (for reference, currently unused)
             start_date: First planting date
             interval_days: Days between plantings (default 14)
             count: Number of succession plantings (default 4)
@@ -233,7 +213,7 @@ class PlantingScheduler:
 
     @staticmethod
     def is_good_planting_time(
-        plant_season: str, current_season: str, days_to_maturity: int, climate_zone: int
+        plant_season: str, current_season: str, _days_to_maturity: int, climate_zone: int
     ) -> bool:
         """
         Determine if current season is suitable for planting a specific crop.
@@ -241,7 +221,7 @@ class PlantingScheduler:
         Args:
             plant_season: Plant's preferred planting season
             current_season: Current season
-            days_to_maturity: Plant's maturation time
+            _days_to_maturity: Plant's maturation time (for reference, currently unused)
             climate_zone: USDA hardiness zone
 
         Returns:

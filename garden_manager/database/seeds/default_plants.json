@@ -1,0 +1,356 @@
+{
+  "plants": [
+    {
+      "name": "Lettuce",
+      "scientific_name": "Lactuca sativa",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Cool weather crop, plant 2 weeks before last frost"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots", "radishes", "onions"],
+        "avoid_plants": ["broccoli"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Spinach",
+      "scientific_name": "Spinacia oleracea",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 45,
+        "spacing_inches": 4
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Bolts in hot weather, successive plantings every 2 weeks"
+      },
+      "compatibility": {
+        "companion_plants": ["lettuce", "peas", "radishes"],
+        "avoid_plants": ["fennel"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Peas",
+      "scientific_name": "Pisum sativum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 10,
+        "days_to_maturity": 70,
+        "spacing_inches": 3
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Plant as soon as soil can be worked, nitrogen fixer"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots", "radishes", "lettuce"],
+        "avoid_plants": ["onions", "garlic"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Radishes",
+      "scientific_name": "Raphanus sativus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 4,
+        "days_to_maturity": 30,
+        "spacing_inches": 2
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Fast growing, helps break up soil for root vegetables"
+      },
+      "compatibility": {
+        "companion_plants": ["lettuce", "spinach", "carrots"],
+        "avoid_plants": ["hyssop"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Tomatoes",
+      "scientific_name": "Solanum lycopersicum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 80,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Plant after last frost, stake or cage for support"
+      },
+      "compatibility": {
+        "companion_plants": ["basil", "peppers", "marigolds"],
+        "avoid_plants": ["fennel", "brassicas"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Peppers",
+      "scientific_name": "Capsicum annuum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 10,
+        "days_to_maturity": 70,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Heat-loving crop, harvest when fully colored"
+      },
+      "compatibility": {
+        "companion_plants": ["tomatoes", "basil", "onions"],
+        "avoid_plants": ["fennel"],
+        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Cucumbers",
+      "scientific_name": "Cucumis sativus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Provide trellis for vertical growth"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "corn", "radishes"],
+        "avoid_plants": ["aromatic herbs"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Zucchini",
+      "scientific_name": "Cucurbita pepo",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 50,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Very productive, harvest when 6-8 inches long"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "corn", "nasturtiums"],
+        "avoid_plants": ["potatoes"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Green Beans",
+      "scientific_name": "Phaseolus vulgaris",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 8,
+        "days_to_maturity": 60,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Bush varieties don't need support, nitrogen fixer"
+      },
+      "compatibility": {
+        "companion_plants": ["corn", "cucumbers", "tomatoes"],
+        "avoid_plants": ["onions", "garlic"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Corn",
+      "scientific_name": "Zea mays",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 80,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Plant in blocks for better pollination"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "squash", "cucumbers"],
+        "avoid_plants": ["tomatoes"],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Broccoli",
+      "scientific_name": "Brassica oleracea",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 70,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Cool weather crop, harvest before flowers open"
+      },
+      "compatibility": {
+        "companion_plants": ["onions", "lettuce", "carrots"],
+        "avoid_plants": ["tomatoes", "peppers"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Cauliflower",
+      "scientific_name": "Brassica oleracea",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 75,
+        "spacing_inches": 15
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Blanch heads by tying leaves over developing curds"
+      },
+      "compatibility": {
+        "companion_plants": ["onions", "celery", "beans"],
+        "avoid_plants": ["tomatoes"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Carrots",
+      "scientific_name": "Daucus carota",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 14,
+        "days_to_maturity": 70,
+        "spacing_inches": 2
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Direct sow, thin seedlings to prevent crowding"
+      },
+      "compatibility": {
+        "companion_plants": ["onions", "leeks", "rosemary"],
+        "avoid_plants": ["dill"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Kale",
+      "scientific_name": "Brassica oleracea",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Frost improves flavor, harvest outer leaves first"
+      },
+      "compatibility": {
+        "companion_plants": ["onions", "garlic", "nasturtiums"],
+        "avoid_plants": ["tomatoes"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Basil",
+      "scientific_name": "Ocimum basilicum",
+      "plant_type": "herb",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Pinch flowers to keep leaves tender"
+      },
+      "compatibility": {
+        "companion_plants": ["tomatoes", "peppers", "oregano"],
+        "avoid_plants": ["rue"],
+        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Strawberries",
+      "scientific_name": "Fragaria × ananassa",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 60,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial, remove runners for larger berries"
+      },
+      "compatibility": {
+        "companion_plants": ["thyme", "borage", "lettuce"],
+        "avoid_plants": ["brassicas"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    }
+  ]
+}
