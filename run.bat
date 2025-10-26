@@ -18,6 +18,18 @@ if errorlevel 1 (
     exit /b 1
 )
 
+REM Verify Python 3.9+ is installed
+python -c "import sys; exit(0 if sys.version_info >= (3, 9) else 1)" >nul 2>&1
+if errorlevel 1 (
+    echo ERROR: Python 3.9 or higher is required
+    echo Your current version is:
+    python --version
+    echo Please upgrade Python from https://www.python.org/
+    echo.
+    pause
+    exit /b 1
+)
+
 REM Check if pip is installed
 pip --version >nul 2>&1
 if errorlevel 1 (
@@ -33,9 +45,30 @@ echo Checking dependencies...
 python -c "import flask" >nul 2>&1
 if errorlevel 1 (
     echo Installing dependencies...
+    echo.
+    
+    REM Check if in virtual environment
+    if not defined VIRTUAL_ENV (
+        echo WARNING: Not running in a virtual environment
+        echo It's recommended to use a virtual environment to avoid conflicts.
+        echo.
+        echo To create a virtual environment:
+        echo   python -m venv venv
+        echo   venv\Scripts\activate
+        echo   pip install -r requirements.txt
+        echo.
+        choice /C YN /M "Install system-wide anyway"
+        if errorlevel 2 (
+            echo Cancelled. Please set up a virtual environment first.
+            pause
+            exit /b 1
+        )
+    )
+    
     pip install -r requirements.txt
     if errorlevel 1 (
         echo ERROR: Failed to install dependencies
+        echo Try manually: pip install -r requirements.txt
         echo.
         pause
         exit /b 1

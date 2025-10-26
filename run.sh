@@ -37,10 +37,30 @@ fi
 echo "Checking dependencies..."
 if ! python3 -c "import flask" &> /dev/null; then
     echo "Installing dependencies..."
+    echo ""
+    
+    # Check if in virtual environment
+    if [ -z "$VIRTUAL_ENV" ]; then
+        echo "⚠️  WARNING: Not running in a virtual environment"
+        echo "It's recommended to use a virtual environment to avoid conflicts."
+        echo ""
+        echo "To create a virtual environment:"
+        echo "  python3 -m venv venv"
+        echo "  source venv/bin/activate  # On Windows: venv\\Scripts\\activate"
+        echo "  pip install -r requirements.txt"
+        echo ""
+        read -p "Install system-wide anyway? (y/N): " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Cancelled. Please set up a virtual environment first."
+            exit 1
+        fi
+    fi
+    
     pip3 install -r requirements.txt
     if [ $? -ne 0 ]; then
         echo "ERROR: Failed to install dependencies"
-        echo "Try: pip3 install -r requirements.txt"
+        echo "Try manually: pip3 install -r requirements.txt"
         exit 1
     fi
 fi
