@@ -61,6 +61,13 @@
                     🌦️ <span>Weather</span>
                 </a>
             </li>
+            <li style="margin-left: auto;">
+                <a href="{{ url_for('help_page') }}" 
+                   {% if request.endpoint == 'help_page' %}class="active" aria-current="page"{% endif %}
+                   title="Help and user guide">
+                    ❓ <span>Help</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
