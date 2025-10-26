@@ -11,6 +11,12 @@ bin
 lib
 settings.json
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
 # Environment variables and secrets
 .env
 *.env.local

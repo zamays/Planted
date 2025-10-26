@@ -62,6 +62,52 @@ class Plant:
     compatibility: PlantCompatibility
     is_custom: bool = False
 
+    # Helper properties for template access
+    @property
+    def season(self) -> str:
+        """Get the planting season."""
+        return self.growing.season
+
+    @property
+    def days_to_germination(self) -> int:
+        """Get days to germination."""
+        return self.growing.days_to_germination
+
+    @property
+    def days_to_maturity(self) -> int:
+        """Get days to maturity."""
+        return self.growing.days_to_maturity
+
+    @property
+    def spacing_inches(self) -> int:
+        """Get required spacing."""
+        return self.growing.spacing_inches
+
+    @property
+    def sun_requirements(self) -> str:
+        """Get sun requirements."""
+        return self.care.sun_requirements
+
+    @property
+    def water_needs(self) -> str:
+        """Get water needs."""
+        return self.care.water_needs
+
+    @property
+    def companion_plants(self) -> List[str]:
+        """Get companion plants list."""
+        return self.compatibility.companion_plants
+
+    @property
+    def avoid_plants(self) -> List[str]:
+        """Get plants to avoid."""
+        return self.compatibility.avoid_plants
+
+    @property
+    def climate_zones(self) -> List[int]:
+        """Get compatible climate zones."""
+        return self.compatibility.climate_zones
+
 
 @dataclass
 class GardenPlot:

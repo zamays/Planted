@@ -3,34 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Planted - Your comprehensive digital garden management system for planning, planting, and maintaining your garden.">
+    <meta name="theme-color" content="#4A7C59">
     <title>{% block title %}Planted{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
-    <header class="header">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header class="header" role="banner">
         <h1>🌱 Planted</h1>
         <div class="subtitle">
             {% if location and season %}
-                📍 {{ location }} • 🍃 {{ season }} Season
+                <span>📍 {{ location }}</span>
+                <span>🍃 {{ season }} Season</span>
             {% else %}
                 Your digital gardening companion
             {% endif %}
         </div>
     </header>
 
-    <nav class="nav">
+    <nav class="nav" role="navigation" aria-label="Main navigation">
         <ul>
-            <li><a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>🏠 Dashboard</a></li>
-            <li><a href="{{ url_for('plants') }}" {% if request.endpoint == 'plants' or request.endpoint == 'plant_detail' %}class="active"{% endif %}>🌿 Browse Plants</a></li>
-            <li><a href="{{ url_for('garden_layout') }}" {% if request.endpoint in ['garden_layout', 'view_plot', 'create_plot'] %}class="active"{% endif %}>🗂️ Garden Layout</a></li>
-            <li><a href="{{ url_for('care_schedule') }}" {% if request.endpoint == 'care_schedule' %}class="active"{% endif %}>📅 Care Schedule</a></li>
-            <li><a href="{{ url_for('weather') }}" {% if request.endpoint == 'weather' %}class="active"{% endif %}>🌦️ Weather</a></li>
+            <li>
+                <a href="{{ url_for('dashboard') }}" 
+                   {% if request.endpoint == 'dashboard' %}class="active" aria-current="page"{% endif %}
+                   title="View your garden dashboard">
+                    🏠 <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('plants') }}" 
+                   {% if request.endpoint == 'plants' or request.endpoint == 'plant_detail' %}class="active" aria-current="page"{% endif %}
+                   title="Browse plant catalog">
+                    🌿 <span>Browse Plants</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('garden_layout') }}" 
+                   {% if request.endpoint in ['garden_layout', 'view_plot', 'create_plot'] %}class="active" aria-current="page"{% endif %}
+                   title="Manage your garden plots">
+                    🗂️ <span>Garden Layout</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('care_schedule') }}" 
+                   {% if request.endpoint == 'care_schedule' %}class="active" aria-current="page"{% endif %}
+                   title="View care tasks and schedule">
+                    📅 <span>Care Schedule</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('weather') }}" 
+                   {% if request.endpoint == 'weather' %}class="active" aria-current="page"{% endif %}
+                   title="Check weather and recommendations">
+                    🌦️ <span>Weather</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
-    <div class="container">
+    <main id="main-content" class="container" role="main">
         {% block content %}{% endblock %}
-    </div>
+    </main>
+
+    <!-- Toast notification container -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}
