@@ -5,11 +5,10 @@ This is a placeholder to establish the testing structure.
 Contributors should add comprehensive tests for all modules.
 """
 
-import pytest
 from garden_manager.utils.date_utils import SeasonCalculator
 
 
-def test_season_calculator_initialization():
+def test_season_calc_init():
     """Test that SeasonCalculator can be initialized."""
     calculator = SeasonCalculator()
     assert calculator is not None
