@@ -19,7 +19,7 @@
         🌱 Plot Details
     </div>
     <div class="card-body">
-        <form method="POST">
+        <form method="POST" id="create-plot-form">
             <div class="form-group">
                 <label for="name">Plot Name <span style="color: #DC3545;">*</span></label>
                 <input type="text" 
@@ -146,28 +146,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
-<script>
-// Update plot preview when dimensions change
-document.addEventListener('DOMContentLoaded', function() {
-    const widthInput = document.getElementById('width');
-    const heightInput = document.getElementById('height');
-    const previewWidth = document.getElementById('preview-width');
-    const previewHeight = document.getElementById('preview-height');
-    const previewTotal = document.getElementById('preview-total');
-    
-    function updatePreview() {
-        const width = parseInt(widthInput.value) || 4;
-        const height = parseInt(heightInput.value) || 4;
-        const total = width * height;
-        
-        previewWidth.textContent = width;
-        previewHeight.textContent = height;
-        previewTotal.textContent = total;
-    }
-    
-    widthInput.addEventListener('input', updatePreview);
-    heightInput.addEventListener('input', updatePreview);
-});
-</script>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/plot-preview.js') }}"></script>
 {% endblock %}
