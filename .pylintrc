@@ -10,7 +10,8 @@ persistent=yes
 disable=
     missing-module-docstring,
     missing-class-docstring,
-    missing-function-docstring
+    missing-function-docstring,
+    redefined-outer-name
 
 [FORMAT]
 # Maximum number of characters on a single line
