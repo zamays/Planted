@@ -1,6 +1,6 @@
 [MAIN]
 # Use multiple processes to speed up Pylint
-jobs=1
+jobs=2
 
 # Pickle collected data for later comparisons
 persistent=yes
@@ -51,7 +51,14 @@ max-statements=50
 
 [BASIC]
 # Good variable names which should always be accepted
-good-names=i,j,k,x,y,id,db,_
+# i,j,k: loop counters
+# x,y: coordinates
+# id: identifier
+# db: database connection
+# e: exception variable (standard in except blocks)
+# f: file handle (standard Python convention)
+# _: unused variable
+good-names=i,j,k,x,y,id,db,e,f,_
 
 # Regular expression matching correct function names
 function-rgx=[a-z_][a-z0-9_]{2,30}$

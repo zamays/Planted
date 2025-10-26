@@ -194,8 +194,8 @@ def plants():
             elif season_filter == "all":
                 # Get all plants
                 all_plants = []
-                for s in ["spring", "summer", "fall", "winter"]:
-                    all_plants.extend(PLANT_DB.get_plants_by_season(s))
+                for season in ["spring", "summer", "fall", "winter"]:
+                    all_plants.extend(PLANT_DB.get_plants_by_season(season))
                 plants_list = all_plants
             else:
                 plants_list = PLANT_DB.get_plants_by_season(season_filter.lower())
