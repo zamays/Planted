@@ -166,6 +166,27 @@ class PlantedItem:
     timeline: PlantTimeline
     notes: str
 
+    # Helper properties for template access
+    @property
+    def planted_date(self) -> datetime:
+        """Get the planted date from timeline."""
+        return self.timeline.planted_date
+
+    @property
+    def expected_harvest(self) -> datetime:
+        """Get the expected harvest date from timeline."""
+        return self.timeline.expected_harvest
+
+    @property
+    def x_position(self) -> int:
+        """Get the x coordinate from position."""
+        return self.position.x
+
+    @property
+    def y_position(self) -> int:
+        """Get the y coordinate from position."""
+        return self.position.y
+
 
 @dataclass
 class CareTask:
