@@ -7,7 +7,9 @@ and filtering capabilities for plant selection.
 """
 
 import sqlite3
+import json
 from typing import List, Optional
+from .default_plants_data import get_default_plants_data
 from .models import (
     Plant,
     PlantSpec,
@@ -15,7 +17,6 @@ from .models import (
     PlantCareRequirements,
     PlantCompatibility,
 )
-from .default_plants_data import get_default_plants_data
 
 
 class PlantDatabase:
