@@ -1,0 +1,19 @@
+include README.md
+include LICENSE
+include SETUP.md
+include CONTRIBUTING.md
+include CHANGELOG.md
+include requirements.txt
+include .env.example
+include run.sh
+include run.bat
+
+recursive-include garden_manager/web/templates *.html
+recursive-include garden_manager/web/static *.css *.js *.png *.jpg *.ico
+recursive-include garden_manager/database/seeds *.json
+recursive-include docs *.md
+
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude *.db
+global-exclude .DS_Store
