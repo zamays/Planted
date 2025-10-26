@@ -1,0 +1,100 @@
+[MAIN]
+# Use multiple processes to speed up Pylint
+jobs=1
+
+# Pickle collected data for later comparisons
+persistent=yes
+
+[MESSAGES CONTROL]
+# Disable warnings that don't apply to this project
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring
+
+[FORMAT]
+# Maximum number of characters on a single line
+max-line-length=120
+
+# Maximum number of lines in a module
+max-module-lines=1000
+
+[DESIGN]
+# Maximum number of arguments for function / method
+max-args=7
+
+# Maximum number of attributes for a class (increased from default 7)
+# Data models and domain entities legitimately need more attributes,
+# especially when using composition patterns with nested dataclasses
+max-attributes=12
+
+# Maximum number of boolean expressions in an if statement
+max-bool-expr=5
+
+# Maximum number of branch for function / method body
+max-branches=12
+
+# Maximum number of locals for function / method body
+max-locals=15
+
+# Maximum number of parents for a class
+max-parents=7
+
+# Maximum number of public methods for a class
+max-public-methods=20
+
+# Maximum number of return / yield for function / method body
+max-returns=6
+
+# Maximum number of statements in function / method body
+max-statements=50
+
+[BASIC]
+# Good variable names which should always be accepted
+good-names=i,j,k,x,y,id,db,_
+
+# Regular expression matching correct function names
+function-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Regular expression matching correct variable names
+variable-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Regular expression matching correct constant names
+const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+
+# Regular expression matching correct attribute names
+attr-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Regular expression matching correct argument names
+argument-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Regular expression matching correct class attribute names
+class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
+
+# Regular expression matching correct class names
+class-rgx=[A-Z_][a-zA-Z0-9]+$
+
+# Regular expression matching correct module names
+module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+
+[SIMILARITIES]
+# Minimum lines number of a similarity
+min-similarity-lines=4
+
+# Ignore comments when computing similarities
+ignore-comments=yes
+
+# Ignore docstrings when computing similarities
+ignore-docstrings=yes
+
+[TYPECHECK]
+# List of decorators that produce context managers
+contextmanager-decorators=contextlib.contextmanager
+
+[IMPORTS]
+# Allow wildcard imports from certain modules
+allow-wildcard-with-all=no
+
+[EXCEPTIONS]
+# Exceptions that will emit a warning when caught
+overgeneral-exceptions=builtins.BaseException,builtins.Exception

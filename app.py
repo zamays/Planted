@@ -85,8 +85,7 @@ def initialize_services():
 
         # Set default location (New York) as fallback
         LOCATION_SERVICE.set_manual_location(
-            40.7128, -74.0060,
-            {"city": "New York", "state": "NY", "country": "USA"}
+            40.7128, -74.0060, {"city": "New York", "state": "NY", "country": "USA"}
         )
 
         # Try to get actual location in background to avoid blocking startup
@@ -227,7 +226,10 @@ def plants():
         suitable_plants = []
         for plant in plants_list:
             # Include plant if it matches current climate zone or has no zone restrictions
-            if climate_zone in plant.compatibility.climate_zones or not plant.compatibility.climate_zones:
+            if (
+                climate_zone in plant.compatibility.climate_zones
+                or not plant.compatibility.climate_zones
+            ):
                 suitable_plants.append(plant)
 
         current_season = SeasonCalculator.get_current_season()
@@ -316,8 +318,10 @@ def add_plant():
                         if z.strip()
                     ]
                 except ValueError:
-                    return ("<h1>Error</h1><p>Climate zones must be numbers separated by commas "
-                    "(e.g., 5,6,7)</p>")
+                    return (
+                        "<h1>Error</h1><p>Climate zones must be numbers separated by commas "
+                        "(e.g., 5,6,7)</p>"
+                    )
 
             if PLANT_DB is None:
                 return "<h1>Error</h1><p>Plant database is not initialized.</p>"
@@ -497,8 +501,10 @@ def plant_to_plot(plot_id):
             existing_items = GARDEN_DB.get_planted_items(plot_id)
             for item in existing_items:
                 if item.position.x == x_position and item.position.y == y_position:
-                    return "<h1>Error</h1><p>This position is already occupied. " \
-                    "Please choose another square.</p>"
+                    return (
+                        "<h1>Error</h1><p>This position is already occupied. "
+                        "Please choose another square.</p>"
+                    )
 
             # Get plant details for days_to_maturity
             plant = PLANT_DB.get_plant_by_id(plant_id)
