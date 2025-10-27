@@ -199,7 +199,7 @@ class TestPlantDeletion:
 
     def test_delete_default_plant(self, plant_db):
         """Test that deleting a default plant raises ValueError."""
-        # Get a default plant (these are loaded in populate_plant_data)
+        # Get a default plant (these are loaded by populate_plant_data)
         plants = plant_db.get_plants_by_type("vegetable")
         assert len(plants) > 0
 

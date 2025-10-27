@@ -429,7 +429,8 @@ class PlantDatabase:
             if not row:
                 return False
 
-            if not row[0]:
+            is_custom = row[0]
+            if not is_custom:
                 raise ValueError("Cannot delete default plants. Only custom plants can be deleted.")
 
             # Delete the plant
