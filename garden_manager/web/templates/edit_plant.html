@@ -123,8 +123,16 @@
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                 <button type="submit" class="btn">Save Changes</button>
                 <a href="{{ url_for('plant_detail', plant_id=plant.id) }}" class="btn btn-secondary">Cancel</a>
+                {% if plant.is_custom %}
+                <button type="button" class="btn btn-danger" id="delete-btn" style="margin-left: auto;">🗑️ Delete Plant</button>
+                {% endif %}
             </div>
         </form>
+        
+        {% if plant.is_custom %}
+        <form method="POST" action="{{ url_for('delete_plant', plant_id=plant.id) }}" id="delete-plant-form" style="display: none;">
+        </form>
+        {% endif %}
     </div>
 </div>
 
@@ -174,5 +182,28 @@
 .btn-secondary:hover {
     background-color: #5a6268;
 }
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteBtn = document.getElementById('delete-btn');
+    const deleteForm = document.getElementById('delete-plant-form');
+    
+    if (deleteBtn && deleteForm) {
+        deleteBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete this custom plant? This action cannot be undone.')) {
+                deleteForm.submit();
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
