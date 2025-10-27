@@ -496,9 +496,12 @@ def edit_plant(plant_id):
             return redirect(url_for("plant_detail", plant_id=plant_id))
 
         return render_template("edit_plant.html", plant=plant)
-    except (sqlite3.Error, ValueError, KeyError) as e:
+    except ValueError as e:
+        print(f"Edit plant validation error: {e}")
+        return "<h1>Edit Plant Error</h1><p>Invalid plant data. Please check your inputs and try again.</p>"
+    except (sqlite3.Error, KeyError) as e:
         print(f"Edit plant error: {e}")
-        return f"<h1>Edit Plant Error</h1><p>{str(e)}</p>"
+        return "<h1>Edit Plant Error</h1><p>An error occurred while updating the plant. Please try again later.</p>"
 
 
 @app.route("/plants/<int:plant_id>/delete", methods=["POST"])
@@ -521,11 +524,11 @@ def delete_plant(plant_id):
             return redirect(url_for("plants"))
         return "<h1>Error</h1><p>Failed to delete plant.</p>"
     except ValueError as e:
-        print(f"Delete plant error: {e}")
-        return f"<h1>Delete Plant Error</h1><p>{str(e)}</p>"
+        print(f"Delete plant validation error: {e}")
+        return "<h1>Delete Plant Error</h1><p>Cannot delete default plants. Only custom plants can be deleted.</p>"
     except sqlite3.Error as e:
         print(f"Delete plant database error: {e}")
-        return f"<h1>Delete Plant Error</h1><p>{str(e)}</p>"
+        return "<h1>Delete Plant Error</h1><p>An error occurred while deleting the plant. Please try again later.</p>"
 
 
 @app.route("/garden")
