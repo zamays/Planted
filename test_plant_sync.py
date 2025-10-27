@@ -7,15 +7,15 @@ default_plants.json to the database on startup.
 """
 
 import sys
+from pathlib import Path
+
+# Add project root to path before other imports
+sys.path.insert(0, str(Path(__file__).parent))
+
 import json
 import os
 import sqlite3
-from pathlib import Path
-
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent))
-
-from garden_manager.database.plant_data import PlantDatabase  # pylint: disable=wrong-import-position
+from garden_manager.database.plant_data import PlantDatabase
 
 
 def print_section(title):
