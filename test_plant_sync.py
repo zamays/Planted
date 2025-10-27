@@ -11,11 +11,10 @@ import json
 import os
 import sqlite3
 from pathlib import Path
+from garden_manager.database.plant_data import PlantDatabase
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent))
-
-from garden_manager.database.plant_data import PlantDatabase  # pylint: disable=wrong-import-position
 
 
 def print_section(title):
@@ -36,20 +35,9 @@ def get_plant_count(db_path='garden.db'):
     return default_count, custom_count
 
 
-def main():  # pylint: disable=too-many-locals,too-many-statements
-    """Run the plant sync test."""
-    print_section("Plant Sync Feature Test")
-
-    print("This test demonstrates the automatic plant sync feature:")
-    print("• On first launch, all plants are loaded from JSON")
-    print("• On subsequent launches, changes are synced automatically")
-    print("• Custom plants are preserved during sync")
-    print("• New plants in JSON are added automatically")
-    print("• Existing plants in JSON are updated automatically")
-
-    # Test 1: Initial load
+def test_initial_database_creation(db_path):
+    """Test initial database creation."""
     print_section("Test 1: Initial Database Creation")
-    db_path = 'garden.db'
 
     # Remove existing database if it exists
     if os.path.exists(db_path):
@@ -57,21 +45,25 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         print("✅ Removed existing database")
 
     print("Creating new database...")
-    _ = PlantDatabase(db_path)  # Create database, variable not needed
+    PlantDatabase(db_path)  # Create database
 
     default_count, custom_count = get_plant_count(db_path)
     print(f"✅ Database created with {default_count} default plants and {custom_count} custom plants")
 
-    # Test 2: Sync on second initialization
+
+def test_sync_on_reinitialization(db_path):
+    """Test sync on second initialization."""
     print_section("Test 2: Sync on Subsequent Launch")
     print("Reinitializing database (simulates app restart)...")
-    _ = PlantDatabase(db_path)  # Reinitialize database
+    PlantDatabase(db_path)  # Reinitialize database
 
-    default_count2, custom_count2 = get_plant_count(db_path)
-    print(f"✅ Database synced: {default_count2} default plants, {custom_count2} custom plants")
+    default_count, custom_count = get_plant_count(db_path)
+    print(f"✅ Database synced: {default_count} default plants, {custom_count} custom plants")
     print("   (No duplicates created - sync is idempotent)")
 
-    # Test 3: Modify JSON and sync
+
+def test_json_modification_sync(db_path):
+    """Test that JSON modifications are synced to the database."""
     print_section("Test 3: Detecting Changes in JSON")
     json_path = 'garden_manager/database/seeds/default_plants.json'
 
@@ -83,7 +75,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     plant_name = data['plants'][0]['name']
 
     # Modify a plant
-    test_notes = f"MODIFIED TEST: {original_notes}"  # noqa: F541
+    test_notes = f"MODIFIED TEST: {original_notes}"
     data['plants'][0]['care']['care_notes'] = test_notes
 
     with open(json_path, 'w', encoding='utf-8') as f:
@@ -95,7 +87,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     # Reinitialize to trigger sync
     print("\nReinitializing database...")
-    _ = PlantDatabase(db_path)  # Reinitialize to sync changes
+    PlantDatabase(db_path)  # Reinitialize to sync changes
 
     # Check if change was synced
     with sqlite3.connect(db_path) as conn:
@@ -114,7 +106,9 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         json.dump(data, f, indent=2)
     print("✅ Restored original JSON")
 
-    # Final summary
+
+def print_summary():
+    """Print test summary."""
     print_section("Summary")
     print("✅ All tests passed!")
     print("\nThe plant sync feature is working correctly:")
@@ -124,6 +118,26 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     print("\nTo add or modify plants, simply edit:")
     print("  garden_manager/database/seeds/default_plants.json")
     print("\nChanges will be synced the next time the app starts!")
+
+
+def main():
+    """Run the plant sync test."""
+    print_section("Plant Sync Feature Test")
+
+    print("This test demonstrates the automatic plant sync feature:")
+    print("• On first launch, all plants are loaded from JSON")
+    print("• On subsequent launches, changes are synced automatically")
+    print("• Custom plants are preserved during sync")
+    print("• New plants in JSON are added automatically")
+    print("• Existing plants in JSON are updated automatically")
+
+    db_path = 'garden.db'
+
+    # Run test sequence
+    test_initial_database_creation(db_path)
+    test_sync_on_reinitialization(db_path)
+    test_json_modification_sync(db_path)
+    print_summary()
 
 
 if __name__ == "__main__":

@@ -216,80 +216,77 @@ class TestPlantDeletion:
         assert success is False
 
 
-class TestPlantEditWorkflow:  # pylint: disable=too-few-public-methods
-    """Tests for the complete edit workflow."""
+def test_add_edit_delete_workflow(plant_db):
+    """Test the complete workflow: add, edit, then delete a custom plant."""
+    # Step 1: Add a custom plant
+    original_spec = PlantSpec(
+        name="Workflow Test Plant",
+        scientific_name="Testus workflowus",
+        plant_type="herb",
+        growing=PlantGrowingInfo(
+            season="spring",
+            planting_method="seed",
+            days_to_germination=5,
+            days_to_maturity=45,
+            spacing_inches=12,
+        ),
+        care=PlantCareRequirements(
+            sun_requirements="full_sun",
+            water_needs="medium",
+            care_notes="Original notes",
+        ),
+        compatibility=PlantCompatibility(
+            companion_plants=["tomatoes"],
+            avoid_plants=["sage"],
+            climate_zones=[5, 6, 7],
+        ),
+    )
+    plant_id = plant_db.add_custom_plant(original_spec)
+    assert plant_id is not None
 
-    def test_add_edit_delete_workflow(self, plant_db):
-        """Test the complete workflow: add, edit, then delete a custom plant."""
-        # Step 1: Add a custom plant
-        original_spec = PlantSpec(
-            name="Workflow Test Plant",
-            scientific_name="Testus workflowus",
-            plant_type="herb",
-            growing=PlantGrowingInfo(
-                season="spring",
-                planting_method="seed",
-                days_to_germination=5,
-                days_to_maturity=45,
-                spacing_inches=12,
-            ),
-            care=PlantCareRequirements(
-                sun_requirements="full_sun",
-                water_needs="medium",
-                care_notes="Original notes",
-            ),
-            compatibility=PlantCompatibility(
-                companion_plants=["tomatoes"],
-                avoid_plants=["sage"],
-                climate_zones=[5, 6, 7],
-            ),
-        )
-        plant_id = plant_db.add_custom_plant(original_spec)
-        assert plant_id is not None
+    # Verify it was added
+    plant = plant_db.get_plant_by_id(plant_id)
+    assert plant is not None
+    assert plant.name == "Workflow Test Plant"
+    assert plant.is_custom is True
 
-        # Verify it was added
-        plant = plant_db.get_plant_by_id(plant_id)
-        assert plant is not None
-        assert plant.name == "Workflow Test Plant"
-        assert plant.is_custom is True
+    # Step 2: Edit the plant
+    updated_spec = PlantSpec(
+        name="Workflow Test Plant - Updated",
+        scientific_name="Testus workflowus editedus",
+        plant_type="herb",
+        growing=PlantGrowingInfo(
+            season="summer",
+            planting_method="transplant",
+            days_to_germination=7,
+            days_to_maturity=60,
+            spacing_inches=18,
+        ),
+        care=PlantCareRequirements(
+            sun_requirements="partial_shade",
+            water_needs="high",
+            care_notes="Updated notes with more details",
+        ),
+        compatibility=PlantCompatibility(
+            companion_plants=["peppers", "cucumbers"],
+            avoid_plants=["mint"],
+            climate_zones=[6, 7, 8, 9],
+        ),
+    )
+    success = plant_db.update_plant(plant_id, updated_spec)
+    assert success is True
 
-        # Step 2: Edit the plant
-        updated_spec = PlantSpec(
-            name="Workflow Test Plant - Updated",
-            scientific_name="Testus workflowus editedus",
-            plant_type="herb",
-            growing=PlantGrowingInfo(
-                season="summer",
-                planting_method="transplant",
-                days_to_germination=7,
-                days_to_maturity=60,
-                spacing_inches=18,
-            ),
-            care=PlantCareRequirements(
-                sun_requirements="partial_shade",
-                water_needs="high",
-                care_notes="Updated notes with more details",
-            ),
-            compatibility=PlantCompatibility(
-                companion_plants=["peppers", "cucumbers"],
-                avoid_plants=["mint"],
-                climate_zones=[6, 7, 8, 9],
-            ),
-        )
-        success = plant_db.update_plant(plant_id, updated_spec)
-        assert success is True
+    # Verify the update
+    plant = plant_db.get_plant_by_id(plant_id)
+    assert plant.name == "Workflow Test Plant - Updated"
+    assert plant.scientific_name == "Testus workflowus editedus"
+    assert plant.season == "summer"
+    assert plant.care_notes == "Updated notes with more details"
 
-        # Verify the update
-        plant = plant_db.get_plant_by_id(plant_id)
-        assert plant.name == "Workflow Test Plant - Updated"
-        assert plant.scientific_name == "Testus workflowus editedus"
-        assert plant.season == "summer"
-        assert plant.care_notes == "Updated notes with more details"
+    # Step 3: Delete the plant
+    success = plant_db.delete_plant(plant_id)
+    assert success is True
 
-        # Step 3: Delete the plant
-        success = plant_db.delete_plant(plant_id)
-        assert success is True
-
-        # Verify it's deleted
-        plant = plant_db.get_plant_by_id(plant_id)
-        assert plant is None
+    # Verify it's deleted
+    plant = plant_db.get_plant_by_id(plant_id)
+    assert plant is None
