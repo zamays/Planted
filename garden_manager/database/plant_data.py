@@ -108,31 +108,94 @@ class PlantDatabase:
 
     def populate_plant_data(self):
         """
-        Populate database with default plant data if empty.
+        Populate database with default plant data if empty, or sync changes from JSON.
+
+        On first run, loads all plants from default_plants.json.
+        On subsequent runs, updates existing plants and adds new ones from the JSON file.
+        Does not delete plants (preserves custom plants and allows for local modifications).
 
         Includes a comprehensive set of common garden plants with complete
         growing information, companion planting data, and care instructions.
         """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*) FROM plants")
-            if cursor.fetchone()[0] > 0:
-                return  # Skip if plants already exist
 
             # Get pre-defined plant data from external module
             plants_data = get_default_plants_data()
 
-            for plant_data in plants_data:
-                cursor.execute(
-                    """
-                    INSERT INTO plants (name, scientific_name, plant_type, season, planting_method,
-                                      days_to_germination, days_to_maturity, spacing_inches,
-                                      sun_requirements, water_needs, companion_plants, avoid_plants,
-                                      climate_zones, care_notes)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                    plant_data,
-                )
+            # Check if this is initial setup (no non-custom plants exist)
+            cursor.execute("SELECT COUNT(*) FROM plants WHERE is_custom = FALSE OR is_custom IS NULL")
+            existing_count = cursor.fetchone()[0]
+
+            if existing_count == 0:
+                # Initial population - insert all plants
+                for plant_data in plants_data:
+                    cursor.execute(
+                        """
+                        INSERT INTO plants (name, scientific_name, plant_type, season, planting_method,
+                                          days_to_germination, days_to_maturity, spacing_inches,
+                                          sun_requirements, water_needs, companion_plants, avoid_plants,
+                                          climate_zones, care_notes, is_custom)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE)
+                    """,
+                        plant_data,
+                    )
+                print(f"   ✅ Loaded {len(plants_data)} default plants into database")
+            else:
+                # Sync mode - update existing plants and add new ones
+                updated_count = 0
+                added_count = 0
+
+                for plant_data in plants_data:
+                    plant_name = plant_data[0]
+
+                    # Check if plant exists (by name, non-custom only)
+                    cursor.execute(
+                        "SELECT id FROM plants WHERE name = ? AND (is_custom = FALSE OR is_custom IS NULL)",
+                        (plant_name,)
+                    )
+                    existing = cursor.fetchone()
+
+                    if existing:
+                        # Update existing plant
+                        cursor.execute(
+                            """
+                            UPDATE plants SET
+                                scientific_name = ?,
+                                plant_type = ?,
+                                season = ?,
+                                planting_method = ?,
+                                days_to_germination = ?,
+                                days_to_maturity = ?,
+                                spacing_inches = ?,
+                                sun_requirements = ?,
+                                water_needs = ?,
+                                companion_plants = ?,
+                                avoid_plants = ?,
+                                climate_zones = ?,
+                                care_notes = ?
+                            WHERE id = ?
+                        """,
+                            plant_data[1:] + (existing[0],)
+                        )
+                        updated_count += 1
+                    else:
+                        # Insert new plant
+                        cursor.execute(
+                            """
+                            INSERT INTO plants (name, scientific_name, plant_type, season, planting_method,
+                                              days_to_germination, days_to_maturity, spacing_inches,
+                                              sun_requirements, water_needs, companion_plants, avoid_plants,
+                                              climate_zones, care_notes, is_custom)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE)
+                        """,
+                            plant_data,
+                        )
+                        added_count += 1
+
+                print(f"   ✅ Plant sync: {added_count} added, {updated_count} updated")
+
+            conn.commit()
 
     def get_plants_by_season(self, season: str) -> List[Plant]:
         """
