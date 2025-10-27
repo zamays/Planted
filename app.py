@@ -615,7 +615,10 @@ def _handle_plant_to_plot_post(plot_id, plot):
     if not plant_id_str:
         return "<h1>Error</h1><p>Plant ID is required.</p>"
 
-    plant_id = int(plant_id_str)
+    try:
+        plant_id = int(plant_id_str)
+    except ValueError:
+        return "<h1>Error</h1><p>Plant ID must be a valid number.</p>"
 
     try:
         x_position = int(request.form.get("x_position", "0"))
@@ -739,10 +742,14 @@ def create_plot():
     try:
         if request.method == "POST":
             name = request.form.get("name", "New Garden Plot")
-            width = int(request.form.get("width", 4))
-            height = int(request.form.get("height", 4))
             location = request.form.get("location", "Garden")
             add_plants = request.form.get("add_plants", "no")
+
+            try:
+                width = int(request.form.get("width", 4))
+                height = int(request.form.get("height", 4))
+            except ValueError:
+                return "<h1>Error</h1><p>Width and height must be valid numbers.</p>"
 
             if garden_db is not None:
                 plot_id = garden_db.create_garden_plot(name, width, height, location)
