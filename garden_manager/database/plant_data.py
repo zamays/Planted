@@ -357,3 +357,83 @@ class PlantDatabase:
             cursor.execute("SELECT * FROM plants WHERE id = ?", (plant_id,))
             row = cursor.fetchone()
             return self._row_to_plant(row) if row else None
+
+    def update_plant(self, plant_id: int, plant_spec: PlantSpec) -> bool:
+        """
+        Update an existing plant in the database.
+
+        Args:
+            plant_id: ID of the plant to update
+            plant_spec: PlantSpec containing updated plant characteristics
+
+        Returns:
+            bool: True if update was successful, False otherwise
+
+        Raises:
+            ValueError: If required fields are missing or invalid
+        """
+        if not plant_spec.name:
+            raise ValueError("Plant name is required")
+
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE plants SET name = ?, scientific_name = ?, plant_type = ?, season = ?,
+                                  planting_method = ?, days_to_germination = ?, days_to_maturity = ?,
+                                  spacing_inches = ?, sun_requirements = ?, water_needs = ?,
+                                  companion_plants = ?, avoid_plants = ?, climate_zones = ?, care_notes = ?
+                WHERE id = ?
+            """,
+                (
+                    plant_spec.name,
+                    plant_spec.scientific_name,
+                    plant_spec.plant_type,
+                    plant_spec.growing.season,
+                    plant_spec.growing.planting_method,
+                    plant_spec.growing.days_to_germination,
+                    plant_spec.growing.days_to_maturity,
+                    plant_spec.growing.spacing_inches,
+                    plant_spec.care.sun_requirements,
+                    plant_spec.care.water_needs,
+                    json.dumps(plant_spec.compatibility.companion_plants),
+                    json.dumps(plant_spec.compatibility.avoid_plants),
+                    json.dumps(plant_spec.compatibility.climate_zones),
+                    plant_spec.care.care_notes,
+                    plant_id,
+                ),
+            )
+            conn.commit()
+            return cursor.rowcount > 0
+
+    def delete_plant(self, plant_id: int) -> bool:
+        """
+        Delete a custom plant from the database.
+
+        Args:
+            plant_id: ID of the plant to delete
+
+        Returns:
+            bool: True if deletion was successful, False otherwise
+
+        Raises:
+            ValueError: If attempting to delete a non-custom plant
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+
+            # Check if plant is custom
+            cursor.execute("SELECT is_custom FROM plants WHERE id = ?", (plant_id,))
+            row = cursor.fetchone()
+
+            if not row:
+                return False
+
+            is_custom = row[0]
+            if not is_custom:
+                raise ValueError("Cannot delete default plants. Only custom plants can be deleted.")
+
+            # Delete the plant
+            cursor.execute("DELETE FROM plants WHERE id = ?", (plant_id,))
+            conn.commit()
+            return cursor.rowcount > 0
