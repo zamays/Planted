@@ -295,13 +295,21 @@ def _parse_plant_form_data():
             except ValueError:
                 return None, "Climate zones must be numbers separated by commas (e.g., 5,6,7)"
 
-        # Create data model objects directly from form data
+        # Parse integer fields with validation
+        try:
+            days_to_germination = int(request.form.get("days_to_germination", 7))
+            days_to_maturity = int(request.form.get("days_to_maturity", 60))
+            spacing_inches = int(request.form.get("spacing_inches", 12))
+        except ValueError:
+            return None, "Days to germination, days to maturity, and spacing must be valid numbers"
+
+        # Create data model objects
         growing = PlantGrowingInfo(
             season=request.form.get("season", "spring"),
             planting_method=request.form.get("planting_method", "seed"),
-            days_to_germination=int(request.form.get("days_to_germination", 7)),
-            days_to_maturity=int(request.form.get("days_to_maturity", 60)),
-            spacing_inches=int(request.form.get("spacing_inches", 12)),
+            days_to_germination=days_to_germination,
+            days_to_maturity=days_to_maturity,
+            spacing_inches=spacing_inches,
         )
 
         care = PlantCareRequirements(
