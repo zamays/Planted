@@ -334,8 +334,8 @@ def _parse_plant_form_data():
         )
 
         return plant_spec, None
-    except (ValueError, KeyError) as e:
-        return None, f"Error parsing form data: {str(e)}"
+    except (ValueError, KeyError):
+        return None, "Invalid form data. Please check your inputs and try again."
 
 
 @app.route("/plants/add", methods=["GET", "POST"])
