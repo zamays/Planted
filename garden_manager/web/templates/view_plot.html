@@ -50,13 +50,13 @@
             {% for x in range(plot.width) %}
                 {% set planted_here = None %}
                 {% for item_data in planted_items %}
-                    {% if item_data.item.x_position == x and item_data.item.y_position == y %}
+                    {% if item_data['item'].x_position == x and item_data['item'].y_position == y %}
                         {% set planted_here = item_data %}
                     {% endif %}
                 {% endfor %}
 
                 {% if planted_here %}
-                <div class="grid-square planted" title="{{ planted_here.plant.name }}">
+                <div class="grid-square planted" title="{{ planted_here['plant'].name }}">
                     <div style="font-size: 2rem; line-height: 1;">🪴</div>
                 </div>
                 {% else %}
@@ -114,27 +114,27 @@
 <div class="plant-grid">
     {% for item_data in planted_items %}
     <div class="plant-card">
-        <h3>{{ item_data.plant.name }}</h3>
+        <h3>{{ item_data['plant'].name }}</h3>
         <div class="plant-meta">
-            {{ item_data.plant.scientific_name }}
+            {{ item_data['plant'].scientific_name }}
         </div>
         <div style="margin: 1rem 0;">
             <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">
-                📍 Position: ({{ item_data.item.x_position }}, {{ item_data.item.y_position }})
+                📍 Position: ({{ item_data['item'].x_position }}, {{ item_data['item'].y_position }})
             </div>
             <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">
-                📅 Planted: {{ item_data.item.planted_date.strftime('%B %d, %Y') }}
+                📅 Planted: {{ item_data['item'].planted_date.strftime('%B %d, %Y') }}
             </div>
             <div style="font-size: 0.9rem; color: #666;">
-                🌾 Expected harvest: {{ item_data.item.expected_harvest.strftime('%B %d, %Y') }}
+                🌾 Expected harvest: {{ item_data['item'].expected_harvest.strftime('%B %d, %Y') }}
             </div>
         </div>
-        {% if item_data.item.notes %}
+        {% if item_data['item'].notes %}
         <div style="padding: 0.75rem; background: #f5f5f5; border-radius: 4px; font-size: 0.9rem; margin-top: 1rem;">
-            {{ item_data.item.notes }}
+            {{ item_data['item'].notes }}
         </div>
         {% endif %}
-        <a href="{{ url_for('plant_detail', plant_id=item_data.plant.id) }}" class="btn" style="margin-top: 1rem;">View Plant Info</a>
+        <a href="{{ url_for('plant_detail', plant_id=item_data['plant'].id) }}" class="btn" style="margin-top: 1rem;">View Plant Info</a>
     </div>
     {% endfor %}
 </div>
