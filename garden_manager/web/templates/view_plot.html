@@ -48,20 +48,20 @@
     <div style="display: grid; grid-template-columns: repeat({{ plot.width }}, 60px); gap: 4px;">
         {% for y in range(plot.height) %}
             {% for x in range(plot.width) %}
-                {% set planted_here = None %}
+                {% set ns = namespace(planted_here=None) %}
                 {% for item_data in planted_items %}
                     {% if item_data['item'].x_position == x and item_data['item'].y_position == y %}
-                        {% set planted_here = item_data %}
+                        {% set ns.planted_here = item_data %}
                     {% endif %}
                 {% endfor %}
 
-                {% if planted_here %}
-                <div class="grid-square planted" title="{{ planted_here['plant'].name }}">
+                {% if ns.planted_here %}
+                <div class="grid-square planted" title="{{ ns.planted_here['plant'].name }}">
                     <div style="font-size: 2rem; line-height: 1;">🪴</div>
                 </div>
                 {% else %}
                 <a href="{{ url_for('plant_to_plot', plot_id=plot.id, x=x, y=y) }}" class="grid-square empty" title="Click to plant at ({{ x }}, {{ y }})">
-                    <div style="color: #ccc;">{{ x }},{{ y }}</div>
+                    <div style="font-size: 2rem; line-height: 1; opacity: 0.3;">🌱</div>
                 </a>
                 {% endif %}
             {% endfor %}
@@ -103,8 +103,7 @@
 }
 
 .grid-square.empty:hover > div {
-    color: #4A7C59;
-    font-weight: 600;
+    opacity: 0.6;
 }
 </style>
 
