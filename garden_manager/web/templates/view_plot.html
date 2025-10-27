@@ -9,7 +9,12 @@
 
 <div class="card" style="margin-bottom: 2rem;">
     <div class="card-body">
-        <h2 style="color: #4A7C59; margin-bottom: 1rem;">{{ plot.name }}</h2>
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <h2 style="color: #4A7C59; margin: 0;">{{ plot.name }}</h2>
+            <button onclick="confirmDeletePlot()" class="btn" style="background-color: #dc3545; border-color: #dc3545; padding: 0.5rem 1rem; font-size: 0.9rem;" aria-label="Delete this garden plot" title="Delete this garden plot and all its planted items">
+                🗑️ Delete Plot
+            </button>
+        </div>
 
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
             <div>
@@ -27,6 +32,10 @@
         </div>
     </div>
 </div>
+
+<!-- Hidden form for plot deletion -->
+<form id="delete-plot-form" method="POST" action="{{ url_for('delete_plot', plot_id=plot.id) }}" style="display: none;">
+</form>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
     <h3 style="color: #4A7C59; margin: 0;">Plot Grid</h3>
@@ -48,7 +57,7 @@
 
                 {% if planted_here %}
                 <div class="grid-square planted" title="{{ planted_here.plant.name }}">
-                    <div style="font-size: 1.5rem;">🌱</div>
+                    <div style="font-size: 2rem; line-height: 1;">🪴</div>
                 </div>
                 {% else %}
                 <a href="{{ url_for('plant_to_plot', plot_id=plot.id, x=x, y=y) }}" class="grid-square empty" title="Click to plant at ({{ x }}, {{ y }})">
@@ -138,5 +147,23 @@
     </div>
 </div>
 {% endif %}
+
+<script>
+function confirmDeletePlot() {
+    // Escape plot name to prevent XSS
+    const plotName = {{ plot.name|tojson }};
+    const hasPlants = {{ planted_items|length }};
+    
+    let message = `Are you sure you want to delete the plot "${plotName}"?`;
+    if (hasPlants > 0) {
+        message += `\n\nThis plot contains ${hasPlants} planted item(s). All planted items and their care tasks will also be deleted.`;
+    }
+    message += "\n\nThis action cannot be undone.";
+    
+    if (confirm(message)) {
+        document.getElementById('delete-plot-form').submit();
+    }
+}
+</script>
 
 {% endblock %}
