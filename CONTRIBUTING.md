@@ -107,7 +107,29 @@ To add new plants:
    - light_requirements, water_requirements
    - care_notes
 
-## Reporting Bugs
+## Creating Issues
+
+We value high-quality, well-structured issues that help the team work efficiently. Whether you're reporting a bug, requesting a feature, or suggesting an improvement, please follow these guidelines:
+
+### Using GitHub Copilot for Issues
+
+We've created comprehensive guidelines for using GitHub Copilot to draft and manage issues. See **[Copilot Issue Instructions](COPILOT-ISSUE-INSTRUCTIONS.md)** for detailed guidance on:
+
+- Creating high-quality issue descriptions
+- Managing parent/child relationships between issues
+- Using templates and metadata effectively
+- Ensuring actionable and detailed content
+
+### Quick Issue Guidelines
+
+**All issues should include:**
+
+1. **Clear, action-oriented title** - Start with a verb (Add, Fix, Update, Improve)
+2. **Overview** - Brief summary of what needs to be done and why
+3. **Requirements** - Specific, numbered list of what needs to be implemented
+4. **Acceptance Criteria** - Testable conditions for completion
+
+### Reporting Bugs
 
 When reporting bugs, please include:
 
@@ -118,14 +140,74 @@ When reporting bugs, please include:
 5. **System information** (OS, Python version)
 6. **Error messages** or stack traces if applicable
 
-## Feature Requests
+**Example Bug Issue Structure:**
+```markdown
+## Overview
+[Brief description of the bug]
+
+## Steps to Reproduce
+1. Step one
+2. Step two
+3. Step three
+
+## Expected Behavior
+[What should happen]
+
+## Actual Behavior
+[What actually happens]
+
+## System Information
+- OS: [e.g., Windows 11, macOS 13, Ubuntu 22.04]
+- Python Version: [e.g., 3.9.7]
+- Browser: [e.g., Chrome 120]
+
+## Error Messages
+[Paste any error messages or stack traces]
+```
+
+### Feature Requests
 
 We welcome feature requests! Please:
 
 1. **Check existing issues** to avoid duplicates
-2. **Describe the feature** clearly
-3. **Explain the use case** and benefits
-4. **Consider implementation** complexity
+2. **Describe the feature** clearly with user benefits
+3. **Explain the use case** and how it improves Planted
+4. **Consider implementation** complexity and provide technical notes when possible
+
+**Example Feature Request Structure:**
+```markdown
+## Overview
+[Brief description of the feature and its value]
+
+## User Benefit
+[How this helps users of Planted]
+
+## Requirements
+1. [Specific requirement 1]
+2. [Specific requirement 2]
+3. [Specific requirement 3]
+
+## Acceptance Criteria
+- [ ] [Testable condition 1]
+- [ ] [Testable condition 2]
+- [ ] [Testable condition 3]
+
+## Technical Notes (optional)
+[Any implementation suggestions or affected components]
+```
+
+### Issue Labels
+
+Use appropriate labels to help with organization:
+
+- `bug` - Something isn't working correctly
+- `enhancement` - New feature or improvement
+- `documentation` - Documentation updates
+- `good first issue` - Good for newcomers
+- `help wanted` - Extra attention needed
+- `priority: high/medium/low` - Urgency indicator
+
+For complete guidance on creating excellent issues, see **[COPILOT-ISSUE-INSTRUCTIONS.md](COPILOT-ISSUE-INSTRUCTIONS.md)**.
 
 ## Questions?
 

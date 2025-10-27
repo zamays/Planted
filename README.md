@@ -213,6 +213,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed information on:
 
 - [Setup Guide](SETUP.md) - Detailed installation and configuration
 - [Contributing Guide](CONTRIBUTING.md) - How to contribute to the project
+- [Copilot Issue Instructions](COPILOT-ISSUE-INSTRUCTIONS.md) - Guide for creating high-quality issues with GitHub Copilot
 - [Plant Data Sources](docs/plant_data_sources.md) - Information about plant database sources
 - [Architecture Documentation](docs/architecture.md) - System design and structure
 - [Deployment Guide](docs/deployment.md) - How to deploy to the web
