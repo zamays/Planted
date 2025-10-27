@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# pylint: disable=too-many-lines
 """
 Planted - Garden Management System
 
@@ -168,6 +167,58 @@ def dashboard():
         )
 
 
+def _get_plants_by_season_filter(season_filter):
+    """Get plants based on season filter."""
+    if plant_db is None:
+        return []
+    
+    if season_filter == "current":
+        current_season = SeasonCalculator.get_current_season()
+        return plant_db.get_plants_by_season(current_season.lower())
+    
+    if season_filter == "all":
+        all_plants = []
+        for season in ["spring", "summer", "fall", "winter"]:
+            all_plants.extend(plant_db.get_plants_by_season(season))
+        return all_plants
+    
+    return plant_db.get_plants_by_season(season_filter.lower())
+
+
+def _filter_plants_by_type(plants_list, type_filter):
+    """Filter plants by type."""
+    if type_filter == "all":
+        return plants_list
+    return [p for p in plants_list if p.plant_type.lower() == type_filter.lower()]
+
+
+def _filter_plants_by_search(plants_list, search):
+    """Filter plants by search term."""
+    if not search:
+        return plants_list
+    return [
+        p for p in plants_list
+        if search.lower() in p.name.lower() or search.lower() in p.scientific_name.lower()
+    ]
+
+
+def _filter_plants_by_climate(plants_list, climate_zone):
+    """Filter plants by climate zone compatibility."""
+    suitable_plants = []
+    for plant in plants_list:
+        if climate_zone in plant.compatibility.climate_zones or not plant.compatibility.climate_zones:
+            suitable_plants.append(plant)
+    return suitable_plants
+
+
+def _get_climate_recommendations(climate_zone, current_season):
+    """Get seasonal recommendations for the climate zone."""
+    if isinstance(climate_zone, int):
+        return SeasonCalculator.get_seasonal_recommendations(current_season, climate_zone)
+    # Default zone 7 for unknown locations
+    return SeasonCalculator.get_seasonal_recommendations(current_season, 7)
+
+
 @app.route("/plants")
 def plants():
     """
@@ -184,68 +235,23 @@ def plants():
     Returns:
         str: Rendered plants catalog HTML template or error message
     """
-    # pylint: disable=too-many-branches
     try:
         season_filter = request.args.get("season", "current")
         type_filter = request.args.get("type", "all")
         search = request.args.get("search", "")
 
-        if plant_db is not None:
-            if season_filter == "current":
-                current_season = SeasonCalculator.get_current_season()
-                plants_list = plant_db.get_plants_by_season(current_season.lower())
-            elif season_filter == "all":
-                # Get all plants
-                all_plants = []
-                for season in ["spring", "summer", "fall", "winter"]:
-                    all_plants.extend(plant_db.get_plants_by_season(season))
-                plants_list = all_plants
-            else:
-                plants_list = plant_db.get_plants_by_season(season_filter.lower())
-        else:
-            plants_list = []
+        # Get and filter plants
+        plants_list = _get_plants_by_season_filter(season_filter)
+        plants_list = _filter_plants_by_type(plants_list, type_filter)
+        plants_list = _filter_plants_by_search(plants_list, search)
 
-        # Apply plant type filter (vegetable, fruit, herb)
-        if type_filter != "all":
-            plants_list = [
-                p for p in plants_list if p.plant_type.lower() == type_filter.lower()
-            ]
+        # Filter by climate zone
+        climate_zone = location_service.get_climate_zone() if location_service is not None else "Unknown"
+        suitable_plants = _filter_plants_by_climate(plants_list, climate_zone)
 
-        # Apply search filter (matches name or scientific name)
-        if search:
-            plants_list = [
-                p
-                for p in plants_list
-                if search.lower() in p.name.lower()
-                or search.lower() in p.scientific_name.lower()
-            ]
-
-        # Filter plants by climate zone compatibility
-        climate_zone = (
-            location_service.get_climate_zone()
-            if location_service is not None
-            else "Unknown"
-        )
-        suitable_plants = []
-        for plant in plants_list:
-            # Include plant if it matches current climate zone or has no zone restrictions
-            if (
-                climate_zone in plant.compatibility.climate_zones
-                or not plant.compatibility.climate_zones
-            ):
-                suitable_plants.append(plant)
-
+        # Get recommendations
         current_season = SeasonCalculator.get_current_season()
-        # Ensure climate_zone is an int for recommendations
-        if isinstance(climate_zone, int):
-            recommendations = SeasonCalculator.get_seasonal_recommendations(
-                current_season, climate_zone
-            )
-        else:
-            # Default zone 7 for unknown locations
-            recommendations = SeasonCalculator.get_seasonal_recommendations(
-                current_season, 7
-            )
+        recommendations = _get_climate_recommendations(climate_zone, current_season)
 
         return render_template(
             "plants.html",
@@ -258,6 +264,87 @@ def plants():
     except (sqlite3.Error, AttributeError, KeyError, ValueError) as e:
         print(f"Plants error: {e}")
         return f"<h1>Plants Error</h1><p>{str(e)}</p>"
+
+
+def _parse_comma_separated_list(form_field_name, form_data):
+    """Parse comma-separated list from form data."""
+    value_str = form_data.get(form_field_name, "").strip()
+    return [item.strip() for item in value_str.split(",") if item.strip()]
+
+
+def _parse_plant_form_data():
+    """
+    Parse plant form data from request and return a PlantSpec.
+    
+    Returns:
+        tuple: (PlantSpec object, error_message or None)
+    """
+    try:
+        # Basic plant information
+        name = request.form.get("name", "").strip()
+        scientific_name = request.form.get("scientific_name", "").strip()
+        plant_type = request.form.get("plant_type", "vegetable")
+        
+        # Growing information
+        season = request.form.get("season", "spring")
+        planting_method = request.form.get("planting_method", "seed")
+        days_to_germination = int(request.form.get("days_to_germination", 7))
+        days_to_maturity = int(request.form.get("days_to_maturity", 60))
+        spacing_inches = int(request.form.get("spacing_inches", 12))
+        
+        # Care requirements
+        sun_requirements = request.form.get("sun_requirements", "full_sun")
+        water_needs = request.form.get("water_needs", "medium")
+        care_notes = request.form.get("care_notes", "").strip()
+
+        # Parse comma-separated lists
+        companion_plants = _parse_comma_separated_list("companion_plants", request.form)
+        avoid_plants = _parse_comma_separated_list("avoid_plants", request.form)
+        
+        # Parse climate zones (must be integers)
+        climate_zones_str = request.form.get("climate_zones", "").strip()
+        climate_zones = []
+        if climate_zones_str:
+            try:
+                climate_zones = [
+                    int(z.strip()) for z in climate_zones_str.split(",") if z.strip()
+                ]
+            except ValueError:
+                return None, "Climate zones must be numbers separated by commas (e.g., 5,6,7)"
+
+        # Create data model objects
+        growing = PlantGrowingInfo(
+            season=season,
+            planting_method=planting_method,
+            days_to_germination=days_to_germination,
+            days_to_maturity=days_to_maturity,
+            spacing_inches=spacing_inches,
+        )
+
+        care = PlantCareRequirements(
+            sun_requirements=sun_requirements,
+            water_needs=water_needs,
+            care_notes=care_notes,
+        )
+
+        compatibility = PlantCompatibility(
+            companion_plants=companion_plants,
+            avoid_plants=avoid_plants,
+            climate_zones=climate_zones,
+        )
+
+        plant_spec = PlantSpec(
+            name=name,
+            scientific_name=scientific_name,
+            plant_type=plant_type,
+            growing=growing,
+            care=care,
+            compatibility=compatibility,
+        )
+        
+        return plant_spec, None
+    except (ValueError, KeyError) as e:
+        return None, f"Error parsing form data: {str(e)}"
 
 
 @app.route("/plants/add", methods=["GET", "POST"])
@@ -287,76 +374,15 @@ def add_plant():
     Returns:
         str: Redirect to plants page on success, or form on GET/error
     """
-    # pylint: disable=too-many-locals
     try:
         if request.method == "POST":
-            name = request.form.get("name", "").strip()
-            scientific_name = request.form.get("scientific_name", "").strip()
-            plant_type = request.form.get("plant_type", "vegetable")
-            season = request.form.get("season", "spring")
-            planting_method = request.form.get("planting_method", "seed")
-            days_to_germination = int(request.form.get("days_to_germination", 7))
-            days_to_maturity = int(request.form.get("days_to_maturity", 60))
-            spacing_inches = int(request.form.get("spacing_inches", 12))
-            sun_requirements = request.form.get("sun_requirements", "full_sun")
-            water_needs = request.form.get("water_needs", "medium")
-            care_notes = request.form.get("care_notes", "").strip()
-
-            # Parse comma-separated lists
-            companion_plants_str = request.form.get("companion_plants", "").strip()
-            companion_plants = [
-                p.strip() for p in companion_plants_str.split(",") if p.strip()
-            ]
-
-            avoid_plants_str = request.form.get("avoid_plants", "").strip()
-            avoid_plants = [p.strip() for p in avoid_plants_str.split(",") if p.strip()]
-
-            climate_zones_str = request.form.get("climate_zones", "").strip()
-            climate_zones = []
-            if climate_zones_str:
-                try:
-                    climate_zones = [
-                        int(z.strip())
-                        for z in climate_zones_str.split(",")
-                        if z.strip()
-                    ]
-                except ValueError:
-                    return (
-                        "<h1>Error</h1><p>Climate zones must be numbers separated by commas "
-                        "(e.g., 5,6,7)</p>"
-                    )
-
             if plant_db is None:
                 return "<h1>Error</h1><p>Plant database is not initialized.</p>"
 
-            growing = PlantGrowingInfo(
-                season=season,
-                planting_method=planting_method,
-                days_to_germination=days_to_germination,
-                days_to_maturity=days_to_maturity,
-                spacing_inches=spacing_inches,
-            )
-
-            care = PlantCareRequirements(
-                sun_requirements=sun_requirements,
-                water_needs=water_needs,
-                care_notes=care_notes,
-            )
-
-            compatibility = PlantCompatibility(
-                companion_plants=companion_plants,
-                avoid_plants=avoid_plants,
-                climate_zones=climate_zones,
-            )
-
-            plant_spec = PlantSpec(
-                name=name,
-                scientific_name=scientific_name,
-                plant_type=plant_type,
-                growing=growing,
-                care=care,
-                compatibility=compatibility,
-            )
+            plant_spec, error = _parse_plant_form_data()
+            if error:
+                return f"<h1>Error</h1><p>{error}</p>"
+            
             plant_db.add_custom_plant(plant_spec)
             return redirect(url_for("plants"))
 
@@ -389,7 +415,7 @@ def plant_detail(plant_id):
 
 
 @app.route("/plants/<int:plant_id>/edit", methods=["GET", "POST"])
-def edit_plant(plant_id):  # pylint: disable=too-many-return-statements
+def edit_plant(plant_id):
     """
     Edit an existing plant.
 
@@ -418,7 +444,6 @@ def edit_plant(plant_id):  # pylint: disable=too-many-return-statements
     Returns:
         str: Redirect to plant detail page on success, or form on GET/error
     """
-    # pylint: disable=too-many-locals
     try:
         if plant_db is None:
             return "<h1>Error</h1><p>Plant database is not initialized.</p>"
@@ -429,70 +454,10 @@ def edit_plant(plant_id):  # pylint: disable=too-many-return-statements
             return "<h1>Plant Not Found</h1><p>The requested plant does not exist.</p>"
 
         if request.method == "POST":
-            name = request.form.get("name", "").strip()
-            scientific_name = request.form.get("scientific_name", "").strip()
-            plant_type = request.form.get("plant_type", "vegetable")
-            season = request.form.get("season", "spring")
-            planting_method = request.form.get("planting_method", "seed")
-            days_to_germination = int(request.form.get("days_to_germination", 7))
-            days_to_maturity = int(request.form.get("days_to_maturity", 60))
-            spacing_inches = int(request.form.get("spacing_inches", 12))
-            sun_requirements = request.form.get("sun_requirements", "full_sun")
-            water_needs = request.form.get("water_needs", "medium")
-            care_notes = request.form.get("care_notes", "").strip()
-
-            # Parse comma-separated lists
-            companion_plants_str = request.form.get("companion_plants", "").strip()
-            companion_plants = [
-                p.strip() for p in companion_plants_str.split(",") if p.strip()
-            ]
-
-            avoid_plants_str = request.form.get("avoid_plants", "").strip()
-            avoid_plants = [p.strip() for p in avoid_plants_str.split(",") if p.strip()]
-
-            climate_zones_str = request.form.get("climate_zones", "").strip()
-            climate_zones = []
-            if climate_zones_str:
-                try:
-                    climate_zones = [
-                        int(z.strip())
-                        for z in climate_zones_str.split(",")
-                        if z.strip()
-                    ]
-                except ValueError:
-                    return (
-                        "<h1>Error</h1><p>Climate zones must be numbers separated by commas "
-                        "(e.g., 5,6,7)</p>"
-                    )
-
-            growing = PlantGrowingInfo(
-                season=season,
-                planting_method=planting_method,
-                days_to_germination=days_to_germination,
-                days_to_maturity=days_to_maturity,
-                spacing_inches=spacing_inches,
-            )
-
-            care = PlantCareRequirements(
-                sun_requirements=sun_requirements,
-                water_needs=water_needs,
-                care_notes=care_notes,
-            )
-
-            compatibility = PlantCompatibility(
-                companion_plants=companion_plants,
-                avoid_plants=avoid_plants,
-                climate_zones=climate_zones,
-            )
-
-            plant_spec = PlantSpec(
-                name=name,
-                scientific_name=scientific_name,
-                plant_type=plant_type,
-                growing=growing,
-                care=care,
-                compatibility=compatibility,
-            )
+            plant_spec, error = _parse_plant_form_data()
+            if error:
+                return f"<h1>Error</h1><p>{error}</p>"
+            
             plant_db.update_plant(plant_id, plant_spec)
             return redirect(url_for("plant_detail", plant_id=plant_id))
 
@@ -618,6 +583,109 @@ def delete_plot(plot_id):
         return f"<h1>Delete Plot Error</h1><p>{str(e)}</p>"
 
 
+def _validate_position_in_bounds(x_pos, y_pos, plot):
+    """Validate that position is within plot bounds."""
+    return (
+        x_pos >= 0 and x_pos < plot.width and 
+        y_pos >= 0 and y_pos < plot.height
+    )
+
+
+def _is_position_occupied(x_pos, y_pos, plot_id):
+    """Check if a position in the plot is already occupied."""
+    existing_items = garden_db.get_planted_items(plot_id)
+    for item in existing_items:
+        if item.position.x == x_pos and item.position.y == y_pos:
+            return True
+    return False
+
+
+def _get_all_unique_plants():
+    """Get all unique plants across all seasons."""
+    all_plants = []
+    for season in ["spring", "summer", "fall", "winter"]:
+        all_plants.extend(plant_db.get_plants_by_season(season))
+    
+    # Remove duplicates and sort
+    seen_ids = set()
+    unique_plants = []
+    for plant in all_plants:
+        if plant.id not in seen_ids:
+            seen_ids.add(plant.id)
+            unique_plants.append(plant)
+    
+    unique_plants.sort(key=lambda p: p.name)
+    return unique_plants
+
+
+def _handle_plant_to_plot_post(plot_id, plot):
+    """Handle POST request for adding a plant to plot."""
+    plant_id_str = request.form.get("plant_id")
+    if not plant_id_str:
+        return "<h1>Error</h1><p>Plant ID is required.</p>"
+    
+    plant_id = int(plant_id_str)
+    
+    try:
+        x_position = int(request.form.get("x_position", "0"))
+        y_position = int(request.form.get("y_position", "0"))
+    except ValueError:
+        return "<h1>Error</h1><p>Position coordinates must be integers.</p>"
+    
+    notes = request.form.get("notes", "").strip()
+
+    # Validate position is within plot bounds
+    if not _validate_position_in_bounds(x_position, y_position, plot):
+        return "<h1>Error</h1><p>Position is outside plot bounds.</p>"
+
+    # Check if position is already occupied
+    if _is_position_occupied(x_position, y_position, plot_id):
+        return (
+            "<h1>Error</h1><p>This position is already occupied. "
+            "Please choose another square.</p>"
+        )
+
+    # Get plant details for days_to_maturity
+    plant = plant_db.get_plant_by_id(plant_id)
+    if not plant:
+        return "<h1>Error</h1><p>Plant not found.</p>"
+
+    # Add the planted item
+    planting_info = PlantingInfo(
+        plant_id=plant_id,
+        plot_id=plot_id,
+        x_pos=x_position,
+        y_pos=y_position,
+        notes=notes,
+        planted_date=datetime.now(),
+        days_to_maturity=plant.growing.days_to_maturity,
+    )
+    garden_db.add_planted_item(planting_info)
+
+    return redirect(url_for("view_plot", plot_id=plot_id))
+
+
+def _handle_plant_to_plot_get(plot_id, plot):
+    """Handle GET request for plant selection form."""
+    x = int(request.args.get("x", 0))
+    y = int(request.args.get("y", 0))
+
+    # Validate position
+    if not _validate_position_in_bounds(x, y, plot):
+        return "<h1>Error</h1><p>Invalid position.</p>"
+
+    # Check if position is already occupied
+    if _is_position_occupied(x, y, plot_id):
+        return redirect(url_for("view_plot", plot_id=plot_id))
+
+    # Get all available plants
+    unique_plants = _get_all_unique_plants()
+
+    return render_template(
+        "plant_to_plot.html", plot=plot, plants=unique_plants, x=x, y=y
+    )
+
+
 @app.route("/garden/<int:plot_id>/plant", methods=["GET", "POST"])
 def plant_to_plot(plot_id):
     """
@@ -639,7 +707,6 @@ def plant_to_plot(plot_id):
     Returns:
         str: Redirect to plot view on success, or form on GET/error
     """
-    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
     try:
         if garden_db is None or plant_db is None:
             return "<h1>Error</h1><p>Database is not initialized.</p>"
@@ -649,86 +716,9 @@ def plant_to_plot(plot_id):
             return "<h1>Plot Not Found</h1><p>The requested garden plot does not exist.</p>"
 
         if request.method == "POST":
-            plant_id_str = request.form.get("plant_id")
-            if not plant_id_str:
-                return "<h1>Error</h1><p>Plant ID is required.</p>"
-            plant_id = int(plant_id_str)
-            try:
-                x_position = int(request.form.get("x_position", "0"))
-                y_position = int(request.form.get("y_position", "0"))
-            except ValueError:
-                return "<h1>Error</h1><p>Position coordinates must be integers.</p>"
-            notes = request.form.get("notes", "").strip()
-
-            # Validate position is within plot bounds
-            if (
-                x_position < 0
-                or x_position >= plot.width
-                or y_position < 0
-                or y_position >= plot.height
-            ):
-                return "<h1>Error</h1><p>Position is outside plot bounds.</p>"
-
-            # Check if position is already occupied
-            existing_items = garden_db.get_planted_items(plot_id)
-            for item in existing_items:
-                if item.position.x == x_position and item.position.y == y_position:
-                    return (
-                        "<h1>Error</h1><p>This position is already occupied. "
-                        "Please choose another square.</p>"
-                    )
-
-            # Get plant details for days_to_maturity
-            plant = plant_db.get_plant_by_id(plant_id)
-            if not plant:
-                return "<h1>Error</h1><p>Plant not found.</p>"
-
-            # Add the planted item
-            planting_info = PlantingInfo(
-                plant_id=plant_id,
-                plot_id=plot_id,
-                x_pos=x_position,
-                y_pos=y_position,
-                notes=notes,
-                planted_date=datetime.now(),
-                days_to_maturity=plant.growing.days_to_maturity,
-            )
-            garden_db.add_planted_item(planting_info)
-
-            return redirect(url_for("view_plot", plot_id=plot_id))
-
-        # GET request - show plant selection form
-        x = int(request.args.get("x", 0))
-        y = int(request.args.get("y", 0))
-
-        # Validate position
-        if x < 0 or x >= plot.width or y < 0 or y >= plot.height:
-            return "<h1>Error</h1><p>Invalid position.</p>"
-
-        # Check if position is already occupied
-        existing_items = garden_db.get_planted_items(plot_id)
-        for item in existing_items:
-            if item.position.x == x and item.position.y == y:
-                return redirect(url_for("view_plot", plot_id=plot_id))
-
-        # Get all available plants
-        all_plants = []
-        for season in ["spring", "summer", "fall", "winter"]:
-            all_plants.extend(plant_db.get_plants_by_season(season))
-
-        # Remove duplicates and sort
-        seen_ids = set()
-        unique_plants = []
-        for plant in all_plants:
-            if plant.id not in seen_ids:
-                seen_ids.add(plant.id)
-                unique_plants.append(plant)
-
-        unique_plants.sort(key=lambda p: p.name)
-
-        return render_template(
-            "plant_to_plot.html", plot=plot, plants=unique_plants, x=x, y=y
-        )
+            return _handle_plant_to_plot_post(plot_id, plot)
+        
+        return _handle_plant_to_plot_get(plot_id, plot)
 
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
         print(f"Plant to plot error: {e}")
