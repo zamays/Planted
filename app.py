@@ -171,17 +171,17 @@ def _get_plants_by_season_filter(season_filter):
     """Get plants based on season filter."""
     if plant_db is None:
         return []
-    
+
     if season_filter == "current":
         current_season = SeasonCalculator.get_current_season()
         return plant_db.get_plants_by_season(current_season.lower())
-    
+
     if season_filter == "all":
         all_plants = []
         for season in ["spring", "summer", "fall", "winter"]:
             all_plants.extend(plant_db.get_plants_by_season(season))
         return all_plants
-    
+
     return plant_db.get_plants_by_season(season_filter.lower())
 
 
@@ -275,32 +275,15 @@ def _parse_comma_separated_list(form_field_name, form_data):
 def _parse_plant_form_data():
     """
     Parse plant form data from request and return a PlantSpec.
-    
+
     Returns:
         tuple: (PlantSpec object, error_message or None)
     """
     try:
-        # Basic plant information
-        name = request.form.get("name", "").strip()
-        scientific_name = request.form.get("scientific_name", "").strip()
-        plant_type = request.form.get("plant_type", "vegetable")
-        
-        # Growing information
-        season = request.form.get("season", "spring")
-        planting_method = request.form.get("planting_method", "seed")
-        days_to_germination = int(request.form.get("days_to_germination", 7))
-        days_to_maturity = int(request.form.get("days_to_maturity", 60))
-        spacing_inches = int(request.form.get("spacing_inches", 12))
-        
-        # Care requirements
-        sun_requirements = request.form.get("sun_requirements", "full_sun")
-        water_needs = request.form.get("water_needs", "medium")
-        care_notes = request.form.get("care_notes", "").strip()
-
         # Parse comma-separated lists
         companion_plants = _parse_comma_separated_list("companion_plants", request.form)
         avoid_plants = _parse_comma_separated_list("avoid_plants", request.form)
-        
+
         # Parse climate zones (must be integers)
         climate_zones_str = request.form.get("climate_zones", "").strip()
         climate_zones = []
@@ -312,19 +295,19 @@ def _parse_plant_form_data():
             except ValueError:
                 return None, "Climate zones must be numbers separated by commas (e.g., 5,6,7)"
 
-        # Create data model objects
+        # Create data model objects directly from form data
         growing = PlantGrowingInfo(
-            season=season,
-            planting_method=planting_method,
-            days_to_germination=days_to_germination,
-            days_to_maturity=days_to_maturity,
-            spacing_inches=spacing_inches,
+            season=request.form.get("season", "spring"),
+            planting_method=request.form.get("planting_method", "seed"),
+            days_to_germination=int(request.form.get("days_to_germination", 7)),
+            days_to_maturity=int(request.form.get("days_to_maturity", 60)),
+            spacing_inches=int(request.form.get("spacing_inches", 12)),
         )
 
         care = PlantCareRequirements(
-            sun_requirements=sun_requirements,
-            water_needs=water_needs,
-            care_notes=care_notes,
+            sun_requirements=request.form.get("sun_requirements", "full_sun"),
+            water_needs=request.form.get("water_needs", "medium"),
+            care_notes=request.form.get("care_notes", "").strip(),
         )
 
         compatibility = PlantCompatibility(
@@ -334,14 +317,14 @@ def _parse_plant_form_data():
         )
 
         plant_spec = PlantSpec(
-            name=name,
-            scientific_name=scientific_name,
-            plant_type=plant_type,
+            name=request.form.get("name", "").strip(),
+            scientific_name=request.form.get("scientific_name", "").strip(),
+            plant_type=request.form.get("plant_type", "vegetable"),
             growing=growing,
             care=care,
             compatibility=compatibility,
         )
-        
+
         return plant_spec, None
     except (ValueError, KeyError) as e:
         return None, f"Error parsing form data: {str(e)}"
@@ -382,7 +365,7 @@ def add_plant():
             plant_spec, error = _parse_plant_form_data()
             if error:
                 return f"<h1>Error</h1><p>{error}</p>"
-            
+
             plant_db.add_custom_plant(plant_spec)
             return redirect(url_for("plants"))
 
@@ -457,7 +440,7 @@ def edit_plant(plant_id):
             plant_spec, error = _parse_plant_form_data()
             if error:
                 return f"<h1>Error</h1><p>{error}</p>"
-            
+
             plant_db.update_plant(plant_id, plant_spec)
             return redirect(url_for("plant_detail", plant_id=plant_id))
 
@@ -586,8 +569,8 @@ def delete_plot(plot_id):
 def _validate_position_in_bounds(x_pos, y_pos, plot):
     """Validate that position is within plot bounds."""
     return (
-        x_pos >= 0 and x_pos < plot.width and 
-        y_pos >= 0 and y_pos < plot.height
+        0 <= x_pos < plot.width and
+        0 <= y_pos < plot.height
     )
 
 
@@ -605,7 +588,7 @@ def _get_all_unique_plants():
     all_plants = []
     for season in ["spring", "summer", "fall", "winter"]:
         all_plants.extend(plant_db.get_plants_by_season(season))
-    
+
     # Remove duplicates and sort
     seen_ids = set()
     unique_plants = []
@@ -613,7 +596,7 @@ def _get_all_unique_plants():
         if plant.id not in seen_ids:
             seen_ids.add(plant.id)
             unique_plants.append(plant)
-    
+
     unique_plants.sort(key=lambda p: p.name)
     return unique_plants
 
@@ -623,15 +606,15 @@ def _handle_plant_to_plot_post(plot_id, plot):
     plant_id_str = request.form.get("plant_id")
     if not plant_id_str:
         return "<h1>Error</h1><p>Plant ID is required.</p>"
-    
+
     plant_id = int(plant_id_str)
-    
+
     try:
         x_position = int(request.form.get("x_position", "0"))
         y_position = int(request.form.get("y_position", "0"))
     except ValueError:
         return "<h1>Error</h1><p>Position coordinates must be integers.</p>"
-    
+
     notes = request.form.get("notes", "").strip()
 
     # Validate position is within plot bounds
@@ -717,7 +700,7 @@ def plant_to_plot(plot_id):
 
         if request.method == "POST":
             return _handle_plant_to_plot_post(plot_id, plot)
-        
+
         return _handle_plant_to_plot_get(plot_id, plot)
 
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
@@ -892,10 +875,10 @@ def weather():
 def help_page():
     """
     Display help and user guide for the Planted application.
-    
+
     Provides comprehensive documentation on how to use all features of the
     garden management system, including keyboard shortcuts and tips.
-    
+
     Returns:
         str: Rendered help page HTML template
     """
