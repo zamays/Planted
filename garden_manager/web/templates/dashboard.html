@@ -21,9 +21,15 @@
         <div class="stat-value">{{ stats.plots }}</div>
         <div class="stat-label">Garden Plots</div>
         <div style="margin-top: 1rem;">
+            {% if stats.plots == 0 %}
+            <a href="{{ url_for('create_plot') }}" class="btn btn-small" style="font-size: 0.8rem;">
+                Create First Plot
+            </a>
+            {% else %}
             <a href="{{ url_for('garden_layout') }}" class="btn btn-small" style="font-size: 0.8rem;">
                 View Plots
             </a>
+            {% endif %}
         </div>
     </div>
     <div class="stat-card">
