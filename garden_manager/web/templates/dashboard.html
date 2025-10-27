@@ -3,9 +3,9 @@
 {% block title %}Dashboard - Planted{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h2 style="margin: 0; color: var(--primary-green); font-size: 1.75rem;">🏡 Garden Dashboard</h2>
-    <div style="display: flex; gap: 0.75rem;">
+<div class="page-header">
+    <h2 class="page-title">🏡 Garden Dashboard</h2>
+    <div class="page-actions">
         <a href="{{ url_for('plants') }}" class="btn btn-small" title="Browse plant catalog">
             🌿 Browse Plants
         </a>
@@ -143,24 +143,18 @@
         ⚡ Quick Actions
     </div>
     <div class="card-body">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            <a href="{{ url_for('plants') }}" class="btn" style="padding: 1rem;">
-                <div style="text-align: center; width: 100%;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
-                    <div>Search Plants</div>
-                </div>
+        <div class="action-grid">
+            <a href="{{ url_for('plants') }}" class="action-card">
+                <span class="action-card-icon">🔍</span>
+                <span class="action-card-label">Search Plants</span>
             </a>
-            <a href="{{ url_for('garden_layout') }}" class="btn btn-secondary" style="padding: 1rem;">
-                <div style="text-align: center; width: 100%;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗺️</div>
-                    <div>View Gardens</div>
-                </div>
+            <a href="{{ url_for('garden_layout') }}" class="action-card">
+                <span class="action-card-icon">🗺️</span>
+                <span class="action-card-label">View Gardens</span>
             </a>
-            <a href="{{ url_for('add_plant') }}" class="btn btn-secondary" style="padding: 1rem;">
-                <div style="text-align: center; width: 100%;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">➕</div>
-                    <div>Add Custom Plant</div>
-                </div>
+            <a href="{{ url_for('add_plant') }}" class="action-card">
+                <span class="action-card-icon">➕</span>
+                <span class="action-card-label">Add Custom Plant</span>
             </a>
         </div>
     </div>
