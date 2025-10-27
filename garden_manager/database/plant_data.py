@@ -193,8 +193,7 @@ class PlantDatabase:
                         )
                         added_count += 1
 
-                if updated_count > 0 or added_count > 0:
-                    print(f"   ✅ Plant sync: {added_count} added, {updated_count} updated")
+                print(f"   ✅ Plant sync: {added_count} added, {updated_count} updated")
 
             conn.commit()
 
