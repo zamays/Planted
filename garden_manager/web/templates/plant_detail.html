@@ -21,6 +21,15 @@
     </div>
     
     <div class="card-body">
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+            <a href="{{ url_for('edit_plant', plant_id=plant.id) }}" class="btn">✏️ Edit Plant</a>
+            {% if plant.is_custom %}
+            <form method="POST" action="{{ url_for('delete_plant', plant_id=plant.id) }}" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this custom plant? This action cannot be undone.');">
+                <button type="submit" class="btn btn-danger">🗑️ Delete Plant</button>
+            </form>
+            {% endif %}
+        </div>
+
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
             <div>
                 <h3 style="color: #4A7C59; margin-bottom: 1rem;">Plant Information</h3>
@@ -76,4 +85,14 @@
         {% endif %}
     </div>
 </div>
+
+<style>
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+</style>
 {% endblock %}

@@ -387,6 +387,147 @@ def plant_detail(plant_id):
         return f"<h1>Plant Detail Error</h1><p>{str(e)}</p>"
 
 
+@app.route("/plants/<int:plant_id>/edit", methods=["GET", "POST"])
+def edit_plant(plant_id):
+    """
+    Edit an existing plant.
+
+    GET: Display the edit plant form with current values
+    POST: Process form data and update the plant
+
+    Args:
+        plant_id: ID of the plant to edit
+
+    Form Data (POST):
+        name (str): Common name of the plant
+        scientific_name (str): Scientific/botanical name
+        plant_type (str): Category (vegetable, fruit, herb)
+        season (str): Optimal planting season
+        planting_method (str): How to plant (seed, transplant, bulb)
+        days_to_germination (int): Days from planting to germination
+        days_to_maturity (int): Days from planting to harvest
+        spacing_inches (int): Required spacing in inches
+        sun_requirements (str): Light needs (full_sun, partial_shade, shade)
+        water_needs (str): Water requirements (low, medium, high)
+        companion_plants (str): Comma-separated list of companion plants
+        avoid_plants (str): Comma-separated list of plants to avoid
+        climate_zones (str): Comma-separated list of USDA zones
+        care_notes (str): Additional care instructions
+
+    Returns:
+        str: Redirect to plant detail page on success, or form on GET/error
+    """
+    # pylint: disable=too-many-locals
+    try:
+        if plant_db is None:
+            return "<h1>Error</h1><p>Plant database is not initialized.</p>"
+
+        # Get the existing plant
+        plant = plant_db.get_plant_by_id(plant_id)
+        if not plant:
+            return "<h1>Plant Not Found</h1><p>The requested plant does not exist.</p>"
+
+        if request.method == "POST":
+            name = request.form.get("name", "").strip()
+            scientific_name = request.form.get("scientific_name", "").strip()
+            plant_type = request.form.get("plant_type", "vegetable")
+            season = request.form.get("season", "spring")
+            planting_method = request.form.get("planting_method", "seed")
+            days_to_germination = int(request.form.get("days_to_germination", 7))
+            days_to_maturity = int(request.form.get("days_to_maturity", 60))
+            spacing_inches = int(request.form.get("spacing_inches", 12))
+            sun_requirements = request.form.get("sun_requirements", "full_sun")
+            water_needs = request.form.get("water_needs", "medium")
+            care_notes = request.form.get("care_notes", "").strip()
+
+            # Parse comma-separated lists
+            companion_plants_str = request.form.get("companion_plants", "").strip()
+            companion_plants = [
+                p.strip() for p in companion_plants_str.split(",") if p.strip()
+            ]
+
+            avoid_plants_str = request.form.get("avoid_plants", "").strip()
+            avoid_plants = [p.strip() for p in avoid_plants_str.split(",") if p.strip()]
+
+            climate_zones_str = request.form.get("climate_zones", "").strip()
+            climate_zones = []
+            if climate_zones_str:
+                try:
+                    climate_zones = [
+                        int(z.strip())
+                        for z in climate_zones_str.split(",")
+                        if z.strip()
+                    ]
+                except ValueError:
+                    return (
+                        "<h1>Error</h1><p>Climate zones must be numbers separated by commas "
+                        "(e.g., 5,6,7)</p>"
+                    )
+
+            growing = PlantGrowingInfo(
+                season=season,
+                planting_method=planting_method,
+                days_to_germination=days_to_germination,
+                days_to_maturity=days_to_maturity,
+                spacing_inches=spacing_inches,
+            )
+
+            care = PlantCareRequirements(
+                sun_requirements=sun_requirements,
+                water_needs=water_needs,
+                care_notes=care_notes,
+            )
+
+            compatibility = PlantCompatibility(
+                companion_plants=companion_plants,
+                avoid_plants=avoid_plants,
+                climate_zones=climate_zones,
+            )
+
+            plant_spec = PlantSpec(
+                name=name,
+                scientific_name=scientific_name,
+                plant_type=plant_type,
+                growing=growing,
+                care=care,
+                compatibility=compatibility,
+            )
+            plant_db.update_plant(plant_id, plant_spec)
+            return redirect(url_for("plant_detail", plant_id=plant_id))
+
+        return render_template("edit_plant.html", plant=plant)
+    except (sqlite3.Error, ValueError, KeyError) as e:
+        print(f"Edit plant error: {e}")
+        return f"<h1>Edit Plant Error</h1><p>{str(e)}</p>"
+
+
+@app.route("/plants/<int:plant_id>/delete", methods=["POST"])
+def delete_plant(plant_id):
+    """
+    Delete a custom plant from the database.
+
+    Args:
+        plant_id: ID of the plant to delete
+
+    Returns:
+        str: Redirect to plants page on success, or error message on failure
+    """
+    try:
+        if plant_db is None:
+            return "<h1>Error</h1><p>Plant database is not initialized.</p>"
+
+        success = plant_db.delete_plant(plant_id)
+        if success:
+            return redirect(url_for("plants"))
+        return "<h1>Error</h1><p>Failed to delete plant.</p>"
+    except ValueError as e:
+        print(f"Delete plant error: {e}")
+        return f"<h1>Delete Plant Error</h1><p>{str(e)}</p>"
+    except sqlite3.Error as e:
+        print(f"Delete plant database error: {e}")
+        return f"<h1>Delete Plant Error</h1><p>{str(e)}</p>"
+
+
 @app.route("/garden")
 def garden_layout():
     """
