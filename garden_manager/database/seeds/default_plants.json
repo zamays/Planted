@@ -835,6 +835,1150 @@
         "avoid_plants": ["brassicas"],
         "climate_zones": [3, 4, 5, 6, 7, 8, 9]
       }
+    },
+    {
+      "name": "Brussels Sprouts",
+      "scientific_name": "Brassica oleracea var. gemmifera",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 90,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Frost improves flavor, harvest from bottom up"
+      },
+      "compatibility": {
+        "companion_plants": ["onions", "potatoes", "beets"],
+        "avoid_plants": ["tomatoes", "strawberries"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Cabbage",
+      "scientific_name": "Brassica oleracea var. capitata",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 70,
+        "spacing_inches": 15
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Cool season crop, consistent moisture prevents splitting"
+      },
+      "compatibility": {
+        "companion_plants": ["beets", "onions", "celery"],
+        "avoid_plants": ["strawberries", "tomatoes"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Bok Choy",
+      "scientific_name": "Brassica rapa subsp. chinensis",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 5,
+        "days_to_maturity": 45,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Quick growing, bolts in hot weather"
+      },
+      "compatibility": {
+        "companion_plants": ["lettuce", "spinach", "onions"],
+        "avoid_plants": ["tomatoes"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Collard Greens",
+      "scientific_name": "Brassica oleracea var. viridis",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 75,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Very frost tolerant, flavor improves after frost"
+      },
+      "compatibility": {
+        "companion_plants": ["onions", "garlic", "beans"],
+        "avoid_plants": ["tomatoes"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Kohlrabi",
+      "scientific_name": "Brassica oleracea var. gongylodes",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 55,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Harvest when bulbs are 2-3 inches in diameter"
+      },
+      "compatibility": {
+        "companion_plants": ["beets", "onions", "cucumbers"],
+        "avoid_plants": ["tomatoes", "strawberries"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Turnips",
+      "scientific_name": "Brassica rapa var. rapa",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 50,
+        "spacing_inches": 4
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Cool season crop, both roots and greens are edible"
+      },
+      "compatibility": {
+        "companion_plants": ["peas", "beans", "radishes"],
+        "avoid_plants": ["potatoes"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Rutabaga",
+      "scientific_name": "Brassica napus var. napobrassica",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 90,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Long season crop, improves with frost"
+      },
+      "compatibility": {
+        "companion_plants": ["peas", "onions"],
+        "avoid_plants": [],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Leeks",
+      "scientific_name": "Allium ampeloprasum var. porrum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 10,
+        "days_to_maturity": 120,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Hill soil around stems to blanch for longer white portion"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots", "celery", "onions"],
+        "avoid_plants": ["beans", "peas"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Shallots",
+      "scientific_name": "Allium cepa var. aggregatum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 90,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "low",
+        "care_notes": "Plant cloves in fall, harvest when tops fall over"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots", "tomatoes", "beets"],
+        "avoid_plants": ["beans", "peas"],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Scallions",
+      "scientific_name": "Allium fistulosum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 2
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Quick growing, succession plant for continuous harvest"
+      },
+      "compatibility": {
+        "companion_plants": ["tomatoes", "lettuce", "carrots"],
+        "avoid_plants": ["beans", "peas"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Asparagus",
+      "scientific_name": "Asparagus officinalis",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial, do not harvest first 2 years, feed heavily"
+      },
+      "compatibility": {
+        "companion_plants": ["tomatoes", "parsley", "basil"],
+        "avoid_plants": ["onions", "garlic"],
+        "climate_zones": [3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Artichoke",
+      "scientific_name": "Cynara cardunculus var. scolymus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 14,
+        "days_to_maturity": 150,
+        "spacing_inches": 36
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Perennial in warm climates, harvest before flowers open"
+      },
+      "compatibility": {
+        "companion_plants": ["sunflowers", "tarragon"],
+        "avoid_plants": [],
+        "climate_zones": [7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Celery",
+      "scientific_name": "Apium graveolens",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 14,
+        "days_to_maturity": 120,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Requires consistent moisture and rich soil"
+      },
+      "compatibility": {
+        "companion_plants": ["leeks", "onions", "tomatoes"],
+        "avoid_plants": ["carrots", "parsley"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Parsnips",
+      "scientific_name": "Pastinaca sativa",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 21,
+        "days_to_maturity": 120,
+        "spacing_inches": 3
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Frost improves flavor, direct sow only"
+      },
+      "compatibility": {
+        "companion_plants": ["peas", "radishes", "beans"],
+        "avoid_plants": ["carrots"],
+        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Sweet Potatoes",
+      "scientific_name": "Ipomoea batatas",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 100,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Heat loving, cure tubers after harvest for better storage"
+      },
+      "compatibility": {
+        "companion_plants": ["thyme", "oregano", "parsnips"],
+        "avoid_plants": ["squash"],
+        "climate_zones": [5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Potatoes",
+      "scientific_name": "Solanum tuberosum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 14,
+        "days_to_maturity": 90,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Hill soil as plants grow to prevent greening"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "corn", "cabbage"],
+        "avoid_plants": ["tomatoes", "cucumbers", "squash"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Summer Squash",
+      "scientific_name": "Cucurbita pepo",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 50,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Harvest frequently to encourage production"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "corn", "radishes"],
+        "avoid_plants": ["potatoes"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Butternut Squash",
+      "scientific_name": "Cucurbita moschata",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 110,
+        "spacing_inches": 36
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Long season crop, harvest when skin is hard"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "corn", "nasturtiums"],
+        "avoid_plants": ["potatoes"],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Acorn Squash",
+      "scientific_name": "Cucurbita pepo var. turbinata",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 85,
+        "spacing_inches": 36
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Winter squash type, cure after harvest for storage"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "corn", "radishes"],
+        "avoid_plants": ["potatoes"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Spaghetti Squash",
+      "scientific_name": "Cucurbita pepo",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 100,
+        "spacing_inches": 36
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Harvest when skin turns golden yellow"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "corn", "marigolds"],
+        "avoid_plants": ["potatoes"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Okra",
+      "scientific_name": "Abelmoschus esculentus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 10,
+        "days_to_maturity": 60,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Heat loving, harvest pods when 2-4 inches long"
+      },
+      "compatibility": {
+        "companion_plants": ["peppers", "eggplant", "basil"],
+        "avoid_plants": [],
+        "climate_zones": [5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Fennel",
+      "scientific_name": "Foeniculum vulgare",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 10,
+        "days_to_maturity": 90,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Inhibits growth of many plants, best grown alone"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": ["tomatoes", "beans", "dill", "cilantro"],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Tarragon",
+      "scientific_name": "Artemisia dracunculus",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 10,
+        "days_to_maturity": 90,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "low",
+        "care_notes": "Perennial herb, French variety preferred for culinary use"
+      },
+      "compatibility": {
+        "companion_plants": ["eggplant", "peppers"],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Lemon Balm",
+      "scientific_name": "Melissa officinalis",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 14,
+        "days_to_maturity": 70,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Perennial herb, can be invasive, contains in pots"
+      },
+      "compatibility": {
+        "companion_plants": ["tomatoes", "squash"],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Lavender",
+      "scientific_name": "Lavandula angustifolia",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 21,
+        "days_to_maturity": 120,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "low",
+        "care_notes": "Perennial, drought tolerant, requires well-drained soil"
+      },
+      "compatibility": {
+        "companion_plants": ["rosemary", "thyme", "sage"],
+        "avoid_plants": [],
+        "climate_zones": [5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Chamomile",
+      "scientific_name": "Matricaria chamomilla",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "low",
+        "care_notes": "Self-seeds readily, harvest flowers when fully open"
+      },
+      "compatibility": {
+        "companion_plants": ["cabbage", "onions", "cucumbers"],
+        "avoid_plants": [],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Marjoram",
+      "scientific_name": "Origanum majorana",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 10,
+        "days_to_maturity": 90,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "low",
+        "care_notes": "Tender perennial, similar to oregano but sweeter"
+      },
+      "compatibility": {
+        "companion_plants": ["oregano", "thyme", "basil"],
+        "avoid_plants": [],
+        "climate_zones": [6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Lemongrass",
+      "scientific_name": "Cymbopogon citratus",
+      "plant_type": "herb",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 14,
+        "days_to_maturity": 90,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Tropical perennial, grow in containers in cold climates"
+      },
+      "compatibility": {
+        "companion_plants": ["citronella", "basil"],
+        "avoid_plants": [],
+        "climate_zones": [9, 10]
+      }
+    },
+    {
+      "name": "Bay Laurel",
+      "scientific_name": "Laurus nobilis",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 180,
+        "spacing_inches": 48
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial shrub, grow in containers in cold climates"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [8, 9, 10]
+      }
+    },
+    {
+      "name": "Horseradish",
+      "scientific_name": "Armoracia rusticana",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 180,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial root, very invasive, harvest in fall"
+      },
+      "compatibility": {
+        "companion_plants": ["potatoes"],
+        "avoid_plants": [],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Ginger",
+      "scientific_name": "Zingiber officinale",
+      "plant_type": "herb",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 240,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "high",
+        "care_notes": "Tropical perennial, harvest after foliage dies back"
+      },
+      "compatibility": {
+        "companion_plants": ["turmeric"],
+        "avoid_plants": [],
+        "climate_zones": [9, 10]
+      }
+    },
+    {
+      "name": "Rhubarb",
+      "scientific_name": "Rheum rhabarbarum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 36
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial, do not harvest first year, leaves are toxic"
+      },
+      "compatibility": {
+        "companion_plants": ["beans", "garlic", "onions"],
+        "avoid_plants": [],
+        "climate_zones": [3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Endive",
+      "scientific_name": "Cichorium endivia",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 85,
+        "spacing_inches": 10
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Cool season crop, blanch centers to reduce bitterness"
+      },
+      "compatibility": {
+        "companion_plants": ["lettuce", "spinach"],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Radicchio",
+      "scientific_name": "Cichorium intybus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 80,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Cool weather crop, colors best in cool temperatures"
+      },
+      "compatibility": {
+        "companion_plants": ["lettuce", "endive"],
+        "avoid_plants": [],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Mustard Greens",
+      "scientific_name": "Brassica juncea",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 5,
+        "days_to_maturity": 40,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Quick growing, succession plant for continuous harvest"
+      },
+      "compatibility": {
+        "companion_plants": ["peas", "beans", "onions"],
+        "avoid_plants": ["strawberries"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Watercress",
+      "scientific_name": "Nasturtium officinale",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 50,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "high",
+        "care_notes": "Aquatic plant, grows best in wet conditions or shallow water"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Tomatillos",
+      "scientific_name": "Physalis philadelphica",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 75,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Plant at least 2 for pollination, harvest when husks split"
+      },
+      "compatibility": {
+        "companion_plants": ["peppers", "basil", "carrots"],
+        "avoid_plants": ["fennel"],
+        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Ground Cherry",
+      "scientific_name": "Physalis pruinosa",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 70,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Sweet fruit in papery husk, harvest when fruit drops"
+      },
+      "compatibility": {
+        "companion_plants": ["tomatoes", "peppers"],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Lima Beans",
+      "scientific_name": "Phaseolus lunatus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 10,
+        "days_to_maturity": 75,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Heat loving, nitrogen fixer, needs warm soil to germinate"
+      },
+      "compatibility": {
+        "companion_plants": ["corn", "cucumbers", "radishes"],
+        "avoid_plants": ["onions", "garlic"],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Edamame",
+      "scientific_name": "Glycine max",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 80,
+        "spacing_inches": 4
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Nitrogen fixer, harvest when pods are plump and green"
+      },
+      "compatibility": {
+        "companion_plants": ["corn", "squash", "cucumbers"],
+        "avoid_plants": ["onions", "garlic"],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Fava Beans",
+      "scientific_name": "Vicia faba",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 10,
+        "days_to_maturity": 90,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Cool season crop, nitrogen fixer, pinch tops to prevent aphids"
+      },
+      "compatibility": {
+        "companion_plants": ["potatoes", "cucumbers", "corn"],
+        "avoid_plants": ["onions", "garlic"],
+        "climate_zones": [3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Pole Beans",
+      "scientific_name": "Phaseolus vulgaris",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 8,
+        "days_to_maturity": 70,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Requires trellis or support, nitrogen fixer, longer harvest than bush"
+      },
+      "compatibility": {
+        "companion_plants": ["corn", "cucumbers", "radishes"],
+        "avoid_plants": ["onions", "beets"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Currants",
+      "scientific_name": "Ribes rubrum",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 48
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Perennial shrub, prune old wood for better production"
+      },
+      "compatibility": {
+        "companion_plants": ["gooseberries", "chives"],
+        "avoid_plants": ["white pine"],
+        "climate_zones": [3, 4, 5, 6, 7]
+      }
+    },
+    {
+      "name": "Gooseberries",
+      "scientific_name": "Ribes uva-crispa",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 48
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Perennial shrub, tolerates shade better than most fruits"
+      },
+      "compatibility": {
+        "companion_plants": ["currants", "tomatoes"],
+        "avoid_plants": ["white pine"],
+        "climate_zones": [3, 4, 5, 6, 7]
+      }
+    },
+    {
+      "name": "Elderberries",
+      "scientific_name": "Sambucus nigra",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 72
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial shrub, plant 2+ varieties for cross-pollination"
+      },
+      "compatibility": {
+        "companion_plants": ["yarrow", "echinacea"],
+        "avoid_plants": [],
+        "climate_zones": [3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Cranberries",
+      "scientific_name": "Vaccinium macrocarpon",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Perennial, requires acidic boggy soil, harvest in fall"
+      },
+      "compatibility": {
+        "companion_plants": ["blueberries", "azaleas"],
+        "avoid_plants": [],
+        "climate_zones": [2, 3, 4, 5, 6]
+      }
+    },
+    {
+      "name": "Huckleberries",
+      "scientific_name": "Vaccinium ovatum",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 36
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Perennial shrub, prefers acidic soil similar to blueberries"
+      },
+      "compatibility": {
+        "companion_plants": ["blueberries", "rhododendrons"],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Lingonberries",
+      "scientific_name": "Vaccinium vitis-idaea",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Perennial groundcover, requires acidic soil, cold hardy"
+      },
+      "compatibility": {
+        "companion_plants": ["blueberries", "cranberries"],
+        "avoid_plants": [],
+        "climate_zones": [2, 3, 4, 5, 6]
+      }
+    },
+    {
+      "name": "Kiwi",
+      "scientific_name": "Actinidia deliciosa",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 1095,
+        "spacing_inches": 120
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Perennial vine, needs male and female plants, sturdy trellis required"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [7, 8, 9]
+      }
+    },
+    {
+      "name": "Hardy Kiwi",
+      "scientific_name": "Actinidia arguta",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 1095,
+        "spacing_inches": 120
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial vine, cold hardy, grape-sized smooth-skinned fruit"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Passion Fruit",
+      "scientific_name": "Passiflora edulis",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 21,
+        "days_to_maturity": 365,
+        "spacing_inches": 120
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Tropical vine, needs trellis, frost sensitive"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [9, 10]
+      }
+    },
+    {
+      "name": "Figs",
+      "scientific_name": "Ficus carica",
+      "plant_type": "fruit",
+      "growing": {
+        "season": "spring",
+        "planting_method": "transplant",
+        "days_to_germination": 0,
+        "days_to_maturity": 730,
+        "spacing_inches": 120
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Perennial tree/shrub, can be container grown in cold climates"
+      },
+      "compatibility": {
+        "companion_plants": ["rue", "strawberries"],
+        "avoid_plants": [],
+        "climate_zones": [7, 8, 9, 10]
+      }
     }
   ]
 }
