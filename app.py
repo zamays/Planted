@@ -453,12 +453,14 @@ def edit_plant(plant_id):
             return redirect(url_for("plant_detail", plant_id=plant_id))
 
         return render_template("edit_plant.html", plant=plant)
-    except ValueError as e:
-        print(f"Edit plant validation error: {e}")
-        return "<h1>Edit Plant Error</h1><p>Invalid plant data. Please check your inputs and try again.</p>"
-    except (sqlite3.Error, KeyError) as e:
+    except (ValueError, sqlite3.Error, KeyError) as e:
         print(f"Edit plant error: {e}")
-        return "<h1>Edit Plant Error</h1><p>An error occurred while updating the plant. Please try again later.</p>"
+        error_msg = (
+            "Invalid plant data. Please check your inputs and try again."
+            if isinstance(e, ValueError)
+            else "An error occurred while updating the plant. Please try again later."
+        )
+        return f"<h1>Edit Plant Error</h1><p>{error_msg}</p>"
 
 
 @app.route("/plants/<int:plant_id>/delete", methods=["POST"])
@@ -615,16 +617,13 @@ def _handle_plant_to_plot_post(plot_id, plot):
     if not plant_id_str:
         return "<h1>Error</h1><p>Plant ID is required.</p>"
 
+    # Parse and validate form data
     try:
         plant_id = int(plant_id_str)
-    except ValueError:
-        return "<h1>Error</h1><p>Plant ID must be a valid number.</p>"
-
-    try:
         x_position = int(request.form.get("x_position", "0"))
         y_position = int(request.form.get("y_position", "0"))
     except ValueError:
-        return "<h1>Error</h1><p>Position coordinates must be integers.</p>"
+        return "<h1>Error</h1><p>Plant ID and position coordinates must be valid numbers.</p>"
 
     notes = request.form.get("notes", "").strip()
 
