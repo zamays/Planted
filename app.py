@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pylint: disable=too-many-lines
 """
 Planted - Garden Management System
 
@@ -388,7 +389,7 @@ def plant_detail(plant_id):
 
 
 @app.route("/plants/<int:plant_id>/edit", methods=["GET", "POST"])
-def edit_plant(plant_id):
+def edit_plant(plant_id):  # pylint: disable=too-many-return-statements
     """
     Edit an existing plant.
 

@@ -3,7 +3,6 @@ Test plant editing and deletion functionality
 """
 
 import pytest
-import json
 from garden_manager.database.plant_data import PlantDatabase
 from garden_manager.database.models import (
     PlantSpec,
@@ -217,7 +216,7 @@ class TestPlantDeletion:
         assert success is False
 
 
-class TestPlantEditWorkflow:
+class TestPlantEditWorkflow:  # pylint: disable=too-few-public-methods
     """Tests for the complete edit workflow."""
 
     def test_add_edit_delete_workflow(self, plant_db):

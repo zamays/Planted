@@ -8,13 +8,14 @@ default_plants.json to the database on startup.
 
 import sys
 import json
+import os
+import sqlite3
 from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from garden_manager.database.plant_data import PlantDatabase
-import sqlite3
+from garden_manager.database.plant_data import PlantDatabase  # pylint: disable=wrong-import-position
 
 
 def print_section(title):
@@ -35,7 +36,7 @@ def get_plant_count(db_path='garden.db'):
     return default_count, custom_count
 
 
-def main():
+def main():  # pylint: disable=too-many-locals,too-many-statements
     """Run the plant sync test."""
     print_section("Plant Sync Feature Test")
 
@@ -51,13 +52,12 @@ def main():
     db_path = 'garden.db'
 
     # Remove existing database if it exists
-    import os
     if os.path.exists(db_path):
         os.remove(db_path)
         print("✅ Removed existing database")
 
     print("Creating new database...")
-    db = PlantDatabase(db_path)
+    _ = PlantDatabase(db_path)  # Create database, variable not needed
 
     default_count, custom_count = get_plant_count(db_path)
     print(f"✅ Database created with {default_count} default plants and {custom_count} custom plants")
@@ -65,17 +65,17 @@ def main():
     # Test 2: Sync on second initialization
     print_section("Test 2: Sync on Subsequent Launch")
     print("Reinitializing database (simulates app restart)...")
-    db2 = PlantDatabase(db_path)
+    _ = PlantDatabase(db_path)  # Reinitialize database
 
     default_count2, custom_count2 = get_plant_count(db_path)
     print(f"✅ Database synced: {default_count2} default plants, {custom_count2} custom plants")
-    print(f"   (No duplicates created - sync is idempotent)")
+    print("   (No duplicates created - sync is idempotent)")
 
     # Test 3: Modify JSON and sync
     print_section("Test 3: Detecting Changes in JSON")
     json_path = 'garden_manager/database/seeds/default_plants.json'
 
-    with open(json_path, 'r') as f:
+    with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     # Remember original value
@@ -83,10 +83,10 @@ def main():
     plant_name = data['plants'][0]['name']
 
     # Modify a plant
-    test_notes = f"MODIFIED TEST: {original_notes}"
+    test_notes = f"MODIFIED TEST: {original_notes}"  # noqa: F541
     data['plants'][0]['care']['care_notes'] = test_notes
 
-    with open(json_path, 'w') as f:
+    with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
     print(f"✅ Modified care notes for '{plant_name}' in JSON")
@@ -95,7 +95,7 @@ def main():
 
     # Reinitialize to trigger sync
     print("\nReinitializing database...")
-    db3 = PlantDatabase(db_path)
+    _ = PlantDatabase(db_path)  # Reinitialize to sync changes
 
     # Check if change was synced
     with sqlite3.connect(db_path) as conn:
@@ -104,13 +104,13 @@ def main():
         synced_notes = cursor.fetchone()[0]
 
     if synced_notes == test_notes:
-        print(f"✅ Change successfully synced to database!")
+        print("✅ Change successfully synced to database!")
     else:
-        print(f"❌ Sync failed - notes don't match")
+        print("❌ Sync failed - notes don't match")
 
     # Restore original
     data['plants'][0]['care']['care_notes'] = original_notes
-    with open(json_path, 'w') as f:
+    with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
     print("✅ Restored original JSON")
 
