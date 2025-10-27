@@ -17,9 +17,23 @@
         "care_notes": "Cool weather crop, plant 2 weeks before last frost"
       },
       "compatibility": {
-        "companion_plants": ["carrots", "radishes", "onions"],
-        "avoid_plants": ["broccoli"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "carrots",
+          "radishes",
+          "onions"
+        ],
+        "avoid_plants": [
+          "broccoli"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -39,9 +53,24 @@
         "care_notes": "Bolts in hot weather, successive plantings every 2 weeks"
       },
       "compatibility": {
-        "companion_plants": ["lettuce", "peas", "radishes"],
-        "avoid_plants": ["fennel"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "lettuce",
+          "peas",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "fennel"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -61,9 +90,24 @@
         "care_notes": "Plant as soon as soil can be worked, nitrogen fixer"
       },
       "compatibility": {
-        "companion_plants": ["carrots", "radishes", "lettuce"],
-        "avoid_plants": ["onions", "garlic"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "carrots",
+          "radishes",
+          "lettuce"
+        ],
+        "avoid_plants": [
+          "onions",
+          "garlic"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -83,9 +127,24 @@
         "care_notes": "Fast growing, helps break up soil for root vegetables"
       },
       "compatibility": {
-        "companion_plants": ["lettuce", "spinach", "carrots"],
-        "avoid_plants": ["hyssop"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "lettuce",
+          "spinach",
+          "carrots"
+        ],
+        "avoid_plants": [
+          "hyssop"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -105,9 +164,25 @@
         "care_notes": "Plant after last frost, stake or cage for support"
       },
       "compatibility": {
-        "companion_plants": ["basil", "peppers", "marigolds"],
-        "avoid_plants": ["fennel", "brassicas"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "basil",
+          "peppers",
+          "marigolds"
+        ],
+        "avoid_plants": [
+          "fennel",
+          "brassicas"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -127,9 +202,23 @@
         "care_notes": "Heat-loving crop, harvest when fully colored"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "basil", "onions"],
-        "avoid_plants": ["fennel"],
-        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "tomatoes",
+          "basil",
+          "onions"
+        ],
+        "avoid_plants": [
+          "fennel"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -149,9 +238,23 @@
         "care_notes": "Provide trellis for vertical growth"
       },
       "compatibility": {
-        "companion_plants": ["beans", "corn", "radishes"],
-        "avoid_plants": ["aromatic herbs"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "corn",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "aromatic herbs"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -171,9 +274,23 @@
         "care_notes": "Very productive, harvest when 6-8 inches long"
       },
       "compatibility": {
-        "companion_plants": ["beans", "corn", "nasturtiums"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "corn",
+          "nasturtiums"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -193,9 +310,24 @@
         "care_notes": "Bush varieties don't need support, nitrogen fixer"
       },
       "compatibility": {
-        "companion_plants": ["corn", "cucumbers", "tomatoes"],
-        "avoid_plants": ["onions", "garlic"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "corn",
+          "cucumbers",
+          "tomatoes"
+        ],
+        "avoid_plants": [
+          "onions",
+          "garlic"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -215,9 +347,22 @@
         "care_notes": "Plant in blocks for better pollination"
       },
       "compatibility": {
-        "companion_plants": ["beans", "squash", "cucumbers"],
-        "avoid_plants": ["tomatoes"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "squash",
+          "cucumbers"
+        ],
+        "avoid_plants": [
+          "tomatoes"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -237,9 +382,24 @@
         "care_notes": "Cool weather crop, harvest before flowers open"
       },
       "compatibility": {
-        "companion_plants": ["onions", "lettuce", "carrots"],
-        "avoid_plants": ["tomatoes", "peppers"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "onions",
+          "lettuce",
+          "carrots"
+        ],
+        "avoid_plants": [
+          "tomatoes",
+          "peppers"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -259,9 +419,23 @@
         "care_notes": "Blanch heads by tying leaves over developing curds"
       },
       "compatibility": {
-        "companion_plants": ["onions", "celery", "beans"],
-        "avoid_plants": ["tomatoes"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "onions",
+          "celery",
+          "beans"
+        ],
+        "avoid_plants": [
+          "tomatoes"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -281,9 +455,23 @@
         "care_notes": "Direct sow, thin seedlings to prevent crowding"
       },
       "compatibility": {
-        "companion_plants": ["onions", "leeks", "rosemary"],
-        "avoid_plants": ["dill"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "onions",
+          "leeks",
+          "rosemary"
+        ],
+        "avoid_plants": [
+          "dill"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -303,9 +491,24 @@
         "care_notes": "Frost improves flavor, harvest outer leaves first"
       },
       "compatibility": {
-        "companion_plants": ["onions", "garlic", "nasturtiums"],
-        "avoid_plants": ["tomatoes"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "onions",
+          "garlic",
+          "nasturtiums"
+        ],
+        "avoid_plants": [
+          "tomatoes"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -325,9 +528,23 @@
         "care_notes": "Pinch flowers to keep leaves tender"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "peppers", "oregano"],
-        "avoid_plants": ["rue"],
-        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "tomatoes",
+          "peppers",
+          "oregano"
+        ],
+        "avoid_plants": [
+          "rue"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -347,9 +564,23 @@
         "care_notes": "Slow to germinate, soak seeds before planting"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "asparagus", "carrots"],
-        "avoid_plants": ["mint"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "tomatoes",
+          "asparagus",
+          "carrots"
+        ],
+        "avoid_plants": [
+          "mint"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -369,9 +600,23 @@
         "care_notes": "Bolts quickly in heat, succession plant every 2-3 weeks"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "peppers", "beans"],
-        "avoid_plants": ["fennel"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "tomatoes",
+          "peppers",
+          "beans"
+        ],
+        "avoid_plants": [
+          "fennel"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -391,9 +636,21 @@
         "care_notes": "Perennial herb, drought tolerant once established"
       },
       "compatibility": {
-        "companion_plants": ["basil", "peppers", "tomatoes"],
+        "companion_plants": [
+          "basil",
+          "peppers",
+          "tomatoes"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -413,9 +670,20 @@
         "care_notes": "Perennial herb, excellent for borders and containers"
       },
       "compatibility": {
-        "companion_plants": ["strawberries", "cabbage", "tomatoes"],
+        "companion_plants": [
+          "strawberries",
+          "cabbage",
+          "tomatoes"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -435,9 +703,18 @@
         "care_notes": "Perennial herb, protect from harsh winter winds"
       },
       "compatibility": {
-        "companion_plants": ["beans", "cabbage", "carrots"],
+        "companion_plants": [
+          "beans",
+          "cabbage",
+          "carrots"
+        ],
         "avoid_plants": [],
-        "climate_zones": [7, 8, 9, 10]
+        "climate_zones": [
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -457,9 +734,22 @@
         "care_notes": "Perennial herb, very invasive, best grown in containers"
       },
       "compatibility": {
-        "companion_plants": ["cabbage", "tomatoes"],
-        "avoid_plants": ["parsley"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "cabbage",
+          "tomatoes"
+        ],
+        "avoid_plants": [
+          "parsley"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -479,9 +769,24 @@
         "care_notes": "Direct sow, does not transplant well"
       },
       "compatibility": {
-        "companion_plants": ["cabbage", "cucumbers", "lettuce"],
-        "avoid_plants": ["carrots", "tomatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "cabbage",
+          "cucumbers",
+          "lettuce"
+        ],
+        "avoid_plants": [
+          "carrots",
+          "tomatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -501,9 +806,24 @@
         "care_notes": "Perennial herb, divide clumps every 3-4 years"
       },
       "compatibility": {
-        "companion_plants": ["carrots", "tomatoes", "roses"],
-        "avoid_plants": ["beans", "peas"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "carrots",
+          "tomatoes",
+          "roses"
+        ],
+        "avoid_plants": [
+          "beans",
+          "peas"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -523,9 +843,21 @@
         "care_notes": "Perennial herb, prune after flowering to maintain shape"
       },
       "compatibility": {
-        "companion_plants": ["rosemary", "cabbage", "carrots"],
-        "avoid_plants": ["cucumbers"],
-        "climate_zones": [5, 6, 7, 8, 9]
+        "companion_plants": [
+          "rosemary",
+          "cabbage",
+          "carrots"
+        ],
+        "avoid_plants": [
+          "cucumbers"
+        ],
+        "climate_zones": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -545,9 +877,20 @@
         "care_notes": "Perennial shrub, requires acidic soil pH 4.5-5.5"
       },
       "compatibility": {
-        "companion_plants": ["azaleas", "rhododendrons", "cranberries"],
+        "companion_plants": [
+          "azaleas",
+          "rhododendrons",
+          "cranberries"
+        ],
         "avoid_plants": [],
-        "climate_zones": [3, 4, 5, 6, 7, 8]
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -567,9 +910,23 @@
         "care_notes": "Perennial canes, prune old canes after fruiting"
       },
       "compatibility": {
-        "companion_plants": ["garlic", "chives", "turnips"],
-        "avoid_plants": ["blackberries", "potatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "garlic",
+          "chives",
+          "turnips"
+        ],
+        "avoid_plants": [
+          "blackberries",
+          "potatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -589,9 +946,21 @@
         "care_notes": "Perennial canes, provide trellis support for best yields"
       },
       "compatibility": {
-        "companion_plants": ["tansy", "yarrow", "hyssop"],
-        "avoid_plants": ["raspberries"],
-        "climate_zones": [5, 6, 7, 8, 9]
+        "companion_plants": [
+          "tansy",
+          "yarrow",
+          "hyssop"
+        ],
+        "avoid_plants": [
+          "raspberries"
+        ],
+        "climate_zones": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -611,9 +980,23 @@
         "care_notes": "Perennial vine, requires sturdy trellis and annual pruning"
       },
       "compatibility": {
-        "companion_plants": ["oregano", "clover", "hyssop"],
-        "avoid_plants": ["cabbage", "radishes"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "oregano",
+          "clover",
+          "hyssop"
+        ],
+        "avoid_plants": [
+          "cabbage",
+          "radishes"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -633,9 +1016,21 @@
         "care_notes": "Requires warm soil, reduce watering as fruits ripen"
       },
       "compatibility": {
-        "companion_plants": ["corn", "radishes", "nasturtiums"],
+        "companion_plants": [
+          "corn",
+          "radishes",
+          "nasturtiums"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -655,9 +1050,22 @@
         "care_notes": "Harvest when stem slips easily from fruit"
       },
       "compatibility": {
-        "companion_plants": ["corn", "beans", "radishes"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "corn",
+          "beans",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -677,9 +1085,23 @@
         "care_notes": "Requires large space, hand pollinate for better fruit set"
       },
       "compatibility": {
-        "companion_plants": ["corn", "beans", "nasturtiums"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "corn",
+          "beans",
+          "nasturtiums"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -699,9 +1121,22 @@
         "care_notes": "Heat-loving crop, harvest when skin is glossy"
       },
       "compatibility": {
-        "companion_plants": ["beans", "peppers", "spinach"],
-        "avoid_plants": ["fennel"],
-        "climate_zones": [5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "beans",
+          "peppers",
+          "spinach"
+        ],
+        "avoid_plants": [
+          "fennel"
+        ],
+        "climate_zones": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -721,9 +1156,24 @@
         "care_notes": "Bend tops over when bulbs form to promote curing"
       },
       "compatibility": {
-        "companion_plants": ["carrots", "beets", "lettuce"],
-        "avoid_plants": ["beans", "peas"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "carrots",
+          "beets",
+          "lettuce"
+        ],
+        "avoid_plants": [
+          "beans",
+          "peas"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -743,9 +1193,24 @@
         "care_notes": "Plant in fall, harvest when lower leaves turn brown"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "roses", "cabbage"],
-        "avoid_plants": ["beans", "peas"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "tomatoes",
+          "roses",
+          "cabbage"
+        ],
+        "avoid_plants": [
+          "beans",
+          "peas"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -765,9 +1230,24 @@
         "care_notes": "Thin seedlings early, both roots and greens are edible"
       },
       "compatibility": {
-        "companion_plants": ["onions", "lettuce", "cabbage"],
-        "avoid_plants": ["pole beans"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "onions",
+          "lettuce",
+          "cabbage"
+        ],
+        "avoid_plants": [
+          "pole beans"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -787,9 +1267,23 @@
         "care_notes": "Heat tolerant, cut outer leaves and let plant continue producing"
       },
       "compatibility": {
-        "companion_plants": ["beans", "cabbage", "onions"],
+        "companion_plants": [
+          "beans",
+          "cabbage",
+          "onions"
+        ],
         "avoid_plants": [],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9, 10]
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -809,14 +1303,27 @@
         "care_notes": "Quick growing, succession plant for continuous harvest"
       },
       "compatibility": {
-        "companion_plants": ["lettuce", "spinach", "carrots"],
+        "companion_plants": [
+          "lettuce",
+          "spinach",
+          "carrots"
+        ],
         "avoid_plants": [],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
       "name": "Strawberries",
-      "scientific_name": "Fragaria × ananassa",
+      "scientific_name": "Fragaria \u00d7 ananassa",
       "plant_type": "fruit",
       "growing": {
         "season": "spring",
@@ -831,9 +1338,23 @@
         "care_notes": "Perennial, remove runners for larger berries"
       },
       "compatibility": {
-        "companion_plants": ["thyme", "borage", "lettuce"],
-        "avoid_plants": ["brassicas"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "thyme",
+          "borage",
+          "lettuce"
+        ],
+        "avoid_plants": [
+          "brassicas"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -853,9 +1374,24 @@
         "care_notes": "Frost improves flavor, harvest from bottom up"
       },
       "compatibility": {
-        "companion_plants": ["onions", "potatoes", "beets"],
-        "avoid_plants": ["tomatoes", "strawberries"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "onions",
+          "potatoes",
+          "beets"
+        ],
+        "avoid_plants": [
+          "tomatoes",
+          "strawberries"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -875,9 +1411,25 @@
         "care_notes": "Cool season crop, consistent moisture prevents splitting"
       },
       "compatibility": {
-        "companion_plants": ["beets", "onions", "celery"],
-        "avoid_plants": ["strawberries", "tomatoes"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beets",
+          "onions",
+          "celery"
+        ],
+        "avoid_plants": [
+          "strawberries",
+          "tomatoes"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -897,9 +1449,23 @@
         "care_notes": "Quick growing, bolts in hot weather"
       },
       "compatibility": {
-        "companion_plants": ["lettuce", "spinach", "onions"],
-        "avoid_plants": ["tomatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "lettuce",
+          "spinach",
+          "onions"
+        ],
+        "avoid_plants": [
+          "tomatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -919,9 +1485,24 @@
         "care_notes": "Very frost tolerant, flavor improves after frost"
       },
       "compatibility": {
-        "companion_plants": ["onions", "garlic", "beans"],
-        "avoid_plants": ["tomatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "onions",
+          "garlic",
+          "beans"
+        ],
+        "avoid_plants": [
+          "tomatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -941,9 +1522,24 @@
         "care_notes": "Harvest when bulbs are 2-3 inches in diameter"
       },
       "compatibility": {
-        "companion_plants": ["beets", "onions", "cucumbers"],
-        "avoid_plants": ["tomatoes", "strawberries"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beets",
+          "onions",
+          "cucumbers"
+        ],
+        "avoid_plants": [
+          "tomatoes",
+          "strawberries"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -963,9 +1559,24 @@
         "care_notes": "Cool season crop, both roots and greens are edible"
       },
       "compatibility": {
-        "companion_plants": ["peas", "beans", "radishes"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "peas",
+          "beans",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -985,9 +1596,20 @@
         "care_notes": "Long season crop, improves with frost"
       },
       "compatibility": {
-        "companion_plants": ["peas", "onions"],
+        "companion_plants": [
+          "peas",
+          "onions"
+        ],
         "avoid_plants": [],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1007,9 +1629,24 @@
         "care_notes": "Hill soil around stems to blanch for longer white portion"
       },
       "compatibility": {
-        "companion_plants": ["carrots", "celery", "onions"],
-        "avoid_plants": ["beans", "peas"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "carrots",
+          "celery",
+          "onions"
+        ],
+        "avoid_plants": [
+          "beans",
+          "peas"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1029,9 +1666,23 @@
         "care_notes": "Plant cloves in fall, harvest when tops fall over"
       },
       "compatibility": {
-        "companion_plants": ["carrots", "tomatoes", "beets"],
-        "avoid_plants": ["beans", "peas"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "carrots",
+          "tomatoes",
+          "beets"
+        ],
+        "avoid_plants": [
+          "beans",
+          "peas"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1051,9 +1702,25 @@
         "care_notes": "Quick growing, succession plant for continuous harvest"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "lettuce", "carrots"],
-        "avoid_plants": ["beans", "peas"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "tomatoes",
+          "lettuce",
+          "carrots"
+        ],
+        "avoid_plants": [
+          "beans",
+          "peas"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -1073,9 +1740,23 @@
         "care_notes": "Perennial, do not harvest first 2 years, feed heavily"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "parsley", "basil"],
-        "avoid_plants": ["onions", "garlic"],
-        "climate_zones": [3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "tomatoes",
+          "parsley",
+          "basil"
+        ],
+        "avoid_plants": [
+          "onions",
+          "garlic"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1095,9 +1776,17 @@
         "care_notes": "Perennial in warm climates, harvest before flowers open"
       },
       "compatibility": {
-        "companion_plants": ["sunflowers", "tarragon"],
+        "companion_plants": [
+          "sunflowers",
+          "tarragon"
+        ],
         "avoid_plants": [],
-        "climate_zones": [7, 8, 9, 10]
+        "climate_zones": [
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -1117,9 +1806,24 @@
         "care_notes": "Requires consistent moisture and rich soil"
       },
       "compatibility": {
-        "companion_plants": ["leeks", "onions", "tomatoes"],
-        "avoid_plants": ["carrots", "parsley"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "leeks",
+          "onions",
+          "tomatoes"
+        ],
+        "avoid_plants": [
+          "carrots",
+          "parsley"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1139,9 +1843,23 @@
         "care_notes": "Frost improves flavor, direct sow only"
       },
       "compatibility": {
-        "companion_plants": ["peas", "radishes", "beans"],
-        "avoid_plants": ["carrots"],
-        "climate_zones": [2, 3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "peas",
+          "radishes",
+          "beans"
+        ],
+        "avoid_plants": [
+          "carrots"
+        ],
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1161,9 +1879,22 @@
         "care_notes": "Heat loving, cure tubers after harvest for better storage"
       },
       "compatibility": {
-        "companion_plants": ["thyme", "oregano", "parsnips"],
-        "avoid_plants": ["squash"],
-        "climate_zones": [5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "thyme",
+          "oregano",
+          "parsnips"
+        ],
+        "avoid_plants": [
+          "squash"
+        ],
+        "climate_zones": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -1183,9 +1914,25 @@
         "care_notes": "Hill soil as plants grow to prevent greening"
       },
       "compatibility": {
-        "companion_plants": ["beans", "corn", "cabbage"],
-        "avoid_plants": ["tomatoes", "cucumbers", "squash"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "corn",
+          "cabbage"
+        ],
+        "avoid_plants": [
+          "tomatoes",
+          "cucumbers",
+          "squash"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1205,9 +1952,23 @@
         "care_notes": "Harvest frequently to encourage production"
       },
       "compatibility": {
-        "companion_plants": ["beans", "corn", "radishes"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "corn",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1227,9 +1988,22 @@
         "care_notes": "Long season crop, harvest when skin is hard"
       },
       "compatibility": {
-        "companion_plants": ["beans", "corn", "nasturtiums"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "corn",
+          "nasturtiums"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1249,9 +2023,23 @@
         "care_notes": "Winter squash type, cure after harvest for storage"
       },
       "compatibility": {
-        "companion_plants": ["beans", "corn", "radishes"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "corn",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1271,9 +2059,23 @@
         "care_notes": "Harvest when skin turns golden yellow"
       },
       "compatibility": {
-        "companion_plants": ["beans", "corn", "marigolds"],
-        "avoid_plants": ["potatoes"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "beans",
+          "corn",
+          "marigolds"
+        ],
+        "avoid_plants": [
+          "potatoes"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1293,9 +2095,20 @@
         "care_notes": "Heat loving, harvest pods when 2-4 inches long"
       },
       "compatibility": {
-        "companion_plants": ["peppers", "eggplant", "basil"],
+        "companion_plants": [
+          "peppers",
+          "eggplant",
+          "basil"
+        ],
         "avoid_plants": [],
-        "climate_zones": [5, 6, 7, 8, 9, 10]
+        "climate_zones": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -1316,8 +2129,20 @@
       },
       "compatibility": {
         "companion_plants": [],
-        "avoid_plants": ["tomatoes", "beans", "dill", "cilantro"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "avoid_plants": [
+          "tomatoes",
+          "beans",
+          "dill",
+          "cilantro"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1337,9 +2162,19 @@
         "care_notes": "Perennial herb, French variety preferred for culinary use"
       },
       "compatibility": {
-        "companion_plants": ["eggplant", "peppers"],
+        "companion_plants": [
+          "eggplant",
+          "peppers"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1359,9 +2194,19 @@
         "care_notes": "Perennial herb, can be invasive, contain in pots"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "squash"],
+        "companion_plants": [
+          "tomatoes",
+          "squash"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1381,9 +2226,19 @@
         "care_notes": "Perennial, drought tolerant, requires well-drained soil"
       },
       "compatibility": {
-        "companion_plants": ["rosemary", "thyme", "sage"],
+        "companion_plants": [
+          "rosemary",
+          "thyme",
+          "sage"
+        ],
         "avoid_plants": [],
-        "climate_zones": [5, 6, 7, 8, 9]
+        "climate_zones": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1403,9 +2258,21 @@
         "care_notes": "Self-seeds readily, harvest flowers when fully open"
       },
       "compatibility": {
-        "companion_plants": ["cabbage", "onions", "cucumbers"],
+        "companion_plants": [
+          "cabbage",
+          "onions",
+          "cucumbers"
+        ],
         "avoid_plants": [],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1425,9 +2292,19 @@
         "care_notes": "Tender perennial, similar to oregano but sweeter"
       },
       "compatibility": {
-        "companion_plants": ["oregano", "thyme", "basil"],
+        "companion_plants": [
+          "oregano",
+          "thyme",
+          "basil"
+        ],
         "avoid_plants": [],
-        "climate_zones": [6, 7, 8, 9, 10]
+        "climate_zones": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -1447,9 +2324,15 @@
         "care_notes": "Tropical perennial, grow in containers in cold climates"
       },
       "compatibility": {
-        "companion_plants": ["citronella", "basil"],
+        "companion_plants": [
+          "citronella",
+          "basil"
+        ],
         "avoid_plants": [],
-        "climate_zones": [9, 10]
+        "climate_zones": [
+          9,
+          10
+        ]
       }
     },
     {
@@ -1471,7 +2354,11 @@
       "compatibility": {
         "companion_plants": [],
         "avoid_plants": [],
-        "climate_zones": [8, 9, 10]
+        "climate_zones": [
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -1491,9 +2378,19 @@
         "care_notes": "Perennial root, very invasive, harvest in fall"
       },
       "compatibility": {
-        "companion_plants": ["potatoes"],
+        "companion_plants": [
+          "potatoes"
+        ],
         "avoid_plants": [],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1513,9 +2410,14 @@
         "care_notes": "Tropical perennial, harvest after foliage dies back"
       },
       "compatibility": {
-        "companion_plants": ["turmeric"],
+        "companion_plants": [
+          "turmeric"
+        ],
         "avoid_plants": [],
-        "climate_zones": [9, 10]
+        "climate_zones": [
+          9,
+          10
+        ]
       }
     },
     {
@@ -1535,9 +2437,20 @@
         "care_notes": "Perennial, do not harvest first year, leaves are toxic"
       },
       "compatibility": {
-        "companion_plants": ["beans", "garlic", "onions"],
+        "companion_plants": [
+          "beans",
+          "garlic",
+          "onions"
+        ],
         "avoid_plants": [],
-        "climate_zones": [3, 4, 5, 6, 7, 8]
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1557,9 +2470,19 @@
         "care_notes": "Cool season crop, blanch centers to reduce bitterness"
       },
       "compatibility": {
-        "companion_plants": ["lettuce", "spinach"],
+        "companion_plants": [
+          "lettuce",
+          "spinach"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1579,9 +2502,20 @@
         "care_notes": "Cool weather crop, colors best in cool temperatures"
       },
       "compatibility": {
-        "companion_plants": ["lettuce", "endive"],
+        "companion_plants": [
+          "lettuce",
+          "endive"
+        ],
         "avoid_plants": [],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1601,9 +2535,23 @@
         "care_notes": "Quick growing, succession plant for continuous harvest"
       },
       "compatibility": {
-        "companion_plants": ["peas", "beans", "onions"],
-        "avoid_plants": ["strawberries"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "peas",
+          "beans",
+          "onions"
+        ],
+        "avoid_plants": [
+          "strawberries"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1625,7 +2573,15 @@
       "compatibility": {
         "companion_plants": [],
         "avoid_plants": [],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1645,9 +2601,23 @@
         "care_notes": "Plant at least 2 for pollination, harvest when husks split"
       },
       "compatibility": {
-        "companion_plants": ["peppers", "basil", "carrots"],
-        "avoid_plants": ["fennel"],
-        "climate_zones": [4, 5, 6, 7, 8, 9, 10]
+        "companion_plants": [
+          "peppers",
+          "basil",
+          "carrots"
+        ],
+        "avoid_plants": [
+          "fennel"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
       }
     },
     {
@@ -1667,9 +2637,19 @@
         "care_notes": "Sweet fruit in papery husk, harvest when fruit drops"
       },
       "compatibility": {
-        "companion_plants": ["tomatoes", "peppers"],
+        "companion_plants": [
+          "tomatoes",
+          "peppers"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1689,9 +2669,23 @@
         "care_notes": "Heat loving, nitrogen fixer, needs warm soil to germinate"
       },
       "compatibility": {
-        "companion_plants": ["corn", "cucumbers", "radishes"],
-        "avoid_plants": ["onions", "garlic"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "corn",
+          "cucumbers",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "onions",
+          "garlic"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1711,9 +2705,23 @@
         "care_notes": "Nitrogen fixer, harvest when pods are plump and green"
       },
       "compatibility": {
-        "companion_plants": ["corn", "squash", "cucumbers"],
-        "avoid_plants": ["onions", "garlic"],
-        "climate_zones": [4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "corn",
+          "squash",
+          "cucumbers"
+        ],
+        "avoid_plants": [
+          "onions",
+          "garlic"
+        ],
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1733,9 +2741,23 @@
         "care_notes": "Cool season crop, nitrogen fixer, pinch tops to prevent aphids"
       },
       "compatibility": {
-        "companion_plants": ["potatoes", "cucumbers", "corn"],
-        "avoid_plants": ["onions", "garlic"],
-        "climate_zones": [3, 4, 5, 6, 7, 8]
+        "companion_plants": [
+          "potatoes",
+          "cucumbers",
+          "corn"
+        ],
+        "avoid_plants": [
+          "onions",
+          "garlic"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1755,9 +2777,24 @@
         "care_notes": "Requires trellis or support, nitrogen fixer, longer harvest than bush"
       },
       "compatibility": {
-        "companion_plants": ["corn", "cucumbers", "radishes"],
-        "avoid_plants": ["onions", "beets"],
-        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+        "companion_plants": [
+          "corn",
+          "cucumbers",
+          "radishes"
+        ],
+        "avoid_plants": [
+          "onions",
+          "beets"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1777,9 +2814,20 @@
         "care_notes": "Perennial shrub, prune old wood for better production"
       },
       "compatibility": {
-        "companion_plants": ["gooseberries", "chives"],
-        "avoid_plants": ["white pine"],
-        "climate_zones": [3, 4, 5, 6, 7]
+        "companion_plants": [
+          "gooseberries",
+          "chives"
+        ],
+        "avoid_plants": [
+          "white pine"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
       }
     },
     {
@@ -1799,9 +2847,20 @@
         "care_notes": "Perennial shrub, tolerates shade better than most fruits"
       },
       "compatibility": {
-        "companion_plants": ["currants", "tomatoes"],
-        "avoid_plants": ["white pine"],
-        "climate_zones": [3, 4, 5, 6, 7]
+        "companion_plants": [
+          "currants",
+          "tomatoes"
+        ],
+        "avoid_plants": [
+          "white pine"
+        ],
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
       }
     },
     {
@@ -1821,9 +2880,19 @@
         "care_notes": "Perennial shrub, plant 2+ varieties for cross-pollination"
       },
       "compatibility": {
-        "companion_plants": ["yarrow", "echinacea"],
+        "companion_plants": [
+          "yarrow",
+          "echinacea"
+        ],
         "avoid_plants": [],
-        "climate_zones": [3, 4, 5, 6, 7, 8]
+        "climate_zones": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1843,9 +2912,18 @@
         "care_notes": "Perennial, requires acidic boggy soil, harvest in fall"
       },
       "compatibility": {
-        "companion_plants": ["blueberries", "azaleas"],
+        "companion_plants": [
+          "blueberries",
+          "azaleas"
+        ],
         "avoid_plants": [],
-        "climate_zones": [2, 3, 4, 5, 6]
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
       }
     },
     {
@@ -1865,9 +2943,18 @@
         "care_notes": "Perennial shrub, prefers acidic soil similar to blueberries"
       },
       "compatibility": {
-        "companion_plants": ["blueberries", "rhododendrons"],
+        "companion_plants": [
+          "blueberries",
+          "rhododendrons"
+        ],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1887,9 +2974,18 @@
         "care_notes": "Perennial groundcover, requires acidic soil, cold hardy"
       },
       "compatibility": {
-        "companion_plants": ["blueberries", "cranberries"],
+        "companion_plants": [
+          "blueberries",
+          "cranberries"
+        ],
         "avoid_plants": [],
-        "climate_zones": [2, 3, 4, 5, 6]
+        "climate_zones": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
       }
     },
     {
@@ -1911,7 +3007,11 @@
       "compatibility": {
         "companion_plants": [],
         "avoid_plants": [],
-        "climate_zones": [7, 8, 9]
+        "climate_zones": [
+          7,
+          8,
+          9
+        ]
       }
     },
     {
@@ -1933,7 +3033,13 @@
       "compatibility": {
         "companion_plants": [],
         "avoid_plants": [],
-        "climate_zones": [4, 5, 6, 7, 8]
+        "climate_zones": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       }
     },
     {
@@ -1955,7 +3061,10 @@
       "compatibility": {
         "companion_plants": [],
         "avoid_plants": [],
-        "climate_zones": [9, 10]
+        "climate_zones": [
+          9,
+          10
+        ]
       }
     },
     {
@@ -1975,9 +3084,17 @@
         "care_notes": "Perennial tree/shrub, can be container grown in cold climates"
       },
       "compatibility": {
-        "companion_plants": ["rue", "strawberries"],
+        "companion_plants": [
+          "rue",
+          "strawberries"
+        ],
         "avoid_plants": [],
-        "climate_zones": [7, 8, 9, 10]
+        "climate_zones": [
+          7,
+          8,
+          9,
+          10
+        ]
       }
     }
   ]
