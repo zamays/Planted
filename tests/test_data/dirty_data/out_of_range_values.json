@@ -1,0 +1,92 @@
+{
+  "plants": [
+    {
+      "name": "Negative-Days Plant",
+      "scientific_name": "Negativus daysus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": -5,
+        "days_to_maturity": -30,
+        "spacing_inches": -10
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Impossible plant"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots"],
+        "avoid_plants": [],
+        "climate_zones": [3, 4, 5]
+      }
+    },
+    {
+      "name": "Extreme-Values Plant",
+      "scientific_name": "Extremus maximus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 99999,
+        "days_to_maturity": 999999,
+        "spacing_inches": 10000
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Takes forever to grow"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 99]
+      }
+    },
+    {
+      "name": "Zero-Values Plant",
+      "scientific_name": "Zerus nullus",
+      "plant_type": "herb",
+      "growing": {
+        "season": "fall",
+        "planting_method": "seed",
+        "days_to_germination": 0,
+        "days_to_maturity": 0,
+        "spacing_inches": 0
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "low",
+        "care_notes": "Instant growth"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": []
+      }
+    },
+    {
+      "name": "Invalid Season Plant",
+      "scientific_name": "Invalida seasonis",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "monsoon",
+        "planting_method": "teleportation",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "total_darkness",
+        "water_needs": "never",
+        "care_notes": "Fictional plant"
+      },
+      "compatibility": {
+        "companion_plants": ["unicorns"],
+        "avoid_plants": ["dragons"],
+        "climate_zones": [-5, 0, 100]
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "plants": [
+    {
+      "name": "String-Days Lettuce",
+      "scientific_name": "Lactuca sativa",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": "seven days",
+        "days_to_maturity": "two months",
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Cool weather crop"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots", "radishes"],
+        "avoid_plants": ["broccoli"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Number-Name Plant",
+      "scientific_name": 12345,
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 80,
+        "spacing_inches": "twenty-four"
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Requires support"
+      },
+      "compatibility": {
+        "companion_plants": "basil",
+        "avoid_plants": "fennel",
+        "climate_zones": "5-9"
+      }
+    },
+    {
+      "name": 999,
+      "scientific_name": "Capsicum annuum",
+      "plant_type": 42,
+      "growing": {
+        "season": ["spring", "summer"],
+        "planting_method": "transplant",
+        "days_to_germination": 10,
+        "days_to_maturity": 70,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": true,
+        "water_needs": false,
+        "care_notes": null
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": []
+      }
+    }
+  ]
+}

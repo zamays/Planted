@@ -1,0 +1,74 @@
+{
+  "version": "2.0",
+  "metadata": {
+    "source": "Test Data",
+    "created_by": "Test System"
+  },
+  "plants": [
+    {
+      "id": 12345,
+      "name": "Lettuce",
+      "scientific_name": "Lactuca sativa",
+      "plant_type": "vegetable",
+      "common_names": ["Garden Lettuce", "Leaf Lettuce"],
+      "origin": "Mediterranean",
+      "price": 2.99,
+      "supplier": "Test Seeds Inc",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 6,
+        "optimal_temperature": "60-65F",
+        "frost_tolerance": "hardy"
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Cool weather crop",
+        "fertilizer_type": "balanced NPK",
+        "ph_range": "6.0-7.0"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots", "radishes"],
+        "avoid_plants": ["broccoli"],
+        "climate_zones": [3, 4, 5, 6, 7, 8, 9],
+        "pollination": "self-pollinating"
+      },
+      "harvest": {
+        "method": "cut and come again",
+        "storage_days": 7,
+        "best_time": "morning"
+      },
+      "nutritional_info": {
+        "calories": 15,
+        "vitamins": ["A", "K", "C"]
+      }
+    },
+    {
+      "name": "Tomato",
+      "scientific_name": "Solanum lycopersicum",
+      "plant_type": "vegetable",
+      "photo_url": "https://example.com/tomato.jpg",
+      "tags": ["determinate", "heirloom", "red"],
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 80,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Requires staking"
+      },
+      "compatibility": {
+        "companion_plants": ["basil", "carrots"],
+        "avoid_plants": ["fennel"],
+        "climate_zones": [5, 6, 7, 8, 9]
+      }
+    }
+  ]
+}

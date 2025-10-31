@@ -1,0 +1,158 @@
+{
+  "plants": [
+    {
+      "name": "Jalapeño Pepper 🌶️",
+      "scientific_name": "Capsicum annuum 'Jalapeño'",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 10,
+        "days_to_maturity": 75,
+        "spacing_inches": 18
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Hot pepper 🔥 - handle with care! Contains capsaicin."
+      },
+      "compatibility": {
+        "companion_plants": ["tomatoes", "peppers"],
+        "avoid_plants": ["beans"],
+        "climate_zones": [5, 6, 7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Plant with\nNewline",
+      "scientific_name": "Newlinus\tTabbus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring\r\n",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Line 1\nLine 2\nLine 3"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [5, 6, 7]
+      }
+    },
+    {
+      "name": "Plant's \"Special\" 'Quotes'",
+      "scientific_name": "Quotus maximus",
+      "plant_type": "herb",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 45,
+        "spacing_inches": 8
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "low",
+        "care_notes": "Water \"deeply\" but not 'too often'"
+      },
+      "compatibility": {
+        "companion_plants": ["herb's friend", "other \"plant\""],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "Überpflanze Ñoño Café",
+      "scientific_name": "Plantus ünïçödë",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 10,
+        "days_to_maturity": 65,
+        "spacing_inches": 15
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Contains: ü, ñ, é, ç characters. Très bien! ¡Muy bueno!"
+      },
+      "compatibility": {
+        "companion_plants": ["tomaté", "peppér"],
+        "avoid_plants": ["bëets"],
+        "climate_zones": [6, 7, 8, 9]
+      }
+    },
+    {
+      "name": "Asian Plant 植物",
+      "scientific_name": "Plantus 日本語",
+      "plant_type": "herb",
+      "growing": {
+        "season": "summer",
+        "planting_method": "seed",
+        "days_to_germination": 14,
+        "days_to_maturity": 90,
+        "spacing_inches": 20
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Contains Chinese (中文), Japanese (日本語), Korean (한국어) characters"
+      },
+      "compatibility": {
+        "companion_plants": ["植物1", "植物2"],
+        "avoid_plants": [],
+        "climate_zones": [7, 8, 9, 10]
+      }
+    },
+    {
+      "name": "Symbols Plant ©®™",
+      "scientific_name": "Symbolus maximus ♠♣♥♦",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "fall",
+        "planting_method": "transplant",
+        "days_to_germination": 12,
+        "days_to_maturity": 80,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "Contains symbols: © ® ™ § ¶ † ‡ • ◦ ° ± ÷ × ≈ ≠ ≤ ≥"
+      },
+      "compatibility": {
+        "companion_plants": ["α-plant", "β-plant"],
+        "avoid_plants": ["∞-weed"],
+        "climate_zones": [5, 6, 7, 8]
+      }
+    },
+    {
+      "name": "SQL'; DROP TABLE plants;--",
+      "scientific_name": "Injectus sqlus",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "medium",
+        "care_notes": "<script>alert('XSS')</script> AND 1=1--"
+      },
+      "compatibility": {
+        "companion_plants": ["OR 1=1", "'; DELETE FROM plants WHERE '1'='1"],
+        "avoid_plants": ["<img src=x onerror=alert('xss')>"],
+        "climate_zones": [5, 6, 7]
+      }
+    }
+  ]
+}

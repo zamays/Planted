@@ -1,0 +1,58 @@
+{
+  "plants": [
+    {
+      "name": "Incomplete Lettuce",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "days_to_germination": 7,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots"],
+        "avoid_plants": [],
+        "climate_zones": [5, 6, 7]
+      }
+    },
+    {
+      "name": "Tomato Missing Growing Info",
+      "scientific_name": "Solanum lycopersicum",
+      "plant_type": "vegetable",
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": "Needs staking"
+      },
+      "compatibility": {
+        "companion_plants": ["basil"],
+        "avoid_plants": ["fennel"],
+        "climate_zones": [5, 6, 7, 8]
+      }
+    },
+    {
+      "scientific_name": "Unknown scientificname",
+      "plant_type": "herb",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 10,
+        "days_to_maturity": 30,
+        "spacing_inches": 12
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "low",
+        "care_notes": "Drought tolerant"
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": [4, 5, 6, 7, 8, 9]
+      }
+    }
+  ]
+}

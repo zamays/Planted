@@ -1,0 +1,70 @@
+{
+  "plants": [
+    {
+      "name": "",
+      "scientific_name": "Lactuca sativa",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "spring",
+        "planting_method": "seed",
+        "days_to_germination": 7,
+        "days_to_maturity": 60,
+        "spacing_inches": 6
+      },
+      "care": {
+        "sun_requirements": "partial_shade",
+        "water_needs": "medium",
+        "care_notes": "Cool weather crop"
+      },
+      "compatibility": {
+        "companion_plants": ["carrots"],
+        "avoid_plants": ["broccoli"],
+        "climate_zones": [3, 4, 5, 6, 7]
+      }
+    },
+    {
+      "name": null,
+      "scientific_name": "Solanum lycopersicum",
+      "plant_type": "vegetable",
+      "growing": {
+        "season": "summer",
+        "planting_method": "transplant",
+        "days_to_germination": 7,
+        "days_to_maturity": 80,
+        "spacing_inches": 24
+      },
+      "care": {
+        "sun_requirements": "full_sun",
+        "water_needs": "high",
+        "care_notes": null
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": null,
+        "climate_zones": null
+      }
+    },
+    {
+      "name": "Pepper",
+      "scientific_name": "",
+      "plant_type": "",
+      "growing": {
+        "season": "",
+        "planting_method": "",
+        "days_to_germination": null,
+        "days_to_maturity": null,
+        "spacing_inches": null
+      },
+      "care": {
+        "sun_requirements": "",
+        "water_needs": "",
+        "care_notes": ""
+      },
+      "compatibility": {
+        "companion_plants": [],
+        "avoid_plants": [],
+        "climate_zones": []
+      }
+    }
+  ]
+}
