@@ -946,6 +946,30 @@ def complete_task():
         return jsonify({"status": "error", "message": str(e)})
 
 
+def get_app_configuration():
+    """
+    Determine application configuration based on environment variables.
+
+    Detects production mode and configures host and port accordingly.
+    Production mode is enabled when PORT environment variable is set
+    (e.g., on Render.com) or RENDER is explicitly set to 'true'.
+
+    Returns:
+        tuple: (is_production, host, port) where:
+            - is_production (bool): True if running in production mode
+            - host (str): Host to bind to ('0.0.0.0' in production, '127.0.0.1' in dev)
+            - port (int): Port to bind to (from PORT env var or 5000 default)
+
+    Environment Variables:
+        PORT: Port to bind to (default: 5000)
+        RENDER: Set to 'true' for production mode on Render.com
+    """
+    is_production = os.getenv("RENDER") == "true" or os.getenv("PORT") is not None
+    port = int(os.getenv("PORT", "5000"))
+    host = "0.0.0.0" if is_production else "127.0.0.1"
+    return is_production, host, port
+
+
 def run_app():
     """
     Initialize services and start the Flask development server.
@@ -955,22 +979,11 @@ def run_app():
 
     The function handles service initialization failures gracefully and
     provides fallback functionality.
-
-    Environment Variables:
-        PORT: Port to bind to (default: 5000)
-        RENDER: Set to 'true' for production mode on Render.com
     """
     print("🌱 Starting Planted Web App...")
 
-    # Detect if running in production (Render.com or similar)
-    is_production = os.getenv("RENDER") == "true" or os.getenv("PORT") is not None
-
-    # Get port from environment or default to 5000
-    port = int(os.getenv("PORT", "5000"))
-
-    # In production, bind to 0.0.0.0 to accept external connections
-    # In development, bind to 127.0.0.1 for local-only access
-    host = "0.0.0.0" if is_production else "127.0.0.1"
+    # Get application configuration
+    is_production, host, port = get_app_configuration()
 
     try:
         initialize_services()
