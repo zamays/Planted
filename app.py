@@ -88,28 +88,11 @@ def initialize_services():
 
         print("   ✅ Database services initialized")
 
-        # Set default location (New York) as fallback
+        # Set default location (New York) as fallback - do NOT use server IP
+        # Users will set their location via browser geolocation or account settings
         location_service.set_manual_location(
             40.7128, -74.0060, {"city": "New York", "state": "NY", "country": "USA"}
         )
-
-        # Try to get actual location in background to avoid blocking startup
-        def load_location():
-            """Background task to load user's actual location and weather data."""
-            try:
-                if location_service is not None:
-                    location_service.get_location_by_ip()
-                    if location_service.current_location:
-                        lat = location_service.current_location["latitude"]
-                        lon = location_service.current_location["longitude"]
-                        if weather_service is not None:
-                            weather_service.get_current_weather(lat, lon)
-                            weather_service.get_forecast(lat, lon)
-                print("   ✅ Location and weather data loaded")
-            except (OSError, KeyError, ValueError, ConnectionError) as e:
-                print(f"   ⚠️ Location/weather loading failed: {e}")
-
-        threading.Thread(target=load_location, daemon=True).start()
 
         # Initialize care reminder system
         try:
@@ -127,7 +110,7 @@ def initialize_services():
 def get_current_user_id():
     """
     Get the current user ID from session.
-    
+
     Returns:
         Optional[int]: User ID if logged in, None if guest mode or not logged in
     """
@@ -144,7 +127,7 @@ def is_logged_in():
 def load_user_location():
     """Load location for the current user."""
     user_id = get_current_user_id()
-    
+
     if user_id and auth_service:
         # Load user's saved location
         user = auth_service.get_user_by_id(user_id)
@@ -159,10 +142,20 @@ def load_user_location():
                     'country': loc.get('country', '')
                 }
             )
+            # Also update weather for user's location
+            if weather_service is not None:
+                weather_service.get_current_weather(
+                    loc['latitude'],
+                    loc['longitude']
+                )
+                weather_service.get_forecast(
+                    loc['latitude'],
+                    loc['longitude']
+                )
             return
-    
-    # Default or guest: try to detect by IP
-    location_service.get_location_by_ip()
+
+    # For guest mode or users without location: use default location
+    # DO NOT use server IP as this gives wrong location when app is hosted remotely
 
 
 @app.before_request
@@ -170,14 +163,19 @@ def check_auth():
     """Check authentication before each request."""
     # Public routes that don't require authentication
     public_routes = ['login', 'signup', 'guest_mode', 'static']
-    
+
     if request.endpoint in public_routes:
         return None
-    
+
     # Check if user is authenticated or in guest mode
     if not session.get('user_id') and not session.get('is_guest'):
         return redirect(url_for('login'))
-    
+
+    # Load user location once per session
+    if not session.get('location_loaded'):
+        load_user_location()
+        session['location_loaded'] = True
+
     return None
 
 
@@ -185,35 +183,35 @@ def check_auth():
 def login():
     """
     User login page and authentication handler.
-    
+
     GET: Display login form
     POST: Authenticate user and create session
     """
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
-        
+
         if not username or not password:
             return render_template("login.html", error="Please enter username and password")
-        
+
         if auth_service is None:
             return render_template("login.html", error="Authentication service unavailable")
-        
+
         user = auth_service.verify_login(username, password)
-        
+
         if user:
             session['user_id'] = user['id']
             session['username'] = user['username']
             session['is_guest'] = False
-            
+
             # Load user's location
             load_user_location()
-            
+
             flash(f"Welcome back, {user['username']}!", "success")
             return redirect(url_for('dashboard'))
-        
+
         return render_template("login.html", error="Invalid username or password")
-    
+
     return render_template("login.html")
 
 
@@ -221,7 +219,7 @@ def login():
 def signup():
     """
     User registration page and handler.
-    
+
     GET: Display signup form
     POST: Create new user account
     """
@@ -230,49 +228,38 @@ def signup():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
-        
+
         # Validation
         if not username or not email or not password:
             return render_template("signup.html", error="All fields are required")
-        
+
         if password != confirm_password:
             return render_template("signup.html", error="Passwords do not match")
-        
+
         if auth_service is None:
             return render_template("signup.html", error="Authentication service unavailable")
-        
+
         try:
             user_id = auth_service.register_user(username, email, password)
-            
+
             if user_id is None:
-                return render_template("signup.html", 
+                return render_template("signup.html",
                                       error="Username or email already exists")
-            
+
             # Auto-login after signup
             session['user_id'] = user_id
             session['username'] = username
             session['is_guest'] = False
-            
-            # Detect and save user's location
-            if location_service:
-                location_service.get_location_by_ip()
-                if location_service.current_location:
-                    loc = location_service.current_location
-                    auth_service.update_user_location(
-                        user_id,
-                        loc['latitude'],
-                        loc['longitude'],
-                        loc.get('city', ''),
-                        loc.get('region', ''),
-                        loc.get('country', '')
-                    )
-            
+
+            # Location will be detected via browser geolocation on first dashboard load
+            # or user can set it in account settings
+
             flash(f"Welcome to Planted, {username}!", "success")
             return redirect(url_for('dashboard'))
-            
+
         except ValueError as e:
             return render_template("signup.html", error=str(e))
-    
+
     return render_template("signup.html")
 
 
@@ -280,7 +267,7 @@ def signup():
 def guest_mode():
     """
     Guest mode warning and activation.
-    
+
     GET: Display warning about guest mode
     POST: Activate guest mode session
     """
@@ -288,17 +275,17 @@ def guest_mode():
         session['is_guest'] = True
         session['user_id'] = None
         session['username'] = 'Guest'
-        
+
         # Use server location for guest mode
         if location_service:
             location_service.set_manual_location(
-                40.7128, -74.0060, 
+                40.7128, -74.0060,
                 {"city": "New York", "state": "NY", "country": "USA"}
             )
-        
+
         flash("⚠️ You are in Guest Mode. Your data will not be saved.", "warning")
         return redirect(url_for('dashboard'))
-    
+
     return render_template("guest_mode.html")
 
 
@@ -341,6 +328,12 @@ def dashboard():
 
         stats = {"plots": len(plots), "active_plants": 0, "tasks_due": len(due_tasks)}
 
+        # Check if user has location set in database
+        user_has_location = False
+        if user_id and auth_service:
+            user = auth_service.get_user_by_id(user_id)
+            user_has_location = user and user.get('location') is not None
+
         return render_template(
             "dashboard.html",
             stats=stats,
@@ -349,6 +342,7 @@ def dashboard():
             weather=weather_service.current_weather
             if weather_service is not None
             else None,
+            user_has_location=user_has_location,
         )
     except (sqlite3.Error, AttributeError, KeyError) as e:
         print(f"Dashboard error: {e}")
@@ -1094,6 +1088,84 @@ def help_page():
     return render_template("help.html")
 
 
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
+    """
+    User account settings page.
+
+    GET: Display settings form with current user information
+    POST: Update user settings (currently only location)
+
+    Returns:
+        str: Rendered settings page HTML template
+    """
+    # Require login
+    if not is_logged_in():
+        flash("Please log in to access settings.", "error")
+        return redirect(url_for('login'))
+
+    user_id = get_current_user_id()
+
+    if auth_service is None:
+        return "<h1>Error</h1><p>Authentication service unavailable.</p>"
+
+    user = auth_service.get_user_by_id(user_id)
+    if not user:
+        flash("User not found.", "error")
+        return redirect(url_for('dashboard'))
+
+    if request.method == "POST":
+        # Handle manual location update
+        try:
+            latitude = float(request.form.get("latitude", ""))
+            longitude = float(request.form.get("longitude", ""))
+            city = request.form.get("city", "").strip()
+            region = request.form.get("region", "").strip()
+            country = request.form.get("country", "").strip()
+
+            # Validate coordinates
+            if not -90 <= latitude <= 90:
+                flash("Latitude must be between -90 and 90", "error")
+                return render_template("settings.html", user=user)
+
+            if not -180 <= longitude <= 180:
+                flash("Longitude must be between -180 and 180", "error")
+                return render_template("settings.html", user=user)
+
+            # Update location
+            auth_service.update_user_location(
+                user_id, latitude, longitude, city, region, country
+            )
+
+            # Update location service for this session
+            if location_service is not None:
+                location_service.set_manual_location(
+                    latitude, longitude,
+                    {"city": city, "region": region, "country": country}
+                )
+
+                # Update weather for new location
+                if weather_service is not None:
+                    weather_service.get_current_weather(latitude, longitude)
+                    weather_service.get_forecast(latitude, longitude)
+
+            flash("Location updated successfully!", "success")
+            return redirect(url_for('settings'))
+
+        except (ValueError, TypeError):
+            flash("Invalid latitude or longitude. Please enter valid numbers.", "error")
+            return render_template("settings.html", user=user)
+
+    # GET request - display settings
+    current_location = None
+    climate_zone = None
+    if location_service is not None and location_service.current_location:
+        current_location = location_service.current_location
+        climate_zone = location_service.get_climate_zone()
+
+    return render_template("settings.html", user=user, current_location=current_location, climate_zone=climate_zone)
+
+
 @app.route("/test")
 def test_page():
     """Simple test page to verify Flask is working"""
@@ -1139,6 +1211,104 @@ def complete_task():
         return jsonify({"status": "success"})
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
         return jsonify({"status": "error", "message": str(e)})
+
+
+@app.route("/api/update_location", methods=["POST"])
+def update_location():
+    """
+    Update user location via AJAX API.
+
+    Accepts JSON data with location coordinates and optional location details.
+    Can be called from browser geolocation or manual entry.
+
+    JSON Data:
+        latitude (float): Geographic latitude
+        longitude (float): Geographic longitude
+        city (str, optional): City name
+        region (str, optional): State/region name
+        country (str, optional): Country name
+
+    Returns:
+        JSON: Success/error status with message
+    """
+    try:
+        # Check if user is logged in
+        user_id = get_current_user_id()
+        if not user_id:
+            return jsonify({
+                "status": "error",
+                "message": "Must be logged in to save location"
+            })
+
+        data = request.get_json()
+        if not data:
+            return jsonify({"status": "error", "message": "No JSON data provided."})
+
+        latitude = data.get("latitude")
+        longitude = data.get("longitude")
+
+        if latitude is None or longitude is None:
+            return jsonify({
+                "status": "error",
+                "message": "Latitude and longitude are required"
+            })
+
+        # Validate coordinates
+        try:
+            latitude = float(latitude)
+            longitude = float(longitude)
+
+            if not (-90 <= latitude <= 90):
+                return jsonify({
+                    "status": "error",
+                    "message": "Latitude must be between -90 and 90"
+                })
+            if not (-180 <= longitude <= 180):
+                return jsonify({
+                    "status": "error",
+                    "message": "Longitude must be between -180 and 180"
+                })
+        except (ValueError, TypeError):
+            return jsonify({
+                "status": "error",
+                "message": "Invalid latitude or longitude"
+            })
+
+        city = data.get("city", "")
+        region = data.get("region", "")
+        country = data.get("country", "")
+
+        # Update in database
+        if auth_service is None:
+            return jsonify({
+                "status": "error",
+                "message": "Authentication service unavailable"
+            })
+
+        auth_service.update_user_location(
+            user_id, latitude, longitude, city, region, country
+        )
+
+        # Update location service for this session
+        if location_service is not None:
+            location_service.set_manual_location(
+                latitude, longitude,
+                {"city": city, "region": region, "country": country}
+            )
+
+            # Update weather for new location
+            if weather_service is not None:
+                weather_service.get_current_weather(latitude, longitude)
+                weather_service.get_forecast(latitude, longitude)
+
+        return jsonify({
+            "status": "success",
+            "message": "Location updated successfully"
+        })
+
+    except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
+        print(f"Error updating location: {e}")  # Log for debugging
+        return jsonify({"status": "error", "message": "Failed to update location"})
 
 
 def get_app_configuration():

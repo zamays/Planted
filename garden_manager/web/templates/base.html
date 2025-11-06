@@ -77,6 +77,15 @@
                     ❓ <span>Help</span>
                 </a>
             </li>
+            {% if session.get('user_id') and not session.get('is_guest') %}
+            <li>
+                <a href="{{ url_for('settings') }}" 
+                   {% if request.endpoint == 'settings' %}class="active" aria-current="page"{% endif %}
+                   title="Account settings">
+                    ⚙️ <span>Settings</span>
+                </a>
+            </li>
+            {% endif %}
             {% if session.get('user_id') %}
             <li>
                 <a href="{{ url_for('logout') }}" 
