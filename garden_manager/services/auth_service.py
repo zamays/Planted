@@ -78,6 +78,19 @@ class AuthService:
         hash_bytes = password_hash.encode('utf-8')
         return bcrypt.checkpw(password_bytes, hash_bytes)
 
+    def _validate_email(self, email: str) -> None:
+        """
+        Validate email address format.
+
+        Args:
+            email: Email address to validate
+
+        Raises:
+            ValueError: If email is invalid
+        """
+        if not email or '@' not in email:
+            raise ValueError("Invalid email address")
+
     def register_user(self, username: str, email: str, password: str) -> Optional[int]:
         """
         Register a new user account.
@@ -96,8 +109,7 @@ class AuthService:
         # Validate inputs
         if not username or len(username) < 3 or len(username) > 50:
             raise ValueError("Username must be between 3 and 50 characters")
-        if not email or '@' not in email:
-            raise ValueError("Invalid email address")
+        self._validate_email(email)
         if not password or len(password) < 6:
             raise ValueError("Password must be at least 6 characters")
 
@@ -308,8 +320,7 @@ class AuthService:
             ValueError: If email validation fails
         """
         # Validate email
-        if not new_email or '@' not in new_email:
-            raise ValueError("Invalid email address")
+        self._validate_email(new_email)
 
         try:
             with sqlite3.connect(self.db_path) as conn:
