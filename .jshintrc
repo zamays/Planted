@@ -1,0 +1,21 @@
+{
+  "esversion": 6,
+  "strict": "global",
+  "browser": true,
+  "devel": true,
+  "jquery": false,
+  "globals": {
+    "fetch": true
+  },
+  "undef": true,
+  "unused": true,
+  "curly": true,
+  "eqeqeq": true,
+  "freeze": true,
+  "futurehostile": true,
+  "latedef": "nofunc",
+  "noarg": true,
+  "nonbsp": true,
+  "nonew": true,
+  "notypeof": true
+}

@@ -1,3 +1,5 @@
+'use strict';
+
 // Plot Preview - Update dimensions preview in real-time
 
 document.addEventListener('DOMContentLoaded', function() {
