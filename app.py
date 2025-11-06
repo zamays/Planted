@@ -946,17 +946,44 @@ def complete_task():
         return jsonify({"status": "error", "message": str(e)})
 
 
+def get_app_configuration():
+    """
+    Determine application configuration based on environment variables.
+
+    Detects production mode and configures host and port accordingly.
+    Production mode is enabled when PORT environment variable is set
+    (e.g., on Render.com) or RENDER is explicitly set to 'true'.
+
+    Returns:
+        tuple: (is_production, host, port) where:
+            - is_production (bool): True if running in production mode
+            - host (str): Host to bind to ('0.0.0.0' in production, '127.0.0.1' in dev)
+            - port (int): Port to bind to (from PORT env var or 5000 default)
+
+    Environment Variables:
+        PORT: Port to bind to (default: 5000)
+        RENDER: Set to 'true' for production mode on Render.com
+    """
+    is_production = os.getenv("RENDER") == "true" or os.getenv("PORT") is not None
+    port = int(os.getenv("PORT", "5000"))
+    host = "0.0.0.0" if is_production else "127.0.0.1"
+    return is_production, host, port
+
+
 def run_app():
     """
     Initialize services and start the Flask development server.
 
-    Sets up all application services, opens web browser automatically,
-    and starts the Flask server on localhost:5000.
+    Sets up all application services, opens web browser automatically in development,
+    and starts the Flask server. Supports both development (local) and production modes.
 
     The function handles service initialization failures gracefully and
     provides fallback functionality.
     """
     print("🌱 Starting Planted Web App...")
+
+    # Get application configuration
+    is_production, host, port = get_app_configuration()
 
     try:
         initialize_services()
@@ -965,26 +992,29 @@ def run_app():
         print(f"   ❌ Service initialization failed: {e}")
         print("   🔧 Starting with limited functionality...")
 
-    print("   🌐 Opening browser...")
+    # Only open browser in development mode
+    if not is_production:
+        print("   🌐 Opening browser...")
 
-    # Open browser after a short delay to ensure server is ready
-    def open_browser():
-        """Background task to open web browser after server startup delay."""
-        time.sleep(2)
-        try:
-            webbrowser.open("http://127.0.0.1:5000")
-            print("   ✅ Browser opened")
-        except (OSError, webbrowser.Error) as e:
-            print(f"   ⚠️ Could not open browser: {e}")
-            print("   📱 Please manually open: http://127.0.0.1:5000")
+        # Open browser after a short delay to ensure server is ready
+        def open_browser():
+            """Background task to open web browser after server startup delay."""
+            time.sleep(2)
+            try:
+                webbrowser.open(f"http://127.0.0.1:{port}")
+                print("   ✅ Browser opened")
+            except (OSError, webbrowser.Error) as e:
+                print(f"   ⚠️ Could not open browser: {e}")
+                print(f"   📱 Please manually open: http://127.0.0.1:{port}")
 
-    threading.Thread(target=open_browser, daemon=True).start()
+        threading.Thread(target=open_browser, daemon=True).start()
 
-    print("   🚀 Server starting at http://127.0.0.1:5000")
-    print("   📄 Test page available at: http://127.0.0.1:5000/test")
+    print(f"   🚀 Server starting at http://{host}:{port}")
+    if not is_production:
+        print(f"   📄 Test page available at: http://127.0.0.1:{port}/test")
 
     try:
-        app.run(debug=False, host="127.0.0.1", port=5000, use_reloader=False)
+        app.run(debug=False, host=host, port=port, use_reloader=False)
     except (OSError, RuntimeError) as e:
         print(f"   ❌ Flask server error: {e}")
 
