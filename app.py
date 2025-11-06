@@ -18,6 +18,8 @@ import sqlite3
 import traceback
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from dotenv import load_dotenv
 from garden_manager.database.plant_data import PlantDatabase
@@ -55,6 +57,15 @@ app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "garden_manager_secret_
 
 # Initialize CSRF protection
 csrf = CSRFProtect(app)
+
+# Initialize rate limiter with memory storage
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+    strategy="fixed-window"
+)
 
 # Global service instances - initialized in initialize_services()
 # pylint: disable=invalid-name
@@ -200,7 +211,39 @@ def handle_csrf_error(e):  # pylint: disable=unused-argument
                           error_code=400), 400
 
 
+@app.errorhandler(429)
+def ratelimit_handler(error):
+    """
+    Custom error handler for rate limit exceeded (429) errors.
+
+    Provides clear messaging about rate limits and when users can retry.
+
+    Args:
+        error: The RateLimitExceeded error
+
+    Returns:
+        JSON response for API endpoints, HTML for web pages
+    """
+    # Check if this is an API request
+    if request.path.startswith('/api/'):
+        return jsonify({
+            "status": "error",
+            "message": "Rate limit exceeded. Please try again later.",
+            "retry_after": error.description
+        }), 429
+
+    # For web pages, show a simple error page
+    return render_template(
+        "error.html",
+        error_code=429,
+        error_title="Too Many Requests",
+        error_message="You have made too many requests. Please wait a moment and try again.",
+        retry_after=error.description
+    ), 429
+
+
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("5 per minute", methods=["POST"])
 def login():
     """
     User login page and authentication handler.
@@ -237,6 +280,7 @@ def login():
 
 
 @app.route("/signup", methods=["GET", "POST"])
+@limiter.limit("3 per minute", methods=["POST"])
 def signup():
     """
     User registration page and handler.
@@ -1113,6 +1157,7 @@ def help_page():
 
 
 @app.route("/settings", methods=["GET", "POST"])
+@limiter.limit("3 per 10 minutes", methods=["POST"])
 def settings():
     """
     User account settings page.
@@ -1318,6 +1363,7 @@ def test_page():
 
 
 @app.route("/api/complete_task", methods=["POST"])
+@limiter.limit("100 per hour")
 def complete_task():
     """
     Mark a care task as completed via AJAX API.
@@ -1350,6 +1396,7 @@ def complete_task():
 
 
 @app.route("/api/update_location", methods=["POST"])
+@limiter.limit("100 per hour")
 def update_location():
     """
     Update user location via AJAX API.
