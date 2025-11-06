@@ -326,7 +326,10 @@ def dashboard():
             else 40.0
         )
 
-        stats = {"plots": len(plots), "active_plants": 0, "tasks_due": len(due_tasks)}
+        active_plants_count = (
+            garden_db.get_planted_items_count(user_id) if garden_db is not None else 0
+        )
+        stats = {"plots": len(plots), "active_plants": active_plants_count, "tasks_due": len(due_tasks)}
 
         # Check if user has location set in database
         user_has_location = False
