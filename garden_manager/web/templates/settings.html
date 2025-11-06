@@ -4,233 +4,430 @@
 
 {% block content %}
 <div class="page-header">
-    <h2 class="page-title">⚙️ Account Settings</h2>
+    <h1>⚙️ Account Settings</h1>
+    <p class="subtitle">Manage your account preferences and location</p>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        📍 Location Settings
-    </div>
-    <div class="card-body">
-        <p style="color: var(--text-gray); margin-bottom: 1rem;">
-            Your location is used to provide accurate weather information and seasonal plant recommendations
-            for your climate zone.
+<div class="settings-container">
+    <section class="settings-section">
+        <h2>Account Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Username:</label>
+                <span class="info-value">{{ user.username }}</span>
+            </div>
+            <div class="info-item">
+                <label>Email:</label>
+                <span class="info-value">{{ user.email }}</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="settings-section">
+        <h2>📍 Location Settings</h2>
+        <p class="help-text">
+            Your location is used to provide relevant weather information and plant recommendations 
+            for your climate zone. You can automatically detect your location using your browser, 
+            or manually enter coordinates.
         </p>
 
-        <form method="POST" style="margin-bottom: 1rem;">
-            <input type="hidden" name="form_type" value="location">
+        {% if current_location %}
+        <div class="current-location">
+            <h3>Current Location</h3>
+            <div class="location-display">
+                {% if current_location.city %}
+                    <p><strong>📍 Location:</strong> 
+                        {{ current_location.city }}
+                        {% if current_location.region %}, {{ current_location.region }}{% endif %}
+                        {% if current_location.country %}, {{ current_location.country }}{% endif %}
+                    </p>
+                {% endif %}
+                <p><strong>Coordinates:</strong> 
+                    {{ "%.4f"|format(current_location.latitude) }}, 
+                    {{ "%.4f"|format(current_location.longitude) }}
+                </p>
+                <p><strong>Climate Zone:</strong>
+                    Zone {{ climate_zone if climate_zone else 'Unknown' }}
+                </p>
+            </div>
+        </div>
+        {% endif %}
 
-            <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 1rem;">
-                <div>
-                    <label for="latitude" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                        Latitude:
-                    </label>
-                    <input
-                        type="text"
-                        id="latitude"
-                        name="latitude"
-                        value="{% if user and user.location %}{{ user.location.latitude }}{% endif %}"
-                        placeholder="40.7128"
+        <div class="location-actions">
+            <button id="detect-location-btn" class="btn btn-primary">
+                🌍 Detect My Location Automatically
+            </button>
+            <p class="help-text" style="margin-top: 0.5rem; font-size: 0.9rem;">
+                Uses your browser's location services (you'll be asked for permission)
+            </p>
+        </div>
+
+        <div id="location-status" class="alert" style="display: none; margin-top: 1rem;"></div>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <form method="POST" action="{{ url_for('settings') }}" class="location-form">
+            <h3>Manual Location Entry</h3>
+            <p class="help-text">
+                Enter your coordinates manually. You can find them using 
+                <a href="https://www.latlong.net/" target="_blank" rel="noopener">latlong.net</a> 
+                or Google Maps.
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="latitude">Latitude *</label>
+                    <input 
+                        type="number" 
+                        id="latitude" 
+                        name="latitude" 
+                        step="0.0001" 
+                        min="-90" 
+                        max="90"
+                        value="{{ user.location.latitude if user.location else '' }}"
+                        placeholder="e.g., 40.7128"
                         required
-                        style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
+                    >
+                    <small>Range: -90 to 90</small>
                 </div>
 
-                <div>
-                    <label for="longitude" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                        Longitude:
-                    </label>
-                    <input
-                        type="text"
-                        id="longitude"
-                        name="longitude"
-                        value="{% if user and user.location %}{{ user.location.longitude }}{% endif %}"
-                        placeholder="-74.0060"
+                <div class="form-group">
+                    <label for="longitude">Longitude *</label>
+                    <input 
+                        type="number" 
+                        id="longitude" 
+                        name="longitude" 
+                        step="0.0001" 
+                        min="-180" 
+                        max="180"
+                        value="{{ user.location.longitude if user.location else '' }}"
+                        placeholder="e.g., -74.0060"
                         required
-                        style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
+                    >
+                    <small>Range: -180 to 180</small>
                 </div>
             </div>
 
-            <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 1rem;">
-                <div>
-                    <label for="city" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                        City:
-                    </label>
-                    <input
-                        type="text"
-                        id="city"
-                        name="city"
-                        value="{% if user and user.location %}{{ user.location.city }}{% endif %}"
-                        placeholder="New York"
-                        style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City (Optional)</label>
+                    <input 
+                        type="text" 
+                        id="city" 
+                        name="city" 
+                        value="{{ user.location.city if user.location else '' }}"
+                        placeholder="e.g., New York"
+                    >
                 </div>
 
-                <div>
-                    <label for="region" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                        State/Region:
-                    </label>
-                    <input
-                        type="text"
-                        id="region"
-                        name="region"
-                        value="{% if user and user.location %}{{ user.location.region }}{% endif %}"
-                        placeholder="New York"
-                        style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
-                </div>
-
-                <div>
-                    <label for="country" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                        Country:
-                    </label>
-                    <input
-                        type="text"
-                        id="country"
-                        name="country"
-                        value="{% if user and user.location %}{{ user.location.country }}{% endif %}"
-                        placeholder="United States"
-                        style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
+                <div class="form-group">
+                    <label for="region">State/Region (Optional)</label>
+                    <input 
+                        type="text" 
+                        id="region" 
+                        name="region" 
+                        value="{{ user.location.region if user.location else '' }}"
+                        placeholder="e.g., NY"
+                    >
                 </div>
             </div>
 
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button type="submit" class="btn">
-                    💾 Save Location
-                </button>
-                <button type="button" class="btn btn-secondary" id="auto-detect-btn">
-                    🌍 Auto-Detect Location
-                </button>
-            </div>
-        </form>
-
-        <div id="location-status" style="margin-top: 1rem;"></div>
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        🔒 Change Password
-    </div>
-    <div class="card-body">
-        <form method="POST">
-            <input type="hidden" name="form_type" value="password">
-
-            <div style="margin-bottom: 1rem;">
-                <label for="current_password" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                    Current Password:
-                </label>
-                <input
-                    type="password"
-                    id="current_password"
-                    name="current_password"
-                    required
-                    style="width: 100%; max-width: 400px; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
+            <div class="form-group">
+                <label for="country">Country (Optional)</label>
+                <input 
+                    type="text" 
+                    id="country" 
+                    name="country" 
+                    value="{{ user.location.country if user.location else '' }}"
+                    placeholder="e.g., USA"
+                >
             </div>
 
-            <div style="margin-bottom: 1rem;">
-                <label for="new_password" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                    New Password:
-                </label>
-                <input
-                    type="password"
-                    id="new_password"
-                    name="new_password"
-                    required
-                    minlength="6"
-                    style="width: 100%; max-width: 400px; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
-                <small style="color: var(--text-gray); display: block; margin-top: 0.25rem;">
-                    Minimum 6 characters
-                </small>
-            </div>
-
-            <div style="margin-bottom: 1rem;">
-                <label for="confirm_password" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                    Confirm New Password:
-                </label>
-                <input
-                    type="password"
-                    id="confirm_password"
-                    name="confirm_password"
-                    required
-                    minlength="6"
-                    style="width: 100%; max-width: 400px; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
-            </div>
-
-            <button type="submit" class="btn">
-                🔑 Change Password
+            <button type="submit" class="btn btn-primary">
+                💾 Save Location
             </button>
         </form>
-    </div>
+    </section>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        ✉️ Change Email Address
-    </div>
-    <div class="card-body">
-        <p style="color: var(--text-gray); margin-bottom: 1rem;">
-            Current Email: <strong>{{ user.email if user else 'Not available' }}</strong>
-        </p>
+<style>
+    .settings-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-        <form method="POST">
-            <input type="hidden" name="form_type" value="email">
+    .settings-section {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-            <div style="margin-bottom: 1rem;">
-                <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">
-                    New Email Address:
-                </label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    style="width: 100%; max-width: 400px; padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px;">
-            </div>
+    .settings-section h2 {
+        margin-top: 0;
+        color: #2d5f3f;
+        border-bottom: 2px solid #4A7C59;
+        padding-bottom: 0.5rem;
+    }
 
-            <button type="submit" class="btn">
-                📧 Update Email
-            </button>
-        </form>
-    </div>
-</div>
+    .settings-section h3 {
+        margin-top: 1.5rem;
+        color: #2d5f3f;
+    }
+
+    .info-grid {
+        display: grid;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 4px;
+    }
+
+    .info-item label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .info-value {
+        color: #333;
+    }
+
+    .help-text {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .current-location {
+        background: #e8f5e9;
+        border-left: 4px solid #4A7C59;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+    }
+
+    .current-location h3 {
+        margin-top: 0;
+        color: #2d5f3f;
+    }
+
+    .location-display p {
+        margin: 0.5rem 0;
+    }
+
+    .location-actions {
+        margin: 1.5rem 0;
+    }
+
+    .divider {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #ddd;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        color: #999;
+        font-weight: 500;
+    }
+
+    .location-form {
+        margin-top: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .form-group input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #4A7C59;
+        box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+    }
+
+    .form-group small {
+        color: #666;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+        background-color: #4A7C59;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #3d6649;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        border-left: 4px solid;
+    }
+
+    .alert.success {
+        background-color: #d1fae5;
+        border-color: #10b981;
+        color: #065f46;
+    }
+
+    .alert.error {
+        background-color: #fee2e2;
+        border-color: #ef4444;
+        color: #991b1b;
+    }
+
+    .alert.info {
+        background-color: #dbeafe;
+        border-color: #3b82f6;
+        color: #1e40af;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 
 <script>
-document.getElementById('auto-detect-btn').addEventListener('click', async function() {
-    const btn = this;
-    const statusDiv = document.getElementById('location-status');
-
-    // Disable button and show loading
-    btn.disabled = true;
-    btn.textContent = '⏳ Detecting...';
-    statusDiv.innerHTML = '<p style="color: var(--text-gray);">Detecting your location...</p>';
-
-    try {
-        const response = await fetch('{{ url_for("detect_location") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'success' && data.location) {
-            // Update form fields
-            document.getElementById('latitude').value = data.location.latitude || '';
-            document.getElementById('longitude').value = data.location.longitude || '';
-            document.getElementById('city').value = data.location.city || '';
-            document.getElementById('region').value = data.location.region || '';
-            document.getElementById('country').value = data.location.country || '';
-
-            statusDiv.innerHTML = '<div style="padding: 1rem; background-color: #d1fae5; border: 1px solid #10b981; border-radius: 4px; color: #065f46;">✅ Location detected successfully! Click "Save Location" to apply changes.</div>';
-        } else {
-            statusDiv.innerHTML = '<div style="padding: 1rem; background-color: #fee2e2; border: 1px solid #ef4444; border-radius: 4px; color: #991b1b;">❌ ' + (data.message || 'Could not detect location') + '</div>';
+    document.getElementById('detect-location-btn').addEventListener('click', function() {
+        const statusDiv = document.getElementById('location-status');
+        const btn = this;
+        
+        // Check if geolocation is supported
+        if (!navigator.geolocation) {
+            statusDiv.className = 'alert error';
+            statusDiv.textContent = '❌ Geolocation is not supported by your browser';
+            statusDiv.style.display = 'block';
+            return;
         }
-    } catch (error) {
-        statusDiv.innerHTML = '<div style="padding: 1rem; background-color: #fee2e2; border: 1px solid #ef4444; border-radius: 4px; color: #991b1b;">❌ Error: ' + error.message + '</div>';
-    } finally {
-        // Re-enable button
-        btn.disabled = false;
-        btn.textContent = '🌍 Auto-Detect Location';
-    }
-});
+        
+        // Disable button and show loading
+        btn.disabled = true;
+        btn.textContent = '🔄 Detecting location...';
+        statusDiv.className = 'alert info';
+        statusDiv.textContent = 'Please allow location access when prompted...';
+        statusDiv.style.display = 'block';
+        
+        // Get location
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                
+                // Send to server
+                fetch('{{ url_for("update_location") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        statusDiv.className = 'alert success';
+                        statusDiv.textContent = '✅ Location detected and saved! Refreshing page...';
+                        // Reload page to show updated location
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        statusDiv.className = 'alert error';
+                        statusDiv.textContent = '❌ Error saving location: ' + data.message;
+                        btn.disabled = false;
+                        btn.textContent = '🌍 Detect My Location Automatically';
+                    }
+                })
+                .catch(error => {
+                    statusDiv.className = 'alert error';
+                    statusDiv.textContent = '❌ Error communicating with server: ' + error.message;
+                    btn.disabled = false;
+                    btn.textContent = '🌍 Detect My Location Automatically';
+                });
+            },
+            function(error) {
+                let errorMsg = '';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMsg = 'Location access was denied. Please enable location permissions in your browser.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMsg = 'Location information is unavailable.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMsg = 'Location request timed out. Please try again.';
+                        break;
+                    default:
+                        errorMsg = 'An unknown error occurred.';
+                }
+                
+                statusDiv.className = 'alert error';
+                statusDiv.textContent = '❌ ' + errorMsg;
+                btn.disabled = false;
+                btn.textContent = '🌍 Detect My Location Automatically';
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    });
 </script>
 {% endblock %}
