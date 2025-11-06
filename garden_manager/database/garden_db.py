@@ -304,6 +304,43 @@ class GardenDatabase:
             rows = cursor.fetchall()
             return [self._row_to_planted_item(row) for row in rows]
 
+    def get_planted_items_count(self, user_id: Optional[int] = None) -> int:
+        """
+        Count the total number of planted items across all garden plots for a user.
+
+        Args:
+            user_id: Optional user ID to filter by. If provided, counts planted items 
+                    in plots belonging to that user (including plots with NULL user_id 
+                    for backward compatibility). If None, counts only planted items in 
+                    plots with NULL user_id.
+
+        Returns:
+            int: Total count of planted items for the specified user
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            if user_id is not None:
+                cursor.execute(
+                    """
+                    SELECT COUNT(*) 
+                    FROM planted_items pi
+                    JOIN garden_plots gp ON pi.plot_id = gp.id
+                    WHERE gp.user_id = ? OR gp.user_id IS NULL
+                    """,
+                    (user_id,)
+                )
+            else:
+                cursor.execute(
+                    """
+                    SELECT COUNT(*) 
+                    FROM planted_items pi
+                    JOIN garden_plots gp ON pi.plot_id = gp.id
+                    WHERE gp.user_id IS NULL
+                    """
+                )
+            result = cursor.fetchone()
+            return result[0] if result else 0
+
     def get_care_tasks(self, due_within_days: int = 7) -> List[CareTask]:
         """
         Retrieve care tasks due within a specified timeframe.

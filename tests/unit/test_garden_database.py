@@ -570,3 +570,169 @@ class TestWateringScheduleAndCareTasks:
 
         # The completed task should not be in the list
         assert task.id not in remaining_task_ids
+
+
+class TestPlantedItemsCount:
+    """Tests for counting planted items by user."""
+
+    def test_count_planted_items_empty_garden(self, garden_db):
+        """Test counting planted items when no plots exist."""
+        count = garden_db.get_planted_items_count(user_id=1)
+        assert count == 0
+
+    def test_count_planted_items_single_user(self, garden_db, sample_plant_id):
+        """Test counting planted items for a single user."""
+        user_id = 1
+        
+        # Create two plots for the user
+        plot1_id = garden_db.create_garden_plot(
+            name="Plot 1",
+            width=5,
+            height=5,
+            location="Backyard",
+            user_id=user_id
+        )
+        plot2_id = garden_db.create_garden_plot(
+            name="Plot 2",
+            width=5,
+            height=5,
+            location="Front Yard",
+            user_id=user_id
+        )
+
+        # Add planted items to plot 1
+        planting_info1 = PlantingInfo(
+            plant_id=sample_plant_id,
+            plot_id=plot1_id,
+            x_pos=0,
+            y_pos=0,
+            notes="Plant 1",
+            planted_date=datetime.now(),
+            days_to_maturity=60
+        )
+        garden_db.add_planted_item(planting_info1)
+
+        planting_info2 = PlantingInfo(
+            plant_id=sample_plant_id,
+            plot_id=plot1_id,
+            x_pos=1,
+            y_pos=1,
+            notes="Plant 2",
+            planted_date=datetime.now(),
+            days_to_maturity=60
+        )
+        garden_db.add_planted_item(planting_info2)
+
+        # Add planted item to plot 2
+        planting_info3 = PlantingInfo(
+            plant_id=sample_plant_id,
+            plot_id=plot2_id,
+            x_pos=0,
+            y_pos=0,
+            notes="Plant 3",
+            planted_date=datetime.now(),
+            days_to_maturity=60
+        )
+        garden_db.add_planted_item(planting_info3)
+
+        # Count should be 3 for this user
+        count = garden_db.get_planted_items_count(user_id=user_id)
+        assert count == 3
+
+    def test_count_planted_items_multiple_users(self, garden_db, sample_plant_id):
+        """Test counting planted items correctly isolates between users."""
+        user1_id = 1
+        user2_id = 2
+
+        # Create plot for user 1
+        plot1_id = garden_db.create_garden_plot(
+            name="User 1 Plot",
+            width=5,
+            height=5,
+            location="Location 1",
+            user_id=user1_id
+        )
+
+        # Create plot for user 2
+        plot2_id = garden_db.create_garden_plot(
+            name="User 2 Plot",
+            width=5,
+            height=5,
+            location="Location 2",
+            user_id=user2_id
+        )
+
+        # Add planted items for user 1
+        planting_info1 = PlantingInfo(
+            plant_id=sample_plant_id,
+            plot_id=plot1_id,
+            x_pos=0,
+            y_pos=0,
+            notes="User 1 Plant 1",
+            planted_date=datetime.now(),
+            days_to_maturity=60
+        )
+        garden_db.add_planted_item(planting_info1)
+
+        planting_info2 = PlantingInfo(
+            plant_id=sample_plant_id,
+            plot_id=plot1_id,
+            x_pos=1,
+            y_pos=1,
+            notes="User 1 Plant 2",
+            planted_date=datetime.now(),
+            days_to_maturity=60
+        )
+        garden_db.add_planted_item(planting_info2)
+
+        # Add planted items for user 2
+        planting_info3 = PlantingInfo(
+            plant_id=sample_plant_id,
+            plot_id=plot2_id,
+            x_pos=0,
+            y_pos=0,
+            notes="User 2 Plant 1",
+            planted_date=datetime.now(),
+            days_to_maturity=60
+        )
+        garden_db.add_planted_item(planting_info3)
+
+        # User 1 should have 2 planted items
+        count1 = garden_db.get_planted_items_count(user_id=user1_id)
+        assert count1 == 2
+
+        # User 2 should have 1 planted item
+        count2 = garden_db.get_planted_items_count(user_id=user2_id)
+        assert count2 == 1
+
+    def test_count_planted_items_with_null_user_id(self, garden_db, sample_plant_id):
+        """Test counting planted items for plots with NULL user_id."""
+        # Create plot with NULL user_id (legacy data)
+        plot_id = garden_db.create_garden_plot(
+            name="Legacy Plot",
+            width=5,
+            height=5,
+            location="Garden",
+            user_id=None
+        )
+
+        # Add planted items
+        planting_info = PlantingInfo(
+            plant_id=sample_plant_id,
+            plot_id=plot_id,
+            x_pos=0,
+            y_pos=0,
+            notes="Legacy Plant",
+            planted_date=datetime.now(),
+            days_to_maturity=60
+        )
+        garden_db.add_planted_item(planting_info)
+
+        # Count with user_id=None should include NULL user_id plots
+        count = garden_db.get_planted_items_count(user_id=None)
+        assert count == 1
+
+        # Count with specific user_id should also include NULL user_id plots
+        # (based on the logic in get_garden_plots which includes NULL user_id)
+        count_with_user = garden_db.get_planted_items_count(user_id=1)
+        assert count_with_user == 1
