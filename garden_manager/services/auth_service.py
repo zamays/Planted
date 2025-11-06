@@ -88,7 +88,14 @@ class AuthService:
         Returns:
             bool: True if email is valid, False otherwise
         """
-        return bool(email and '@' in email)
+        if not email or '@' not in email:
+            return False
+        # Basic validation: must have at least one char before and after @
+        parts = email.split('@')
+        if len(parts) != 2:
+            return False
+        local, domain = parts
+        return bool(local and domain and '.' in domain)
 
     def register_user(self, username: str, email: str, password: str) -> Optional[int]:
         """

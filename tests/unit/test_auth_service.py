@@ -319,8 +319,22 @@ class TestEmailChange:
     def test_change_email_invalid_format(self, auth_service):
         """Test email change with invalid email format."""
         user_id = auth_service.register_user("testuser", "old@example.com", "password123")
+        
+        # Test various invalid formats
         with pytest.raises(ValueError, match="Invalid email address"):
             auth_service.change_email(user_id, "invalid-email")
+        
+        with pytest.raises(ValueError, match="Invalid email address"):
+            auth_service.change_email(user_id, "@")
+        
+        with pytest.raises(ValueError, match="Invalid email address"):
+            auth_service.change_email(user_id, "a@")
+        
+        with pytest.raises(ValueError, match="Invalid email address"):
+            auth_service.change_email(user_id, "@b")
+        
+        with pytest.raises(ValueError, match="Invalid email address"):
+            auth_service.change_email(user_id, "a@@b")
 
     def test_change_email_empty(self, auth_service):
         """Test email change with empty email."""

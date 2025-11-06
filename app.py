@@ -395,6 +395,9 @@ def detect_location():
     """
     API endpoint to automatically detect user's location using IP geolocation.
 
+    Returns location data to populate form fields. User must explicitly save
+    the location via the form submission.
+
     Returns:
         JSON: Location data or error message
     """
@@ -404,8 +407,6 @@ def detect_location():
     if not is_logged_in():
         return jsonify({"status": "error", "message": "Not logged in"})
 
-    user_id = get_current_user_id()
-
     if location_service is None:
         return jsonify({"status": "error", "message": "Location service unavailable"})
 
@@ -413,16 +414,8 @@ def detect_location():
         location = location_service.get_location_by_ip()
 
         if location:
-            # Save to user account
-            auth_service.update_user_location(
-                user_id,
-                location['latitude'],
-                location['longitude'],
-                location.get('city', ''),
-                location.get('region', ''),
-                location.get('country', '')
-            )
-
+            # Return location data to populate form fields
+            # User must save explicitly via the form
             return jsonify({
                 "status": "success",
                 "location": location
