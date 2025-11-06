@@ -71,15 +71,22 @@
                 </a>
             </li>
             <li style="margin-left: auto;">
-                <a href="{{ url_for('help_page') }}" 
+                <a href="{{ url_for('help_page') }}"
                    {% if request.endpoint == 'help_page' %}class="active" aria-current="page"{% endif %}
                    title="Help and user guide">
                     ❓ <span>Help</span>
                 </a>
             </li>
-            {% if session.get('user_id') %}
+            {% if session.get('user_id') and not session.get('is_guest') %}
             <li>
-                <a href="{{ url_for('logout') }}" 
+                <a href="{{ url_for('settings') }}"
+                   {% if request.endpoint == 'settings' %}class="active" aria-current="page"{% endif %}
+                   title="Account settings">
+                    ⚙️ <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('logout') }}"
                    title="Log out">
                     🚪 <span>Logout</span>
                 </a>
