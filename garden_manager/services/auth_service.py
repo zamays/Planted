@@ -78,6 +78,19 @@ class AuthService:
         hash_bytes = password_hash.encode('utf-8')
         return bcrypt.checkpw(password_bytes, hash_bytes)
 
+    def _validate_email(self, email: str) -> None:
+        """
+        Validate email address format.
+
+        Args:
+            email: Email address to validate
+
+        Raises:
+            ValueError: If email is invalid
+        """
+        if not email or '@' not in email:
+            raise ValueError("Invalid email address")
+
     def register_user(self, username: str, email: str, password: str) -> Optional[int]:
         """
         Register a new user account.
@@ -96,8 +109,7 @@ class AuthService:
         # Validate inputs
         if not username or len(username) < 3 or len(username) > 50:
             raise ValueError("Username must be between 3 and 50 characters")
-        if not email or '@' not in email:
-            raise ValueError("Invalid email address")
+        self._validate_email(email)
         if not password or len(password) < 6:
             raise ValueError("Password must be at least 6 characters")
 
@@ -245,3 +257,80 @@ class AuthService:
                 (latitude, longitude, city, region, country, user_id)
             )
             conn.commit()
+
+    def change_password(self, user_id: int, current_password: str, new_password: str) -> bool:
+        """
+        Change user's password.
+
+        Args:
+            user_id: User ID
+            current_password: Current password for verification
+            new_password: New password to set
+
+        Returns:
+            bool: True if password changed successfully, False if current password is incorrect
+
+        Raises:
+            ValueError: If new password validation fails
+        """
+        # Validate new password
+        if not new_password or len(new_password) < 6:
+            raise ValueError("New password must be at least 6 characters")
+
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+
+            # Get current password hash
+            cursor.execute(
+                "SELECT password_hash FROM users WHERE id = ?",
+                (user_id,)
+            )
+            row = cursor.fetchone()
+
+            if not row:
+                return False
+
+            current_hash = row[0]
+
+            # Verify current password
+            if not self._verify_password(current_password, current_hash):
+                return False
+
+            # Hash new password and update
+            new_hash = self._hash_password(new_password)
+            cursor.execute(
+                "UPDATE users SET password_hash = ? WHERE id = ?",
+                (new_hash, user_id)
+            )
+            conn.commit()
+            return True
+
+    def update_email(self, user_id: int, new_email: str) -> bool:
+        """
+        Update user's email address.
+
+        Args:
+            user_id: User ID
+            new_email: New email address
+
+        Returns:
+            bool: True if email updated successfully, False if email already exists
+
+        Raises:
+            ValueError: If email validation fails
+        """
+        # Validate email
+        self._validate_email(new_email)
+
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "UPDATE users SET email = ? WHERE id = ?",
+                    (new_email, user_id)
+                )
+                conn.commit()
+                return True
+        except sqlite3.IntegrityError:
+            # Email already exists
+            return False
