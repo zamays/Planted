@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+
+{% block title %}Account Settings - Planted{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>⚙️ Account Settings</h1>
+    <p class="subtitle">Manage your account preferences and location</p>
+</div>
+
+<div class="settings-container">
+    <section class="settings-section">
+        <h2>Account Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Username:</label>
+                <span class="info-value">{{ user.username }}</span>
+            </div>
+            <div class="info-item">
+                <label>Email:</label>
+                <span class="info-value">{{ user.email }}</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="settings-section">
+        <h2>📍 Location Settings</h2>
+        <p class="help-text">
+            Your location is used to provide relevant weather information and plant recommendations 
+            for your climate zone. You can automatically detect your location using your browser, 
+            or manually enter coordinates.
+        </p>
+
+        {% if current_location %}
+        <div class="current-location">
+            <h3>Current Location</h3>
+            <div class="location-display">
+                {% if current_location.city %}
+                    <p><strong>📍 Location:</strong> 
+                        {{ current_location.city }}
+                        {% if current_location.region %}, {{ current_location.region }}{% endif %}
+                        {% if current_location.country %}, {{ current_location.country }}{% endif %}
+                    </p>
+                {% endif %}
+                <p><strong>Coordinates:</strong> 
+                    {{ "%.4f"|format(current_location.latitude) }}, 
+                    {{ "%.4f"|format(current_location.longitude) }}
+                </p>
+                <p><strong>Climate Zone:</strong>
+                    Zone {{ climate_zone if climate_zone else 'Unknown' }}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="location-actions">
+            <button id="detect-location-btn" class="btn btn-primary">
+                🌍 Detect My Location Automatically
+            </button>
+            <p class="help-text" style="margin-top: 0.5rem; font-size: 0.9rem;">
+                Uses your browser's location services (you'll be asked for permission)
+            </p>
+        </div>
+
+        <div id="location-status" class="alert" style="display: none; margin-top: 1rem;"></div>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <form method="POST" action="{{ url_for('settings') }}" class="location-form">
+            <h3>Manual Location Entry</h3>
+            <p class="help-text">
+                Enter your coordinates manually. You can find them using 
+                <a href="https://www.latlong.net/" target="_blank" rel="noopener">latlong.net</a> 
+                or Google Maps.
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="latitude">Latitude *</label>
+                    <input 
+                        type="number" 
+                        id="latitude" 
+                        name="latitude" 
+                        step="0.0001" 
+                        min="-90" 
+                        max="90"
+                        value="{{ user.location.latitude if user.location else '' }}"
+                        placeholder="e.g., 40.7128"
+                        required
+                    >
+                    <small>Range: -90 to 90</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="longitude">Longitude *</label>
+                    <input 
+                        type="number" 
+                        id="longitude" 
+                        name="longitude" 
+                        step="0.0001" 
+                        min="-180" 
+                        max="180"
+                        value="{{ user.location.longitude if user.location else '' }}"
+                        placeholder="e.g., -74.0060"
+                        required
+                    >
+                    <small>Range: -180 to 180</small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City (Optional)</label>
+                    <input 
+                        type="text" 
+                        id="city" 
+                        name="city" 
+                        value="{{ user.location.city if user.location else '' }}"
+                        placeholder="e.g., New York"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="region">State/Region (Optional)</label>
+                    <input 
+                        type="text" 
+                        id="region" 
+                        name="region" 
+                        value="{{ user.location.region if user.location else '' }}"
+                        placeholder="e.g., NY"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country (Optional)</label>
+                <input 
+                    type="text" 
+                    id="country" 
+                    name="country" 
+                    value="{{ user.location.country if user.location else '' }}"
+                    placeholder="e.g., USA"
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                💾 Save Location
+            </button>
+        </form>
+    </section>
+</div>
+
+<style>
+    .settings-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .settings-section {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .settings-section h2 {
+        margin-top: 0;
+        color: #2d5f3f;
+        border-bottom: 2px solid #4A7C59;
+        padding-bottom: 0.5rem;
+    }
+
+    .settings-section h3 {
+        margin-top: 1.5rem;
+        color: #2d5f3f;
+    }
+
+    .info-grid {
+        display: grid;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 4px;
+    }
+
+    .info-item label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .info-value {
+        color: #333;
+    }
+
+    .help-text {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .current-location {
+        background: #e8f5e9;
+        border-left: 4px solid #4A7C59;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+    }
+
+    .current-location h3 {
+        margin-top: 0;
+        color: #2d5f3f;
+    }
+
+    .location-display p {
+        margin: 0.5rem 0;
+    }
+
+    .location-actions {
+        margin: 1.5rem 0;
+    }
+
+    .divider {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #ddd;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        color: #999;
+        font-weight: 500;
+    }
+
+    .location-form {
+        margin-top: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .form-group input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #4A7C59;
+        box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+    }
+
+    .form-group small {
+        color: #666;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+        background-color: #4A7C59;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #3d6649;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        border-left: 4px solid;
+    }
+
+    .alert.success {
+        background-color: #d1fae5;
+        border-color: #10b981;
+        color: #065f46;
+    }
+
+    .alert.error {
+        background-color: #fee2e2;
+        border-color: #ef4444;
+        color: #991b1b;
+    }
+
+    .alert.info {
+        background-color: #dbeafe;
+        border-color: #3b82f6;
+        color: #1e40af;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    document.getElementById('detect-location-btn').addEventListener('click', function() {
+        const statusDiv = document.getElementById('location-status');
+        const btn = this;
+        
+        // Check if geolocation is supported
+        if (!navigator.geolocation) {
+            statusDiv.className = 'alert error';
+            statusDiv.textContent = '❌ Geolocation is not supported by your browser';
+            statusDiv.style.display = 'block';
+            return;
+        }
+        
+        // Disable button and show loading
+        btn.disabled = true;
+        btn.textContent = '🔄 Detecting location...';
+        statusDiv.className = 'alert info';
+        statusDiv.textContent = 'Please allow location access when prompted...';
+        statusDiv.style.display = 'block';
+        
+        // Get location
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                
+                // Send to server
+                fetch('{{ url_for("update_location") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        statusDiv.className = 'alert success';
+                        statusDiv.textContent = '✅ Location detected and saved! Refreshing page...';
+                        // Reload page to show updated location
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        statusDiv.className = 'alert error';
+                        statusDiv.textContent = '❌ Error saving location: ' + data.message;
+                        btn.disabled = false;
+                        btn.textContent = '🌍 Detect My Location Automatically';
+                    }
+                })
+                .catch(error => {
+                    statusDiv.className = 'alert error';
+                    statusDiv.textContent = '❌ Error communicating with server: ' + error.message;
+                    btn.disabled = false;
+                    btn.textContent = '🌍 Detect My Location Automatically';
+                });
+            },
+            function(error) {
+                let errorMsg = '';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMsg = 'Location access was denied. Please enable location permissions in your browser.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMsg = 'Location information is unavailable.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMsg = 'Location request timed out. Please try again.';
+                        break;
+                    default:
+                        errorMsg = 'An unknown error occurred.';
+                }
+                
+                statusDiv.className = 'alert error';
+                statusDiv.textContent = '❌ ' + errorMsg;
+                btn.disabled = false;
+                btn.textContent = '🌍 Detect My Location Automatically';
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    });
+</script>
+{% endblock %}

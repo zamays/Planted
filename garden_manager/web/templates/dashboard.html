@@ -160,3 +160,57 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-detect location for new users who haven't set their location yet
+    (function() {
+        // Only run for logged-in users (not guests) who don't have a location set
+        const isGuest = {{ 'true' if session.get('is_guest') else 'false' }};
+        const hasLocation = {{ 'true' if user_has_location else 'false' }};
+        
+        if (!isGuest && !hasLocation && navigator.geolocation) {
+            // Check if user has already been prompted (use sessionStorage to avoid repeated prompts)
+            if (!sessionStorage.getItem('location_prompt_shown')) {
+                sessionStorage.setItem('location_prompt_shown', 'true');
+                
+                // Show a friendly notification
+                if (confirm('📍 Would you like to automatically detect your location for personalized weather and plant recommendations?\n\nYou can also set this later in Account Settings.')) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            fetch('{{ url_for("update_location") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    latitude: position.coords.latitude,
+                                    longitude: position.coords.longitude
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    alert('✅ Location detected successfully! The page will refresh to show personalized recommendations.');
+                                    window.location.reload();
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error saving location:', error);
+                            });
+                        },
+                        function(error) {
+                            console.log('Location detection declined or failed:', error);
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                }
+            }
+        }
+    })();
+</script>
+{% endblock %}
