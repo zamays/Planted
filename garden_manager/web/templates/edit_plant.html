@@ -12,6 +12,7 @@
 <div class="card">
     <div class="card-body">
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <h3 style="color: #4A7C59; margin-bottom: 1.5rem;">Basic Information</h3>
 
             <div class="form-group">
@@ -131,6 +132,7 @@
         
         {% if plant.is_custom %}
         <form method="POST" action="{{ url_for('delete_plant', plant_id=plant.id) }}" id="delete-plant-form" style="display: none;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         </form>
         {% endif %}
     </div>
