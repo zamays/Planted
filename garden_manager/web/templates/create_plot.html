@@ -20,6 +20,7 @@
     </div>
     <div class="card-body">
         <form method="POST" id="create-plot-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group">
                 <label for="name">Plot Name <span style="color: #DC3545;">*</span></label>
                 <input type="text" 
