@@ -245,3 +245,81 @@ class AuthService:
                 (latitude, longitude, city, region, country, user_id)
             )
             conn.commit()
+
+    def change_password(self, user_id: int, current_password: str, new_password: str) -> bool:
+        """
+        Change user's password.
+
+        Args:
+            user_id: User ID
+            current_password: Current password for verification
+            new_password: New password to set
+
+        Returns:
+            bool: True if password changed successfully, False if current password is incorrect
+
+        Raises:
+            ValueError: If new password validation fails
+        """
+        # Validate new password
+        if not new_password or len(new_password) < 6:
+            raise ValueError("New password must be at least 6 characters")
+
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+
+            # Get current password hash
+            cursor.execute(
+                "SELECT password_hash FROM users WHERE id = ?",
+                (user_id,)
+            )
+            row = cursor.fetchone()
+
+            if not row:
+                return False
+
+            current_hash = row[0]
+
+            # Verify current password
+            if not self._verify_password(current_password, current_hash):
+                return False
+
+            # Hash new password and update
+            new_hash = self._hash_password(new_password)
+            cursor.execute(
+                "UPDATE users SET password_hash = ? WHERE id = ?",
+                (new_hash, user_id)
+            )
+            conn.commit()
+            return True
+
+    def update_email(self, user_id: int, new_email: str) -> bool:
+        """
+        Update user's email address.
+
+        Args:
+            user_id: User ID
+            new_email: New email address
+
+        Returns:
+            bool: True if email updated successfully, False if email already exists
+
+        Raises:
+            ValueError: If email validation fails
+        """
+        # Validate email
+        if not new_email or '@' not in new_email:
+            raise ValueError("Invalid email address")
+
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "UPDATE users SET email = ? WHERE id = ?",
+                    (new_email, user_id)
+                )
+                conn.commit()
+                return True
+        except sqlite3.IntegrityError:
+            # Email already exists
+            return False

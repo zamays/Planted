@@ -201,6 +201,99 @@ class TestLocationManagement:
         assert user['location']['city'] == "New York"
 
 
+class TestPasswordChange:
+    """Tests for password change functionality."""
+
+    def test_change_password_success(self, auth_service):
+        """Test successful password change."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "oldpassword")
+        result = auth_service.change_password(user_id, "oldpassword", "newpassword123")
+        assert result is True
+
+        # Verify old password no longer works
+        user = auth_service.verify_login("testuser", "oldpassword")
+        assert user is None
+
+        # Verify new password works
+        user = auth_service.verify_login("testuser", "newpassword123")
+        assert user is not None
+        assert user['id'] == user_id
+
+    def test_change_password_wrong_current_password(self, auth_service):
+        """Test password change with wrong current password."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "password123")
+        result = auth_service.change_password(user_id, "wrongpassword", "newpassword123")
+        assert result is False
+
+        # Verify original password still works
+        user = auth_service.verify_login("testuser", "password123")
+        assert user is not None
+
+    def test_change_password_short_new_password(self, auth_service):
+        """Test password change with short new password."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "password123")
+        with pytest.raises(ValueError, match="New password must be at least 6 characters"):
+            auth_service.change_password(user_id, "password123", "short")
+
+    def test_change_password_empty_new_password(self, auth_service):
+        """Test password change with empty new password."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "password123")
+        with pytest.raises(ValueError, match="New password must be at least 6 characters"):
+            auth_service.change_password(user_id, "password123", "")
+
+    def test_change_password_nonexistent_user(self, auth_service):
+        """Test password change for nonexistent user."""
+        result = auth_service.change_password(999999, "anypassword", "newpassword123")
+        assert result is False
+
+
+class TestEmailUpdate:
+    """Tests for email update functionality."""
+
+    def test_update_email_success(self, auth_service):
+        """Test successful email update."""
+        user_id = auth_service.register_user("testuser", "old@example.com", "password123")
+        result = auth_service.update_email(user_id, "new@example.com")
+        assert result is True
+
+        # Verify new email in user record
+        user = auth_service.get_user_by_id(user_id)
+        assert user['email'] == "new@example.com"
+
+        # Verify can login with new email
+        user = auth_service.verify_login("new@example.com", "password123")
+        assert user is not None
+        assert user['id'] == user_id
+
+        # Verify old email no longer works
+        user = auth_service.verify_login("old@example.com", "password123")
+        assert user is None
+
+    def test_update_email_duplicate(self, auth_service):
+        """Test email update to existing email."""
+        auth_service.register_user("user1", "email1@example.com", "password123")
+        user_id2 = auth_service.register_user("user2", "email2@example.com", "password123")
+
+        result = auth_service.update_email(user_id2, "email1@example.com")
+        assert result is False
+
+        # Verify email wasn't changed
+        user = auth_service.get_user_by_id(user_id2)
+        assert user['email'] == "email2@example.com"
+
+    def test_update_email_invalid(self, auth_service):
+        """Test email update with invalid email."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "password123")
+        with pytest.raises(ValueError, match="Invalid email address"):
+            auth_service.update_email(user_id, "invalid-email")
+
+    def test_update_email_empty(self, auth_service):
+        """Test email update with empty email."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "password123")
+        with pytest.raises(ValueError, match="Invalid email address"):
+            auth_service.update_email(user_id, "")
+
+
 class TestDatabaseSchema:
     """Tests for database schema and table structure."""
 
