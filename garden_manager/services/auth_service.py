@@ -78,6 +78,18 @@ class AuthService:
         hash_bytes = password_hash.encode('utf-8')
         return bcrypt.checkpw(password_bytes, hash_bytes)
 
+    def _validate_email(self, email: str) -> bool:
+        """
+        Validate email address format.
+
+        Args:
+            email: Email address to validate
+
+        Returns:
+            bool: True if email is valid, False otherwise
+        """
+        return bool(email and '@' in email)
+
     def register_user(self, username: str, email: str, password: str) -> Optional[int]:
         """
         Register a new user account.
@@ -96,7 +108,7 @@ class AuthService:
         # Validate inputs
         if not username or len(username) < 3 or len(username) > 50:
             raise ValueError("Username must be between 3 and 50 characters")
-        if not email or '@' not in email:
+        if not self._validate_email(email):
             raise ValueError("Invalid email address")
         if not password or len(password) < 6:
             raise ValueError("Password must be at least 6 characters")
@@ -304,7 +316,7 @@ class AuthService:
         Raises:
             ValueError: If email is invalid
         """
-        if not new_email or '@' not in new_email:
+        if not self._validate_email(new_email):
             raise ValueError("Invalid email address")
 
         try:

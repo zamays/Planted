@@ -299,6 +299,11 @@ class TestEmailChange:
         user = auth_service.verify_login("old@example.com", "password123")
         assert user is None
 
+        # Verify username still works for login
+        user = auth_service.verify_login("testuser", "password123")
+        assert user is not None
+        assert user['email'] == "new@example.com"
+
     def test_change_email_duplicate(self, auth_service):
         """Test email change to an already used email."""
         auth_service.register_user("testuser1", "user1@example.com", "password123")
