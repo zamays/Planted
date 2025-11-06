@@ -309,7 +309,10 @@ class GardenDatabase:
         Count the total number of planted items across all garden plots for a user.
 
         Args:
-            user_id: Optional user ID to filter by. If None, counts all planted items.
+            user_id: Optional user ID to filter by. If provided, counts planted items 
+                    in plots belonging to that user (including plots with NULL user_id 
+                    for backward compatibility). If None, counts only planted items in 
+                    plots with NULL user_id.
 
         Returns:
             int: Total count of planted items for the specified user
