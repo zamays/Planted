@@ -20,6 +20,7 @@ import traceback
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from dotenv import load_dotenv
 from garden_manager.database.plant_data import PlantDatabase
 from garden_manager.database.garden_db import GardenDatabase
@@ -53,6 +54,9 @@ static_dir = os.path.join(
 )
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "garden_manager_secret_key")
+
+# Initialize CSRF protection
+csrf = CSRFProtect(app)
 
 # Initialize rate limiter with memory storage
 limiter = Limiter(
@@ -169,6 +173,44 @@ def load_user_location():
     # DO NOT use server IP as this gives wrong location when app is hosted remotely
 
 
+@app.before_request
+def check_auth():
+    """Check authentication before each request."""
+    # Public routes that don't require authentication
+    public_routes = ['login', 'signup', 'guest_mode', 'static']
+
+    if request.endpoint in public_routes:
+        return None
+
+    # Check if user is authenticated or in guest mode
+    if not session.get('user_id') and not session.get('is_guest'):
+        return redirect(url_for('login'))
+
+    # Load user location once per session
+    if not session.get('location_loaded'):
+        load_user_location()
+        session['location_loaded'] = True
+
+    return None
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):  # pylint: disable=unused-argument
+    """
+    Handle CSRF validation errors.
+
+    Args:
+        e: CSRFError exception
+
+    Returns:
+        Rendered error page with appropriate status code
+    """
+    return render_template('error.html',
+                          error_title='CSRF Validation Failed',
+                          error_message='Your session may have expired. Please refresh the page and try again.',
+                          error_code=400), 400
+
+
 @app.errorhandler(429)
 def ratelimit_handler(error):
     """
@@ -198,27 +240,6 @@ def ratelimit_handler(error):
         error_message="You have made too many requests. Please wait a moment and try again.",
         retry_after=error.description
     ), 429
-
-
-@app.before_request
-def check_auth():
-    """Check authentication before each request."""
-    # Public routes that don't require authentication
-    public_routes = ['login', 'signup', 'guest_mode', 'static']
-
-    if request.endpoint in public_routes:
-        return None
-
-    # Check if user is authenticated or in guest mode
-    if not session.get('user_id') and not session.get('is_guest'):
-        return redirect(url_for('login'))
-
-    # Load user location once per session
-    if not session.get('location_loaded'):
-        load_user_location()
-        session['location_loaded'] = True
-
-    return None
 
 
 @app.route("/login", methods=["GET", "POST"])
