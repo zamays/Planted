@@ -2,13 +2,12 @@
 Authentication Service
 
 Handles user authentication, registration, and session management.
-Provides secure password hashing and user verification.
+Provides secure password hashing and user verification using bcrypt.
 """
 
-import hashlib
-import secrets
-from typing import Optional, Dict
 import sqlite3
+from typing import Optional, Dict
+import bcrypt
 
 
 class AuthService:
@@ -16,7 +15,7 @@ class AuthService:
     Service for user authentication and account management.
 
     Provides user registration, login verification, and session management
-    with secure password hashing using SHA-256.
+    with secure password hashing using bcrypt.
     """
 
     def __init__(self, db_path: str = "garden.db"):
@@ -38,7 +37,6 @@ class AuthService:
                     username TEXT NOT NULL UNIQUE,
                     email TEXT NOT NULL UNIQUE,
                     password_hash TEXT NOT NULL,
-                    salt TEXT NOT NULL,
                     location_latitude REAL,
                     location_longitude REAL,
                     location_city TEXT,
@@ -49,19 +47,36 @@ class AuthService:
             """)
             conn.commit()
 
-    def _hash_password(self, password: str, salt: str) -> str:
+    def _hash_password(self, password: str) -> str:
         """
-        Hash a password with salt using SHA-256.
+        Hash a password using bcrypt.
 
         Args:
             password: Plain text password
-            salt: Salt string for hashing
 
         Returns:
-            str: Hexadecimal hash string
+            str: Bcrypt hash string
         """
-        hash_input = (password + salt).encode('utf-8')
-        return hashlib.sha256(hash_input).hexdigest()
+        # Generate salt and hash password using bcrypt
+        salt = bcrypt.gensalt()
+        password_bytes = password.encode('utf-8')
+        hashed = bcrypt.hashpw(password_bytes, salt)
+        return hashed.decode('utf-8')
+
+    def _verify_password(self, password: str, password_hash: str) -> bool:
+        """
+        Verify a password against a bcrypt hash.
+
+        Args:
+            password: Plain text password
+            password_hash: Bcrypt hash to verify against
+
+        Returns:
+            bool: True if password matches, False otherwise
+        """
+        password_bytes = password.encode('utf-8')
+        hash_bytes = password_hash.encode('utf-8')
+        return bcrypt.checkpw(password_bytes, hash_bytes)
 
     def register_user(self, username: str, email: str, password: str) -> Optional[int]:
         """
@@ -86,19 +101,18 @@ class AuthService:
         if not password or len(password) < 6:
             raise ValueError("Password must be at least 6 characters")
 
-        # Generate salt and hash password
-        salt = secrets.token_hex(16)
-        password_hash = self._hash_password(password, salt)
+        # Hash password using bcrypt
+        password_hash = self._hash_password(password)
 
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO users (username, email, password_hash, salt)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO users (username, email, password_hash)
+                    VALUES (?, ?, ?)
                     """,
-                    (username, email, password_hash, salt)
+                    (username, email, password_hash)
                 )
                 conn.commit()
                 return cursor.lastrowid
@@ -123,7 +137,7 @@ class AuthService:
             # Try username or email
             cursor.execute(
                 """
-                SELECT id, username, email, password_hash, salt,
+                SELECT id, username, email, password_hash,
                        location_latitude, location_longitude,
                        location_city, location_region, location_country
                 FROM users
@@ -136,11 +150,10 @@ class AuthService:
             if not row:
                 return None
 
-            # Verify password
-            user_id, db_username, email, password_hash, salt, lat, lon, city, region, country = row
-            computed_hash = self._hash_password(password, salt)
+            # Verify password using bcrypt
+            user_id, db_username, email, password_hash, lat, lon, city, region, country = row
 
-            if computed_hash == password_hash:
+            if self._verify_password(password, password_hash):
                 return {
                     'id': user_id,
                     'username': db_username,

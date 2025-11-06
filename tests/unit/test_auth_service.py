@@ -224,8 +224,8 @@ class TestDatabaseSchema:
             cursor = conn.cursor()
             with pytest.raises(sqlite3.IntegrityError):
                 cursor.execute(
-                    "INSERT INTO users (username, email, password_hash, salt) VALUES (?, ?, ?, ?)",
-                    ("testuser", "test2@example.com", "hash", "salt")
+                    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
+                    ("testuser", "test2@example.com", "hash")
                 )
 
     def test_email_unique_constraint(self, auth_service, temp_db):
@@ -237,6 +237,6 @@ class TestDatabaseSchema:
             cursor = conn.cursor()
             with pytest.raises(sqlite3.IntegrityError):
                 cursor.execute(
-                    "INSERT INTO users (username, email, password_hash, salt) VALUES (?, ?, ?, ?)",
-                    ("testuser2", "test@example.com", "hash", "salt")
+                    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
+                    ("testuser2", "test@example.com", "hash")
                 )
