@@ -1307,7 +1307,8 @@ def update_location():
         })
 
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
-        return jsonify({"status": "error", "message": str(e)})
+        print(f"Error updating location: {e}")  # Log for debugging
+        return jsonify({"status": "error", "message": "Failed to update location"})
 
 
 def get_app_configuration():
