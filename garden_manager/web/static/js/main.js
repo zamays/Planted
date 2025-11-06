@@ -18,8 +18,10 @@ function getCSRFToken() {
         return tokenInput.value;
     }
     
-    console.error('CSRF token not found');
-    return '';
+    // CSRF token not found - this should never happen in normal operation
+    console.error('CSRF token not found - request may fail');
+    showNotification('⚠️ Security token missing. Please refresh the page.', 'error');
+    throw new Error('CSRF token not found');
 }
 
 // ============================================================================
