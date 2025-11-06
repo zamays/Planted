@@ -422,8 +422,8 @@ def detect_location():
             })
 
         return jsonify({"status": "error", "message": "Could not detect location"})
-    except (OSError, ValueError, KeyError) as e:
-        return jsonify({"status": "error", "message": str(e)})
+    except (OSError, ValueError, KeyError):
+        return jsonify({"status": "error", "message": "Failed to detect location"})
 
 
 @app.route("/")
