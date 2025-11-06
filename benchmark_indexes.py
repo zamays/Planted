@@ -5,6 +5,7 @@ This script demonstrates the performance improvement from database indexes
 by comparing query execution times with and without indexes.
 """
 
+import os
 import sqlite3
 import tempfile
 import time
@@ -124,72 +125,84 @@ def run_benchmarks():
     print("DATABASE INDEX PERFORMANCE BENCHMARK")
     print("=" * 70)
 
-    # Create two databases: one with indexes, one without
-    db_with_indexes = tempfile.mktemp(suffix=".db")
-    db_without_indexes = tempfile.mktemp(suffix=".db")
+    # Create two temporary databases: one with indexes, one without
+    # Using NamedTemporaryFile with delete=False for security and proper cleanup
+    db_with_indexes_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+    db_with_indexes = db_with_indexes_file.name
+    db_with_indexes_file.close()
 
-    print("\n1. Creating test databases...")
-    print("   - Database WITH indexes")
-    _ = PlantDatabase(db_with_indexes)
-    print("   - Database WITHOUT indexes")
-    _ = PlantDatabase(db_without_indexes)
-    drop_all_indexes(db_without_indexes)
+    db_without_indexes_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+    db_without_indexes = db_without_indexes_file.name
+    db_without_indexes_file.close()
 
-    print("\n2. Populating with test data...")
-    stats = create_test_data(db_with_indexes, num_users=5, plots_per_user=10, plants_per_plot=20)
-    create_test_data(db_without_indexes, num_users=5, plots_per_user=10, plants_per_plot=20)
-    print(f"   - Created {stats[0]} plots")
-    print(f"   - Created {stats[1]} planted items")
-    print(f"   - Created {stats[2]} care tasks")
+    try:
+        print("\n1. Creating test databases...")
+        print("   - Database WITH indexes")
+        _ = PlantDatabase(db_with_indexes)
+        print("   - Database WITHOUT indexes")
+        _ = PlantDatabase(db_without_indexes)
+        drop_all_indexes(db_without_indexes)
 
-    # Define test queries
-    queries = [
-        ("Season Filtering", "SELECT * FROM plants WHERE season = 'spring'", None),
-        ("User's Plots", "SELECT * FROM garden_plots WHERE user_id = 3", None),
-        ("Plot's Plants", "SELECT * FROM planted_items WHERE plot_id = 5", None),
-        ("Item's Tasks", "SELECT * FROM care_tasks WHERE planted_item_id = 10", None),
-        ("Due Date Filter",
-         "SELECT * FROM care_tasks WHERE due_date <= datetime('now', '+30 days')", None),
-        ("Due & Incomplete",
-         "SELECT * FROM care_tasks WHERE due_date <= datetime('now', '+30 days') AND completed = 0",
-         None),
-    ]
+        print("\n2. Populating with test data...")
+        stats = create_test_data(db_with_indexes, num_users=5, plots_per_user=10, plants_per_plot=20)
+        create_test_data(db_without_indexes, num_users=5, plots_per_user=10, plants_per_plot=20)
+        print(f"   - Created {stats[0]} plots")
+        print(f"   - Created {stats[1]} planted items")
+        print(f"   - Created {stats[2]} care tasks")
 
-    print("\n3. Running benchmarks (100 iterations per query)...\n")
-    print(f"{'Query':<20} {'Without Index':<15} {'With Index':<15} {'Speedup':<10}")
-    print("-" * 70)
+        # Define test queries
+        queries = [
+            ("Season Filtering", "SELECT * FROM plants WHERE season = 'spring'", None),
+            ("User's Plots", "SELECT * FROM garden_plots WHERE user_id = 3", None),
+            ("Plot's Plants", "SELECT * FROM planted_items WHERE plot_id = 5", None),
+            ("Item's Tasks", "SELECT * FROM care_tasks WHERE planted_item_id = 10", None),
+            ("Due Date Filter",
+             "SELECT * FROM care_tasks WHERE due_date <= datetime('now', '+30 days')", None),
+            ("Due & Incomplete",
+             "SELECT * FROM care_tasks WHERE due_date <= datetime('now', '+30 days') AND completed = 0",
+             None),
+        ]
 
-    conn_with = sqlite3.connect(db_with_indexes)
-    conn_without = sqlite3.connect(db_without_indexes)
+        print("\n3. Running benchmarks (100 iterations per query)...\n")
+        print(f"{'Query':<20} {'Without Index':<15} {'With Index':<15} {'Speedup':<10}")
+        print("-" * 70)
 
-    total_speedup = 0
-    count = 0
+        conn_with = sqlite3.connect(db_with_indexes)
+        conn_without = sqlite3.connect(db_without_indexes)
 
-    for name, query, params in queries:
-        time_with = benchmark_query(conn_with, query, params)
-        time_without = benchmark_query(conn_without, query, params)
-        speedup = time_without / time_with if time_with > 0 else 1.0
+        total_speedup = 0
+        count = 0
 
-        print(f"{name:<20} {time_without:>10.3f} ms   {time_with:>10.3f} ms   {speedup:>6.1f}x")
+        for name, query, params in queries:
+            time_with = benchmark_query(conn_with, query, params)
+            time_without = benchmark_query(conn_without, query, params)
+            speedup = time_without / time_with if time_with > 0 else 1.0
 
-        total_speedup += speedup
-        count += 1
+            print(f"{name:<20} {time_without:>10.3f} ms   {time_with:>10.3f} ms   {speedup:>6.1f}x")
 
-    conn_with.close()
-    conn_without.close()
+            total_speedup += speedup
+            count += 1
 
-    avg_speedup = total_speedup / count if count > 0 else 1.0
+        conn_with.close()
+        conn_without.close()
 
-    print("-" * 70)
-    print(f"{'Average Speedup:':<20} {avg_speedup:>42.1f}x")
+        avg_speedup = total_speedup / count if count > 0 else 1.0
 
-    print("\n4. Summary:")
-    print(f"   ✅ Average performance improvement: {avg_speedup:.1f}x faster")
-    print("   ✅ Indexes significantly improve query performance")
-    print("   ✅ Complex queries benefit most from compound indexes")
+        print("-" * 70)
+        print(f"{'Average Speedup:':<20} {avg_speedup:>42.1f}x")
 
-    print("\n" + "=" * 70)
+        print("\n4. Summary:")
+        print(f"   ✅ Average performance improvement: {avg_speedup:.1f}x faster")
+        print("   ✅ Indexes significantly improve query performance")
+        print("   ✅ Complex queries benefit most from compound indexes")
 
+        print("\n" + "=" * 70)
+
+    finally:
+        # Clean up temporary database files
+        for db_path in [db_with_indexes, db_without_indexes]:
+            if os.path.exists(db_path):
+                os.unlink(db_path)
 
 if __name__ == "__main__":
     run_benchmarks()
