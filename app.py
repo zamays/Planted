@@ -1187,6 +1187,118 @@ def settings():
     return render_template("settings.html", user=user, current_location=current_location, climate_zone=climate_zone)
 
 
+@app.route("/settings/change-password", methods=["POST"])
+def change_password():
+    """
+    Change user password.
+
+    POST: Process password change request
+
+    Form Data:
+        current_password (str): Current password for verification
+        new_password (str): New password
+        confirm_password (str): New password confirmation
+
+    Returns:
+        str: Redirect to settings page with success/error message
+    """
+    # Require login
+    if not is_logged_in():
+        flash("Please log in to change password.", "error")
+        return redirect(url_for('login'))
+
+    user_id = get_current_user_id()
+
+    if auth_service is None:
+        flash("Authentication service unavailable.", "error")
+        return redirect(url_for('settings'))
+
+    # Get form data
+    current_password = request.form.get("current_password", "")
+    new_password = request.form.get("new_password", "")
+    confirm_password = request.form.get("confirm_password", "")
+
+    # Validate inputs
+    if not current_password or not new_password or not confirm_password:
+        flash("All password fields are required.", "error")
+        return redirect(url_for('settings'))
+
+    if new_password != confirm_password:
+        flash("New passwords do not match.", "error")
+        return redirect(url_for('settings'))
+
+    try:
+        # Attempt to change password
+        success = auth_service.change_password(user_id, current_password, new_password)
+
+        if success:
+            flash("Password changed successfully!", "success")
+        else:
+            flash("Current password is incorrect.", "error")
+
+    except ValueError as e:
+        flash(str(e), "error")
+
+    return redirect(url_for('settings'))
+
+
+@app.route("/settings/update-email", methods=["POST"])
+def update_user_email():
+    """
+    Update user email address.
+
+    POST: Process email update request
+
+    Form Data:
+        new_email (str): New email address
+        confirm_email (str): Email confirmation
+
+    Returns:
+        str: Redirect to settings page with success/error message
+    """
+    # Require login
+    if not is_logged_in():
+        flash("Please log in to update email.", "error")
+        return redirect(url_for('login'))
+
+    user_id = get_current_user_id()
+
+    if auth_service is None:
+        flash("Authentication service unavailable.", "error")
+        return redirect(url_for('settings'))
+
+    # Get form data
+    new_email = request.form.get("new_email", "").strip()
+    confirm_email = request.form.get("confirm_email", "").strip()
+
+    # Validate inputs
+    if not new_email or not confirm_email:
+        flash("All email fields are required.", "error")
+        return redirect(url_for('settings'))
+
+    if new_email != confirm_email:
+        flash("Email addresses do not match.", "error")
+        return redirect(url_for('settings'))
+
+    try:
+        # Attempt to update email
+        success = auth_service.update_email(user_id, new_email)
+
+        if success:
+            # Update session with new email
+            user = auth_service.get_user_by_id(user_id)
+            if user:
+                session['email'] = user['email']
+            flash("Email updated successfully!", "success")
+        else:
+            flash("This email address is already in use.", "error")
+
+    except ValueError as e:
+        flash(str(e), "error")
+
+    return redirect(url_for('settings'))
+
+
 @app.route("/test")
 def test_page():
     """Simple test page to verify Flask is working"""

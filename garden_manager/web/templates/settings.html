@@ -151,6 +151,99 @@
             </button>
         </form>
     </section>
+
+    <section class="settings-section">
+        <h2>🔒 Change Password</h2>
+        <p class="help-text">
+            Update your account password. Make sure to use a strong password with at least 6 characters.
+        </p>
+
+        <form method="POST" action="{{ url_for('change_password') }}" class="password-form">
+            <div class="form-group">
+                <label for="current_password">Current Password *</label>
+                <input 
+                    type="password" 
+                    id="current_password" 
+                    name="current_password" 
+                    placeholder="Enter your current password"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="new_password">New Password *</label>
+                <input 
+                    type="password" 
+                    id="new_password" 
+                    name="new_password" 
+                    placeholder="Enter new password (min 6 characters)"
+                    minlength="6"
+                    required
+                    autocomplete="new-password"
+                >
+                <small>Minimum 6 characters</small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password *</label>
+                <input 
+                    type="password" 
+                    id="confirm_password" 
+                    name="confirm_password" 
+                    placeholder="Re-enter new password"
+                    minlength="6"
+                    required
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                🔐 Change Password
+            </button>
+        </form>
+    </section>
+
+    <section class="settings-section">
+        <h2>📧 Update Email Address</h2>
+        <p class="help-text">
+            Change the email address associated with your account. You'll be able to use the new email to log in.
+        </p>
+
+        <div class="current-email">
+            <strong>Current Email:</strong> {{ user.email }}
+        </div>
+
+        <form method="POST" action="{{ url_for('update_user_email') }}" class="email-form">
+            <div class="form-group">
+                <label for="new_email">New Email Address *</label>
+                <input 
+                    type="email" 
+                    id="new_email" 
+                    name="new_email" 
+                    placeholder="Enter new email address"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_email">Confirm New Email *</label>
+                <input 
+                    type="email" 
+                    id="confirm_email" 
+                    name="confirm_email" 
+                    placeholder="Re-enter new email address"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                💾 Update Email
+            </button>
+        </form>
+    </section>
 </div>
 
 <style>
@@ -256,6 +349,19 @@
 
     .location-form {
         margin-top: 1rem;
+    }
+
+    .password-form,
+    .email-form {
+        margin-top: 1rem;
+    }
+
+    .current-email {
+        background: #f9fafb;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+        color: #333;
     }
 
     .form-row {
