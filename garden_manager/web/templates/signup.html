@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - Planted{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">🌱 Create Account</h2>
+        <p class="auth-subtitle">Join Planted and start your garden journey</p>
+        
+        {% if error %}
+        <div class="alert alert-error">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required 
+                       placeholder="Choose a username (3-50 characters)"
+                       minlength="3" maxlength="50"
+                       autocomplete="username"
+                       value="{{ request.form.get('username', '') }}">
+                <small>Your username will be displayed on your account</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required 
+                       placeholder="Enter your email address"
+                       autocomplete="email"
+                       value="{{ request.form.get('email', '') }}">
+                <small>We'll use this to help you recover your account</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Choose a strong password (min 6 characters)"
+                       minlength="6"
+                       autocomplete="new-password">
+                <small>Use at least 6 characters</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required 
+                       placeholder="Re-enter your password"
+                       minlength="6"
+                       autocomplete="new-password">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">
+                Create Account
+            </button>
+        </form>
+        
+        <div class="auth-links">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+            <p>or</p>
+            <p><a href="{{ url_for('guest_mode') }}" class="guest-link">Continue as Guest</a></p>
+            <p class="guest-warning">⚠️ Guest mode data is not saved</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+    padding: 2rem;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    max-width: 450px;
+    width: 100%;
+}
+
+.auth-title {
+    text-align: center;
+    color: #2d5a3d;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.auth-form {
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #888;
+    font-size: 0.875rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4A7C59;
+    box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.auth-links p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.auth-links a {
+    color: #4A7C59;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.guest-link {
+    color: #888 !important;
+}
+
+.guest-warning {
+    font-size: 0.875rem;
+    color: #f59e0b;
+    margin-top: 0.5rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+}
+
+.alert-error {
+    background-color: #fee;
+    border: 1px solid #fcc;
+    color: #c00;
+}
+</style>
+{% endblock %}

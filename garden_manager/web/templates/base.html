@@ -15,11 +15,20 @@
     <header class="header" role="banner">
         <h1>🌱 Planted</h1>
         <div class="subtitle">
+            {% if session.get('is_guest') %}
+                <span class="guest-indicator" title="Guest Mode - Data not saved">
+                    👤 Guest Mode
+                </span>
+            {% elif session.get('username') %}
+                <span class="user-indicator" title="Logged in as {{ session.get('username') }}">
+                    👤 {{ session.get('username') }}
+                </span>
+            {% endif %}
             {% if location and season %}
                 <span>📍 {{ location }}</span>
                 <span>🍃 {{ season }} Season</span>
             {% else %}
-                Your digital gardening companion
+                <span>Your digital gardening companion</span>
             {% endif %}
         </div>
     </header>
@@ -68,15 +77,88 @@
                     ❓ <span>Help</span>
                 </a>
             </li>
+            {% if session.get('user_id') %}
+            <li>
+                <a href="{{ url_for('logout') }}" 
+                   title="Log out">
+                    🚪 <span>Logout</span>
+                </a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
 
     <main id="main-content" class="container" role="main">
+        {% if session.get('is_guest') %}
+        <div class="alert alert-warning" style="margin-bottom: 1rem;">
+            ⚠️ <strong>Guest Mode:</strong> Your data is not being saved. <a href="{{ url_for('signup') }}" style="text-decoration: underline;">Create an account</a> to save your garden.
+        </div>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="margin-bottom: 1rem;">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
         {% block content %}{% endblock %}
     </main>
 
     <!-- Toast notification container -->
     <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <style>
+        .guest-indicator {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+            border: 1px solid #f59e0b;
+        }
+        
+        .user-indicator {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid transparent;
+        }
+        
+        .alert-warning {
+            background-color: #fef3c7;
+            border-color: #f59e0b;
+            color: #78350f;
+        }
+        
+        .alert-success {
+            background-color: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .alert-info {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        
+        .alert-error {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+    </style>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}

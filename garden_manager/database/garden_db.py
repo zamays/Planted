@@ -29,7 +29,7 @@ class GardenDatabase:
         self.db_path = db_path
 
     def create_garden_plot(
-        self, name: str, width: int, height: int, location: str
+        self, name: str, width: int, height: int, location: str, user_id: Optional[int] = None
     ) -> int:
         """
         Create a new garden plot in the database.
@@ -39,6 +39,7 @@ class GardenDatabase:
             width: Width in grid units (must be positive)
             height: Height in grid units (must be positive)
             location: Physical location description
+            user_id: Optional user ID to associate the plot with
 
         Returns:
             int: ID of the newly created plot
@@ -54,10 +55,10 @@ class GardenDatabase:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
-                    INSERT INTO garden_plots (name, width, height, location)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO garden_plots (name, width, height, location, user_id)
+                    VALUES (?, ?, ?, ?, ?)
                 """,
-                    (name, width, height, location),
+                    (name, width, height, location, user_id),
                 )
 
                 plot_id = cursor.lastrowid
@@ -72,16 +73,25 @@ class GardenDatabase:
                     f"Database error while creating garden plot: {e}"
                 ) from e
 
-    def get_garden_plots(self) -> List[GardenPlot]:
+    def get_garden_plots(self, user_id: Optional[int] = None) -> List[GardenPlot]:
         """
         Retrieve all garden plots ordered by creation date.
+
+        Args:
+            user_id: Optional user ID to filter plots by
 
         Returns:
             List[GardenPlot]: All garden plots, newest first
         """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM garden_plots ORDER BY created_date DESC")
+            if user_id is not None:
+                cursor.execute(
+                    "SELECT * FROM garden_plots WHERE user_id = ? OR user_id IS NULL ORDER BY created_date DESC",
+                    (user_id,)
+                )
+            else:
+                cursor.execute("SELECT * FROM garden_plots WHERE user_id IS NULL ORDER BY created_date DESC")
             rows = cursor.fetchall()
             return [self._row_to_plot(row) for row in rows]
 
