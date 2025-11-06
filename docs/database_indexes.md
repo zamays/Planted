@@ -6,7 +6,7 @@ This document describes the database indexes added to optimize query performance
 
 ## Indexes Added
 
-The following 7 strategic indexes were added to improve query performance by 10-100x:
+The following 7 strategic indexes were added to improve query performance by 5-30x:
 
 ### 1. `idx_plants_season`
 - **Table:** `plants`

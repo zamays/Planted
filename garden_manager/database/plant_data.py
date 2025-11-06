@@ -118,7 +118,7 @@ class PlantDatabase:
         Create database indexes for query performance optimization.
 
         Adds strategic indexes on frequently queried columns to improve
-        query performance by 10-100x for filtered and joined queries.
+        query performance by 5-30x for filtered and joined queries.
 
         Indexes created:
         - plants(season): For season filtering queries
