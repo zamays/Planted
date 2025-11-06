@@ -17,7 +17,7 @@ import time
 import sqlite3
 import traceback
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from dotenv import load_dotenv
 from garden_manager.database.plant_data import PlantDatabase
 from garden_manager.database.garden_db import GardenDatabase
@@ -31,6 +31,7 @@ from garden_manager.database.models import (
 from garden_manager.services.weather_service import WeatherService
 from garden_manager.services.location_service import LocationService
 from garden_manager.services.scheduler import CareReminder
+from garden_manager.services.auth_service import AuthService
 from garden_manager.utils.date_utils import SeasonCalculator
 
 # Load environment variables from .env file
@@ -58,6 +59,7 @@ garden_db = None
 location_service = None
 weather_service = None
 care_reminder = None
+auth_service = None
 # pylint: enable=invalid-name
 
 
@@ -72,7 +74,7 @@ def initialize_services():
         Exception: If critical service initialization fails
     """
     # pylint: disable=global-statement
-    global plant_db, garden_db, location_service, weather_service, care_reminder
+    global plant_db, garden_db, location_service, weather_service, care_reminder, auth_service
 
     print("🔧 Initializing services...")
 
@@ -82,6 +84,7 @@ def initialize_services():
         garden_db = GardenDatabase()
         location_service = LocationService()
         weather_service = WeatherService()
+        auth_service = AuthService()
 
         print("   ✅ Database services initialized")
 
@@ -121,6 +124,192 @@ def initialize_services():
         raise
 
 
+def get_current_user_id():
+    """
+    Get the current user ID from session.
+    
+    Returns:
+        Optional[int]: User ID if logged in, None if guest mode or not logged in
+    """
+    if session.get('is_guest'):
+        return None
+    return session.get('user_id')
+
+
+def is_logged_in():
+    """Check if user is logged in (not guest mode)."""
+    return session.get('user_id') is not None and not session.get('is_guest')
+
+
+def load_user_location():
+    """Load location for the current user."""
+    user_id = get_current_user_id()
+    
+    if user_id and auth_service:
+        # Load user's saved location
+        user = auth_service.get_user_by_id(user_id)
+        if user and user.get('location'):
+            loc = user['location']
+            location_service.set_manual_location(
+                loc['latitude'],
+                loc['longitude'],
+                {
+                    'city': loc.get('city', ''),
+                    'region': loc.get('region', ''),
+                    'country': loc.get('country', '')
+                }
+            )
+            return
+    
+    # Default or guest: try to detect by IP
+    location_service.get_location_by_ip()
+
+
+@app.before_request
+def check_auth():
+    """Check authentication before each request."""
+    # Public routes that don't require authentication
+    public_routes = ['login', 'signup', 'guest_mode', 'static']
+    
+    if request.endpoint in public_routes:
+        return None
+    
+    # Check if user is authenticated or in guest mode
+    if not session.get('user_id') and not session.get('is_guest'):
+        return redirect(url_for('login'))
+    
+    return None
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """
+    User login page and authentication handler.
+    
+    GET: Display login form
+    POST: Authenticate user and create session
+    """
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+        
+        if not username or not password:
+            return render_template("login.html", error="Please enter username and password")
+        
+        if auth_service is None:
+            return render_template("login.html", error="Authentication service unavailable")
+        
+        user = auth_service.verify_login(username, password)
+        
+        if user:
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            session['is_guest'] = False
+            
+            # Load user's location
+            load_user_location()
+            
+            flash(f"Welcome back, {user['username']}!", "success")
+            return redirect(url_for('dashboard'))
+        
+        return render_template("login.html", error="Invalid username or password")
+    
+    return render_template("login.html")
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    """
+    User registration page and handler.
+    
+    GET: Display signup form
+    POST: Create new user account
+    """
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+        
+        # Validation
+        if not username or not email or not password:
+            return render_template("signup.html", error="All fields are required")
+        
+        if password != confirm_password:
+            return render_template("signup.html", error="Passwords do not match")
+        
+        if auth_service is None:
+            return render_template("signup.html", error="Authentication service unavailable")
+        
+        try:
+            user_id = auth_service.register_user(username, email, password)
+            
+            if user_id is None:
+                return render_template("signup.html", 
+                                      error="Username or email already exists")
+            
+            # Auto-login after signup
+            session['user_id'] = user_id
+            session['username'] = username
+            session['is_guest'] = False
+            
+            # Detect and save user's location
+            if location_service:
+                location_service.get_location_by_ip()
+                if location_service.current_location:
+                    loc = location_service.current_location
+                    auth_service.update_user_location(
+                        user_id,
+                        loc['latitude'],
+                        loc['longitude'],
+                        loc.get('city', ''),
+                        loc.get('region', ''),
+                        loc.get('country', '')
+                    )
+            
+            flash(f"Welcome to Planted, {username}!", "success")
+            return redirect(url_for('dashboard'))
+            
+        except ValueError as e:
+            return render_template("signup.html", error=str(e))
+    
+    return render_template("signup.html")
+
+
+@app.route("/guest-mode", methods=["GET", "POST"])
+def guest_mode():
+    """
+    Guest mode warning and activation.
+    
+    GET: Display warning about guest mode
+    POST: Activate guest mode session
+    """
+    if request.method == "POST":
+        session['is_guest'] = True
+        session['user_id'] = None
+        session['username'] = 'Guest'
+        
+        # Use server location for guest mode
+        if location_service:
+            location_service.set_manual_location(
+                40.7128, -74.0060, 
+                {"city": "New York", "state": "NY", "country": "USA"}
+            )
+        
+        flash("⚠️ You are in Guest Mode. Your data will not be saved.", "warning")
+        return redirect(url_for('dashboard'))
+    
+    return render_template("guest_mode.html")
+
+
+@app.route("/logout")
+def logout():
+    """Log out current user and clear session."""
+    session.clear()
+    flash("You have been logged out successfully.", "info")
+    return redirect(url_for('login'))
+
+
 @app.route("/")
 def dashboard():
     """
@@ -133,7 +322,8 @@ def dashboard():
         str: Rendered dashboard HTML template or error message
     """
     try:
-        plots = garden_db.get_garden_plots() if garden_db is not None else []
+        user_id = get_current_user_id()
+        plots = garden_db.get_garden_plots(user_id) if garden_db is not None else []
         due_tasks = (
             garden_db.get_care_tasks(due_within_days=7) if garden_db is not None else []
         )
@@ -167,22 +357,22 @@ def dashboard():
         )
 
 
-def _get_plants_by_season_filter(season_filter):
+def _get_plants_by_season_filter(season_filter, user_id=None):
     """Get plants based on season filter."""
     if plant_db is None:
         return []
 
     if season_filter == "current":
         current_season = SeasonCalculator.get_current_season()
-        return plant_db.get_plants_by_season(current_season.lower())
+        return plant_db.get_plants_by_season(current_season.lower(), user_id)
 
     if season_filter == "all":
         all_plants = []
         for season in ["spring", "summer", "fall", "winter"]:
-            all_plants.extend(plant_db.get_plants_by_season(season))
+            all_plants.extend(plant_db.get_plants_by_season(season, user_id))
         return all_plants
 
-    return plant_db.get_plants_by_season(season_filter.lower())
+    return plant_db.get_plants_by_season(season_filter.lower(), user_id)
 
 
 def _filter_plants_by_type(plants_list, type_filter):
@@ -236,12 +426,13 @@ def plants():
         str: Rendered plants catalog HTML template or error message
     """
     try:
+        user_id = get_current_user_id()
         season_filter = request.args.get("season", "current")
         type_filter = request.args.get("type", "all")
         search = request.args.get("search", "")
 
         # Get and filter plants
-        plants_list = _get_plants_by_season_filter(season_filter)
+        plants_list = _get_plants_by_season_filter(season_filter, user_id)
         plants_list = _filter_plants_by_type(plants_list, type_filter)
         plants_list = _filter_plants_by_search(plants_list, search)
 
@@ -370,11 +561,12 @@ def add_plant():
             if plant_db is None:
                 return "<h1>Error</h1><p>Plant database is not initialized.</p>"
 
+            user_id = get_current_user_id()
             plant_spec, error = _parse_plant_form_data()
             if error:
                 return f"<h1>Error</h1><p>{error}</p>"
 
-            plant_db.add_custom_plant(plant_spec)
+            plant_db.add_custom_plant(plant_spec, user_id)
             return redirect(url_for("plants"))
 
         return render_template("add_plant.html")
@@ -502,7 +694,8 @@ def garden_layout():
         str: Rendered garden layout HTML template or error message
     """
     try:
-        plots = garden_db.get_garden_plots() if garden_db is not None else []
+        user_id = get_current_user_id()
+        plots = garden_db.get_garden_plots(user_id) if garden_db is not None else []
         return render_template("garden.html", plots=plots)
     except (sqlite3.Error, AttributeError) as e:
         print(f"Garden error: {e}")
@@ -593,11 +786,11 @@ def _is_position_occupied(x_pos, y_pos, plot_id):
     return False
 
 
-def _get_all_unique_plants():
+def _get_all_unique_plants(user_id=None):
     """Get all unique plants across all seasons."""
     all_plants = []
     for season in ["spring", "summer", "fall", "winter"]:
-        all_plants.extend(plant_db.get_plants_by_season(season))
+        all_plants.extend(plant_db.get_plants_by_season(season, user_id))
 
     # Remove duplicates and sort
     seen_ids = set()
@@ -658,7 +851,7 @@ def _handle_plant_to_plot_post(plot_id, plot):
     return redirect(url_for("view_plot", plot_id=plot_id))
 
 
-def _handle_plant_to_plot_get(plot_id, plot):
+def _handle_plant_to_plot_get(plot_id, plot, user_id=None):
     """Handle GET request for plant selection form."""
     x = int(request.args.get("x", 0))
     y = int(request.args.get("y", 0))
@@ -672,7 +865,7 @@ def _handle_plant_to_plot_get(plot_id, plot):
         return redirect(url_for("view_plot", plot_id=plot_id))
 
     # Get all available plants
-    unique_plants = _get_all_unique_plants()
+    unique_plants = _get_all_unique_plants(user_id)
 
     return render_template(
         "plant_to_plot.html", plot=plot, plants=unique_plants, x=x, y=y
@@ -711,7 +904,8 @@ def plant_to_plot(plot_id):
         if request.method == "POST":
             return _handle_plant_to_plot_post(plot_id, plot)
 
-        return _handle_plant_to_plot_get(plot_id, plot)
+        user_id = get_current_user_id()
+        return _handle_plant_to_plot_get(plot_id, plot, user_id)
 
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
         print(f"Plant to plot error: {e}")
@@ -751,7 +945,8 @@ def create_plot():
                 return "<h1>Error</h1><p>Width and height must be valid numbers.</p>"
 
             if garden_db is not None:
-                plot_id = garden_db.create_garden_plot(name, width, height, location)
+                user_id = get_current_user_id()
+                plot_id = garden_db.create_garden_plot(name, width, height, location, user_id)
 
                 # If user wants to add plants immediately, redirect to plot view
                 if add_plants == "yes":

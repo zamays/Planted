@@ -64,7 +64,9 @@ class PlantDatabase:
                     avoid_plants TEXT NOT NULL,
                     climate_zones TEXT NOT NULL,
                     care_notes TEXT NOT NULL,
-                    is_custom BOOLEAN DEFAULT FALSE
+                    is_custom BOOLEAN DEFAULT FALSE,
+                    user_id INTEGER,
+                    FOREIGN KEY (user_id) REFERENCES users (id)
                 )
             """)
 
@@ -75,7 +77,9 @@ class PlantDatabase:
                     width INTEGER,
                     height INTEGER,
                     location TEXT,
-                    created_date DATETIME DEFAULT CURRENT_TIMESTAMP
+                    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    user_id INTEGER,
+                    FOREIGN KEY (user_id) REFERENCES users (id)
                 )
             """)
 
@@ -197,19 +201,26 @@ class PlantDatabase:
 
             conn.commit()
 
-    def get_plants_by_season(self, season: str) -> List[Plant]:
+    def get_plants_by_season(self, season: str, user_id: Optional[int] = None) -> List[Plant]:
         """
         Retrieve plants suitable for a specific planting season.
 
         Args:
             season: Season name (spring, summer, fall, winter)
+            user_id: Optional user ID to include user's custom plants
 
         Returns:
             List[Plant]: Plants suitable for the specified season
         """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM plants WHERE season = ?", (season,))
+            if user_id is not None:
+                cursor.execute(
+                    "SELECT * FROM plants WHERE season = ? AND (user_id IS NULL OR user_id = ?)",
+                    (season, user_id)
+                )
+            else:
+                cursor.execute("SELECT * FROM plants WHERE season = ? AND user_id IS NULL", (season,))
             return [self._row_to_plant(row) for row in cursor.fetchall()]
 
     def get_plants_by_type(self, plant_type: str) -> List[Plant]:
@@ -245,12 +256,13 @@ class PlantDatabase:
             )
             return [self._row_to_plant(row) for row in cursor.fetchall()]
 
-    def add_custom_plant(self, plant_spec: PlantSpec) -> Optional[int]:
+    def add_custom_plant(self, plant_spec: PlantSpec, user_id: Optional[int] = None) -> Optional[int]:
         """
         Add a custom plant to the database.
 
         Args:
             plant_spec: PlantSpec containing all plant characteristics
+            user_id: Optional user ID to associate the plant with
 
         Returns:
             int: ID of the newly created plant
@@ -268,8 +280,8 @@ class PlantDatabase:
                 INSERT INTO plants (name, scientific_name, plant_type, season, planting_method,
                                   days_to_germination, days_to_maturity, spacing_inches,
                                   sun_requirements, water_needs, companion_plants, avoid_plants,
-                                  climate_zones, care_notes, is_custom)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE)
+                                  climate_zones, care_notes, is_custom, user_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE, ?)
             """,
                 (
                     plant_spec.name,
@@ -286,6 +298,7 @@ class PlantDatabase:
                     json.dumps(plant_spec.compatibility.avoid_plants),
                     json.dumps(plant_spec.compatibility.climate_zones),
                     plant_spec.care.care_notes,
+                    user_id,
                 ),
             )
 

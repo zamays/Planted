@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Guest Mode - Planted{% endblock %}
+
+{% block content %}
+<div class="guest-warning-container">
+    <div class="guest-warning-card">
+        <div class="warning-icon">⚠️</div>
+        <h2 class="warning-title">Guest Mode Warning</h2>
+        <p class="warning-message">
+            You are about to use Planted in <strong>Guest Mode</strong>.
+        </p>
+        
+        <div class="warning-details">
+            <h3>What this means:</h3>
+            <ul>
+                <li>❌ Your plants, garden plots, and care tasks <strong>will NOT be saved</strong></li>
+                <li>❌ Your location will be based on the server's location, not yours</li>
+                <li>❌ All data will be lost when you close your browser</li>
+                <li>❌ You cannot access your data from other devices</li>
+            </ul>
+            
+            <h3>To save your data:</h3>
+            <ul>
+                <li>✅ <a href="{{ url_for('signup') }}">Create a free account</a></li>
+                <li>✅ Get personalized location-based recommendations</li>
+                <li>✅ Access your garden from anywhere</li>
+                <li>✅ Keep your data safe and secure</li>
+            </ul>
+        </div>
+        
+        <div class="warning-actions">
+            <a href="{{ url_for('signup') }}" class="btn btn-primary">
+                Create Free Account
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">
+                Sign In
+            </a>
+            <form method="POST" action="{{ url_for('guest_mode') }}" style="margin-top: 1rem;">
+                <button type="submit" class="btn btn-text">
+                    Continue as Guest (Not Recommended)
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.guest-warning-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+    padding: 2rem;
+}
+
+.guest-warning-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    max-width: 600px;
+    width: 100%;
+    border: 2px solid #f59e0b;
+}
+
+.warning-icon {
+    text-align: center;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.warning-title {
+    text-align: center;
+    color: #c05621;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.warning-message {
+    text-align: center;
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.warning-details {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+}
+
+.warning-details h3 {
+    color: #92400e;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.warning-details ul {
+    margin: 0.5rem 0 1.5rem 1.5rem;
+    padding: 0;
+}
+
+.warning-details ul:last-child {
+    margin-bottom: 0;
+}
+
+.warning-details li {
+    margin-bottom: 0.5rem;
+    color: #78350f;
+}
+
+.warning-details a {
+    color: #4A7C59;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.warning-details a:hover {
+    text-decoration: underline;
+}
+
+.warning-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.warning-actions .btn {
+    min-width: 250px;
+}
+
+.btn-text {
+    background: none;
+    color: #888;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.btn-text:hover {
+    color: #666;
+}
+
+@media (max-width: 640px) {
+    .guest-warning-card {
+        padding: 1.5rem;
+    }
+    
+    .warning-icon {
+        font-size: 3rem;
+    }
+    
+    .warning-title {
+        font-size: 1.5rem;
+    }
+    
+    .warning-actions .btn {
+        min-width: 100%;
+    }
+}
+</style>
+{% endblock %}
