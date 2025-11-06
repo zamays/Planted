@@ -69,6 +69,7 @@
         </div>
 
         <form method="POST" action="{{ url_for('settings') }}" class="location-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <h3>Manual Location Entry</h3>
             <p class="help-text">
                 Enter your coordinates manually. You can find them using 
@@ -374,6 +375,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: JSON.stringify({
                         latitude: latitude,

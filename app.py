@@ -18,6 +18,7 @@ import sqlite3
 import traceback
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from dotenv import load_dotenv
 from garden_manager.database.plant_data import PlantDatabase
 from garden_manager.database.garden_db import GardenDatabase
@@ -51,6 +52,9 @@ static_dir = os.path.join(
 )
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "garden_manager_secret_key")
+
+# Initialize CSRF protection
+csrf = CSRFProtect(app)
 
 # Global service instances - initialized in initialize_services()
 # pylint: disable=invalid-name
@@ -177,6 +181,23 @@ def check_auth():
         session['location_loaded'] = True
 
     return None
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):  # pylint: disable=unused-argument
+    """
+    Handle CSRF validation errors.
+
+    Args:
+        e: CSRFError exception
+
+    Returns:
+        Rendered error page with appropriate status code
+    """
+    return render_template('error.html',
+                          error_title='CSRF Validation Failed',
+                          error_message='Your session may have expired. Please refresh the page and try again.',
+                          error_code=400), 400
 
 
 @app.route("/login", methods=["GET", "POST"])

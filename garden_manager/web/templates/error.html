@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ error_title or 'Error' }} - Planted{% endblock %}
+
+{% block content %}
+<div class="error-container" style="max-width: 600px; margin: 4rem auto; text-align: center; padding: 2rem;">
+    <div class="error-icon" style="font-size: 4rem; margin-bottom: 1.5rem;">
+        ⚠️
+    </div>
+    
+    <h1 class="error-title" style="color: var(--primary-green); margin-bottom: 1rem;">
+        {{ error_title or 'Error' }}
+    </h1>
+    
+    <p class="error-message" style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 2rem;">
+        {{ error_message or 'An unexpected error occurred.' }}
+    </p>
+    
+    {% if error_code %}
+    <p class="error-code" style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 2rem;">
+        Error Code: {{ error_code }}
+    </p>
+    {% endif %}
+    
+    <div class="error-actions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            🏠 Go to Dashboard
+        </a>
+        <button onclick="window.history.back()" class="btn btn-secondary">
+            ← Go Back
+        </button>
+        <button onclick="window.location.reload()" class="btn btn-secondary">
+            🔄 Refresh Page
+        </button>
+    </div>
+</div>
+{% endblock %}
