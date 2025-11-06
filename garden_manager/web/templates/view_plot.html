@@ -35,6 +35,7 @@
 
 <!-- Hidden form for plot deletion -->
 <form id="delete-plot-form" method="POST" action="{{ url_for('delete_plot', plot_id=plot.id) }}" style="display: none;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 </form>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
