@@ -37,6 +37,7 @@
                 Sign In
             </a>
             <form method="POST" action="{{ url_for('guest_mode') }}" style="margin-top: 1rem;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <button type="submit" class="btn btn-text">
                     Continue as Guest (Not Recommended)
                 </button>

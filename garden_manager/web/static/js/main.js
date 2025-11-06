@@ -1,6 +1,30 @@
 // Garden Manager JavaScript Functions
 
 // ============================================================================
+// CSRF Token Helper
+// ============================================================================
+
+// Get CSRF token from meta tag or form
+function getCSRFToken() {
+    // Try to get from meta tag first
+    const metaTag = document.querySelector('meta[name="csrf-token"]');
+    if (metaTag) {
+        return metaTag.getAttribute('content');
+    }
+    
+    // Otherwise get from any form's hidden input
+    const tokenInput = document.querySelector('input[name="csrf_token"]');
+    if (tokenInput) {
+        return tokenInput.value;
+    }
+    
+    // CSRF token not found - this should never happen in normal operation
+    console.error('CSRF token not found - request may fail');
+    showNotification('⚠️ Security token missing. Please refresh the page.', 'error');
+    throw new Error('CSRF token not found');
+}
+
+// ============================================================================
 // Task Completion
 // ============================================================================
 
@@ -21,6 +45,7 @@ function completeTask(taskId) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
         },
         body: JSON.stringify({
             task_id: taskId,
