@@ -7,6 +7,7 @@ Handles care schedule viewing and task management.
 import sqlite3
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request
+import logging
 
 care_bp = Blueprint('care', __name__, url_prefix='/care')
 
@@ -96,5 +97,5 @@ def index():
             weather=current_weather,
         )
     except (sqlite3.Error, AttributeError, KeyError, ValueError) as e:
-        print(f"Care schedule error: {e}")
-        return f"<h1>Care Schedule Error</h1><p>{str(e)}</p>"
+        logging.error("Care schedule error", exc_info=True)
+        return "<h1>Care Schedule Error</h1><p>An internal error has occurred.</p>"
