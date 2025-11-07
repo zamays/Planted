@@ -909,8 +909,18 @@ body.dark-mode .alert-error {
     color: #FF6B7A;
 }
 
-/* Smooth transitions for theme switching */
-* {
+/* Smooth transitions for theme switching - applied to key elements */
+body,
+.card,
+.nav a,
+.button,
+button,
+input,
+textarea,
+select,
+.alert,
+.toast,
+.theme-toggle-btn {
     transition: background-color var(--transition-normal), 
                 border-color var(--transition-normal),
                 color var(--transition-normal);
@@ -918,11 +928,8 @@ body.dark-mode .alert-error {
 
 /* Preserve specific animations that shouldn't be affected by theme transition */
 .loading,
-.skeleton,
-@keyframes slideInRight,
-@keyframes loading,
-@keyframes fadeIn {
-    transition: none;
+.skeleton {
+    transition: none !important;
 }
 
 /* Auto dark mode based on system preference */
