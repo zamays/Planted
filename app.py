@@ -1107,7 +1107,7 @@ def weather():
 
     Shows current weather data, multi-day forecast, and location information
     to help with gardening decisions.
-    
+
     Query Parameters:
         refresh (str): If 'true', bypass cache and fetch fresh weather data
 
@@ -1117,25 +1117,25 @@ def weather():
     try:
         # Check if user requested a cache refresh
         refresh = request.args.get("refresh", "false").lower() == "true"
-        
+
         # Get location
         location_text = (
             location_service.get_location_display()
             if location_service is not None
             else "Unknown Location"
         )
-        
+
         # Fetch weather data with optional cache bypass
         if weather_service is not None and location_service is not None:
             lat = location_service.current_location.get("latitude", 40.7128)
             lon = location_service.current_location.get("longitude", -74.0060)
-            
+
             current_weather = weather_service.get_current_weather(lat, lon, bypass_cache=refresh)
             forecast = weather_service.get_forecast(lat, lon, bypass_cache=refresh)
         else:
             current_weather = None
             forecast = []
-        
+
         # Get cache statistics
         cache_stats = weather_service.get_cache_stats() if weather_service is not None else None
 
@@ -1513,9 +1513,9 @@ def update_location():
 def get_cache_stats():
     """
     Get weather cache statistics via AJAX API.
-    
+
     Returns cache performance metrics including hit rate, API calls saved, etc.
-    
+
     Returns:
         JSON: Cache statistics including hits, misses, hit rate, and cache sizes
     """
@@ -1525,7 +1525,7 @@ def get_cache_stats():
                 "status": "error",
                 "message": "Weather service is not initialized."
             })
-        
+
         stats = weather_service.get_cache_stats()
         return jsonify({
             "status": "success",
@@ -1540,10 +1540,10 @@ def get_cache_stats():
 def clear_weather_cache():
     """
     Clear weather cache via AJAX API.
-    
+
     Forces fresh API calls on next weather data request.
     Useful after location changes or for manual refresh.
-    
+
     Returns:
         JSON: Success/error status with message
     """
@@ -1553,7 +1553,7 @@ def clear_weather_cache():
                 "status": "error",
                 "message": "Weather service is not initialized."
             })
-        
+
         weather_service.clear_cache()
         return jsonify({
             "status": "success",
