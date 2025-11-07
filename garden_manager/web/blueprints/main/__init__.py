@@ -6,6 +6,7 @@ Handles dashboard, weather, help pages, and test page.
 
 import sqlite3
 from flask import Blueprint, render_template, request
+import logging
 from garden_manager.utils.date_utils import SeasonCalculator
 from garden_manager.web.blueprints.utils import get_current_user_id
 
@@ -78,9 +79,9 @@ def dashboard():
             user_has_location=user_has_location,
         )
     except (sqlite3.Error, AttributeError, KeyError) as e:
-        print(f"Dashboard error: {e}")
+        logging.error("Dashboard error: %s", e)
         return (
-            f"<h1>Dashboard Error</h1><p>{str(e)}</p><p>Check console for details.</p>"
+            "<h1>Dashboard Error</h1><p>An internal error occurred. Please try again later.</p>"
         )
 
 
