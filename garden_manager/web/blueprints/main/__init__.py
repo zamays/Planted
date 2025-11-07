@@ -132,13 +132,17 @@ def weather():
             cache_stats=cache_stats,
         )
     except (AttributeError, KeyError) as e:
-        print(f"Weather error: {e}")
+        logging.error("Weather error", exc_info=True)
         current_weather = (
             weather_service.current_weather
             if weather_service is not None
             else "Unavailable"
         )
-        return f"<h1>Weather Error</h1><p>{str(e)}</p><p>Current weather: {current_weather}</p>"
+        return (
+            "<h1>Weather Error</h1>"
+            "<p>An internal error has occurred while retrieving weather data.</p>"
+            f"<p>Current weather: {current_weather}</p>"
+        )
 
 
 @main_bp.route("/help")
