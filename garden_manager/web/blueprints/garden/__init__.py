@@ -85,7 +85,7 @@ def view_plot(plot_id):
         )
     except (sqlite3.Error, AttributeError, KeyError) as e:
         print(f"View plot error: {e}")
-        return f"<h1>View Plot Error</h1><p>{str(e)}</p>"
+        return "<h1>View Plot Error</h1><p>An internal error occurred while loading the plot.</p>"
 
 
 @garden_bp.route("/<int:plot_id>/delete", methods=["POST"])
