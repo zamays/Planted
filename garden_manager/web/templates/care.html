@@ -91,7 +91,7 @@
                     </div>
                     {% endif %}
                 </div>
-                <button onclick="completeTask({{ task.id }})" 
+                <button onclick="completeTask(event, {{ task.id }})" 
                         class="btn btn-small"
                         style="flex-shrink: 0;"
                         title="Mark task as complete">

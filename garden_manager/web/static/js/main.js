@@ -1,3 +1,5 @@
+'use strict';
+
 // Garden Manager JavaScript Functions
 
 // ============================================================================
@@ -29,7 +31,7 @@ function getCSRFToken() {
 // ============================================================================
 
 // Complete a care task
-function completeTask(taskId) {
+function completeTask(event, taskId) {
     if (!taskId) {
         console.error('Task ID is required');
         return;
