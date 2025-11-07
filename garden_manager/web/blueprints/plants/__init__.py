@@ -6,6 +6,9 @@ Handles plant catalog browsing, searching, adding custom plants, and managing pl
 
 import sqlite3
 from flask import Blueprint, render_template, request, redirect, url_for
+import logging
+
+logging.basicConfig(level=logging.INFO)
 from garden_manager.database.models import PlantSpec, PlantGrowingInfo, PlantCareRequirements, PlantCompatibility
 from garden_manager.utils.date_utils import SeasonCalculator
 from garden_manager.web.blueprints.utils import get_current_user_id
@@ -193,8 +196,8 @@ def index():
             filters={"season": season_filter, "type": type_filter, "search": search},
         )
     except (sqlite3.Error, AttributeError, KeyError, ValueError) as e:
-        print(f"Plants error: {e}")
-        return f"<h1>Plants Error</h1><p>{str(e)}</p>"
+        logging.exception("Exception in plants index route")
+        return "<h1>Plants Error</h1><p>An internal error occurred. Please try again later.</p>"
 
 
 @plants_bp.route("/add", methods=["GET", "POST"])
