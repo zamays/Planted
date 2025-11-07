@@ -1531,8 +1531,8 @@ def get_cache_stats():
             "status": "success",
             "stats": stats
         })
-    except (AttributeError, KeyError) as e:
-        return jsonify({"status": "error", "message": str(e)})
+    except (AttributeError, KeyError):
+        return jsonify({"status": "error", "message": "Failed to retrieve cache statistics"})
 
 
 @app.route("/api/clear_cache", methods=["POST"])
@@ -1559,8 +1559,8 @@ def clear_weather_cache():
             "status": "success",
             "message": "Weather cache cleared successfully"
         })
-    except (AttributeError, KeyError) as e:
-        return jsonify({"status": "error", "message": str(e)})
+    except (AttributeError, KeyError):
+        return jsonify({"status": "error", "message": "Failed to clear cache"})
 
 
 def get_app_configuration():
