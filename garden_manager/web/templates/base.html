@@ -72,6 +72,14 @@
                 </a>
             </li>
             <li style="margin-left: auto;">
+                <button id="theme-toggle" 
+                        class="theme-toggle-btn" 
+                        aria-label="Toggle dark mode"
+                        title="Toggle dark mode">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </li>
+            <li>
                 <a href="{{ url_for('main.help_page') }}" 
                    {% if request.endpoint == 'main.help_page' %}class="active" aria-current="page"{% endif %}
                    title="Help and user guide">
@@ -168,8 +176,44 @@
             border-color: #ef4444;
             color: #991b1b;
         }
+        
+        /* Theme toggle button styles */
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-gray);
+            transition: all var(--transition-normal);
+            border-radius: var(--radius-sm);
+        }
+        
+        .theme-toggle-btn:hover {
+            color: var(--primary-green);
+            background: rgba(45, 106, 79, 0.05);
+            transform: scale(1.1);
+        }
+        
+        .theme-toggle-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .theme-toggle-btn .theme-icon {
+            display: inline-block;
+            transition: transform var(--transition-normal);
+        }
+        
+        .theme-toggle-btn:hover .theme-icon {
+            transform: rotate(20deg);
+        }
     </style>
 
+    <!-- Load theme toggle first to prevent flash -->
+    <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/form-validation.js') }}"></script>
     {% block scripts %}{% endblock %}

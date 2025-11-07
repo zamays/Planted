@@ -49,6 +49,7 @@ body {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 /* Header */
@@ -811,9 +812,154 @@ body {
     }
 }
 
-/* Dark mode support (future enhancement) */
+/* ============================================================================
+   Dark Mode Theme
+   ============================================================================ */
+
+/* Dark mode color palette with WCAG AA contrast ratios */
+body.dark-mode {
+    --primary-green: #52B788;
+    --primary-green-dark: #40916C;
+    --primary-green-light: #6EDB9A;
+    --secondary-green: #74C69D;
+    --accent-green: #95D5B2;
+    --accent-yellow: #FFE135;
+    --accent-orange: #FFB84D;
+    
+    /* Dark backgrounds */
+    --background-cream: #1A1D23;
+    --background-white: #24282F;
+    --background-light: #2C3139;
+    
+    /* Dark text colors with high contrast */
+    --text-dark: #E8EAED;
+    --text-gray: #B8BCC3;
+    --text-light: #8A8F98;
+    
+    /* Dark borders */
+    --border-light: #3E4450;
+    --border-dark: #4E5563;
+    
+    /* Status colors adjusted for dark theme */
+    --success: #5DD39E;
+    --warning: #FFC843;
+    --danger: #FF6B7A;
+    --info: #4CB5E8;
+    
+    /* Dark shadows - lighter and more subtle */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.4);
+    --shadow-xl: 0 20px 25px rgba(0,0,0,0.6), 0 10px 10px rgba(0,0,0,0.5);
+}
+
+/* Apply dark mode styles to elements that need special handling */
+body.dark-mode .toast {
+    background: var(--background-light);
+    color: var(--text-dark);
+    box-shadow: var(--shadow-xl);
+}
+
+body.dark-mode .skeleton {
+    background: linear-gradient(90deg, var(--border-light) 25%, var(--border-dark) 50%, var(--border-light) 75%);
+    background-size: 200% 100%;
+}
+
+body.dark-mode .nav a:hover {
+    background: rgba(82, 183, 136, 0.15);
+}
+
+body.dark-mode .nav a.active {
+    background: rgba(82, 183, 136, 0.2);
+}
+
+body.dark-mode .guest-indicator {
+    background-color: #3E3B20;
+    color: #FFE135;
+    border-color: #8B7D00;
+}
+
+body.dark-mode .user-indicator {
+    background-color: #1E2F3E;
+    color: #4CB5E8;
+    border-color: #2A5980;
+}
+
+body.dark-mode .alert-warning {
+    background-color: #3E3B20;
+    border-color: #8B7D00;
+    color: #FFE135;
+}
+
+body.dark-mode .alert-success {
+    background-color: #1E3E2F;
+    border-color: #2D6A4F;
+    color: #5DD39E;
+}
+
+body.dark-mode .alert-info {
+    background-color: #1E2F3E;
+    border-color: #2A5980;
+    color: #4CB5E8;
+}
+
+body.dark-mode .alert-error {
+    background-color: #3E1E23;
+    border-color: #8B2D36;
+    color: #FF6B7A;
+}
+
+/* Smooth transitions for theme switching - applied to key elements */
+body,
+.card,
+.nav a,
+.button,
+button,
+input,
+textarea,
+select,
+.alert,
+.toast,
+.theme-toggle-btn {
+    transition: background-color var(--transition-normal), 
+                border-color var(--transition-normal),
+                color var(--transition-normal);
+}
+
+/* Preserve specific animations that shouldn't be affected by theme transition */
+.loading,
+.skeleton {
+    transition: none !important;
+}
+
+/* Auto dark mode based on system preference */
 @media (prefers-color-scheme: dark) {
-    /* Placeholder for dark mode styles */
+    /* This will be overridden by JavaScript for user preference */
+    body:not(.light-mode):not(.dark-mode) {
+        --primary-green: #52B788;
+        --primary-green-dark: #40916C;
+        --primary-green-light: #6EDB9A;
+        --secondary-green: #74C69D;
+        --accent-green: #95D5B2;
+        --accent-yellow: #FFE135;
+        --accent-orange: #FFB84D;
+        --background-cream: #1A1D23;
+        --background-white: #24282F;
+        --background-light: #2C3139;
+        --text-dark: #E8EAED;
+        --text-gray: #B8BCC3;
+        --text-light: #8A8F98;
+        --border-light: #3E4450;
+        --border-dark: #4E5563;
+        --success: #5DD39E;
+        --warning: #FFC843;
+        --danger: #FF6B7A;
+        --info: #4CB5E8;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+        --shadow-md: 0 4px 6px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+        --shadow-lg: 0 10px 15px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.4);
+        --shadow-xl: 0 20px 25px rgba(0,0,0,0.6), 0 10px 10px rgba(0,0,0,0.5);
+    }
 }
 
 /* Toast Notifications */
