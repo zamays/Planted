@@ -7,7 +7,7 @@ Provides CRUD operations with proper error handling and data validation.
 
 import sqlite3
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from .models import GardenPlot, PlantedItem, CareTask, PlantingInfo, PlotPosition, PlantTimeline
 
 
@@ -303,6 +303,25 @@ class GardenDatabase:
             cursor.execute("SELECT * FROM planted_items WHERE plot_id = ?", (plot_id,))
             rows = cursor.fetchall()
             return [self._row_to_planted_item(row) for row in rows]
+
+    def get_planted_items_with_plant_ids(self, plot_id: int) -> List[Tuple[PlantedItem, int]]:
+        """
+        Retrieve planted items with their plant IDs for efficient batch loading.
+
+        This method returns minimal data to enable batch fetching of plant details,
+        avoiding N+1 query problems.
+
+        Args:
+            plot_id: ID of the plot to query
+
+        Returns:
+            List[Tuple[PlantedItem, int]]: List of (PlantedItem, plant_id) tuples
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM planted_items WHERE plot_id = ?", (plot_id,))
+            rows = cursor.fetchall()
+            return [(self._row_to_planted_item(row), row[1]) for row in rows]
 
     def get_planted_items_count(self, user_id: Optional[int] = None) -> int:
         """
