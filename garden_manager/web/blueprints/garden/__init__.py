@@ -220,7 +220,7 @@ def _handle_plant_to_plot_get(plot_id, plot, user_id=None):
     # Get current season and climate zone
     current_season = SeasonCalculator.get_current_season()
     climate_zone = (location_service.get_climate_zone()
-                    if location_service is not None else 7)
+                    if location_service is not None else 6)  # Default matches LocationService
 
     # Mark plants as suggested or not
     plants_with_suggestion = []

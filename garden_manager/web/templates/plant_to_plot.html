@@ -148,7 +148,8 @@ function filterPlants() {
     }
     
     // Reset selection if current option is now hidden
-    if (currentValue && select.options[select.selectedIndex].style.display === 'none') {
+    if (currentValue && select.selectedIndex >= 0 && 
+        select.options[select.selectedIndex].style.display === 'none') {
         select.value = '';
         updatePlantInfo();
     }
