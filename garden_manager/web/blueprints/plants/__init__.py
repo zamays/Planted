@@ -242,8 +242,8 @@ def add():
 
         return render_template("add_plant.html")
     except (sqlite3.Error, ValueError, KeyError) as e:
-        print(f"Add plant error: {e}")
-        return f"<h1>Add Plant Error</h1><p>{str(e)}</p>"
+        logging.error(f"Add plant error: {e}")
+        return "<h1>Add Plant Error</h1><p>An internal error occurred while adding the plant.</p>"
 
 
 @plants_bp.route("/<int:plant_id>")
