@@ -15,7 +15,7 @@ import webbrowser
 import time
 import sqlite3
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect, CSRFError
@@ -115,7 +115,7 @@ def initialize_services():
         except (sqlite3.Error, ValueError, AttributeError, OSError) as e:
             print(f"   ⚠️ Care reminder failed: {e}")
 
-    except (OSError, ValueError, ImportError) as e:
+    except (OSError, sqlite3.Error, ValueError, ImportError) as e:
         print(f"⚠️ Service initialization warning: {e}")
         # Continue with partially initialized services
 
@@ -222,8 +222,6 @@ def ratelimit_handler(error):
     Returns:
         JSON response for API endpoints, HTML for web pages
     """
-    from flask import jsonify
-    
     # Check if this is an API request
     if request.path.startswith('/api/'):
         return jsonify({
