@@ -8,7 +8,7 @@ and filtering capabilities for plant selection.
 
 import sqlite3
 import json
-from typing import List, Optional
+from typing import List, Optional, Dict
 from .default_plants_data import get_default_plants_data
 from .models import (
     Plant,
@@ -438,7 +438,7 @@ class PlantDatabase:
             row = cursor.fetchone()
             return self._row_to_plant(row) if row else None
 
-    def get_plants_by_ids(self, plant_ids: List[int]) -> dict[int, Plant]:
+    def get_plants_by_ids(self, plant_ids: List[int]) -> Dict[int, Plant]:
         """
         Retrieve multiple plants by their IDs in a single query.
 
@@ -448,7 +448,7 @@ class PlantDatabase:
             plant_ids: List of plant IDs to retrieve
 
         Returns:
-            dict[int, Plant]: Dictionary mapping plant_id to Plant object
+            Dict[int, Plant]: Dictionary mapping plant_id to Plant object
         """
         if not plant_ids:
             return {}
