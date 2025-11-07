@@ -43,7 +43,7 @@ def index():
         return render_template("garden.html", plots=plots)
     except (sqlite3.Error, AttributeError) as e:
         print(f"Garden error: {e}")
-        return f"<h1>Garden Error</h1><p>{str(e)}</p>"
+        return "<h1>Garden Error</h1><p>An internal error occurred while loading the garden.</p>"
 
 
 @garden_bp.route("/<int:plot_id>")
