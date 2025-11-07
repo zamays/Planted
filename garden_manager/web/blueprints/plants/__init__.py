@@ -264,8 +264,8 @@ def detail(plant_id):
 
         return render_template("plant_detail.html", plant=plant)
     except (sqlite3.Error, AttributeError) as e:
-        print(f"Plant detail error: {e}")
-        return f"<h1>Plant Detail Error</h1><p>{str(e)}</p>"
+        logging.error(f"Plant detail error: {e}", exc_info=True)
+        return "<h1>Plant Detail Error</h1><p>An internal error occurred while fetching plant detail.</p>"
 
 
 @plants_bp.route("/<int:plant_id>/edit", methods=["GET", "POST"])
