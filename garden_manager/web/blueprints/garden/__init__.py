@@ -302,4 +302,4 @@ def create():
         return render_template("create_plot.html")
     except (sqlite3.Error, ValueError, KeyError) as e:
         print(f"Create plot error: {e}")
-        return f"<h1>Create Plot Error</h1><p>{str(e)}</p>"
+        return "<h1>Create Plot Error</h1><p>An error occurred while creating the plot. Please try again later.</p>"
