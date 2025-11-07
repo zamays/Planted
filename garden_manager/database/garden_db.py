@@ -304,6 +304,25 @@ class GardenDatabase:
             rows = cursor.fetchall()
             return [self._row_to_planted_item(row) for row in rows]
 
+    def get_planted_items_with_plant_ids(self, plot_id: int) -> List[tuple]:
+        """
+        Retrieve planted items with their plant IDs for efficient batch loading.
+
+        This method returns minimal data to enable batch fetching of plant details,
+        avoiding N+1 query problems.
+
+        Args:
+            plot_id: ID of the plot to query
+
+        Returns:
+            List[tuple]: List of (PlantedItem, plant_id) tuples
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM planted_items WHERE plot_id = ?", (plot_id,))
+            rows = cursor.fetchall()
+            return [(self._row_to_planted_item(row), row[1]) for row in rows]
+
     def get_planted_items_count(self, user_id: Optional[int] = None) -> int:
         """
         Count the total number of planted items across all garden plots for a user.

@@ -67,18 +67,20 @@ def view_plot(plot_id):
         if not plot:
             return "<h1>Plot Not Found</h1><p>The requested garden plot does not exist.</p>"
 
-        planted_items = garden_db.get_planted_items(plot_id)
+        # Get planted items with their plant IDs
+        planted_items_data = garden_db.get_planted_items_with_plant_ids(plot_id)
 
-        # Get plant details for each planted item
+        # Batch load all plant details in a single query
         items_with_plants = []
-        for item in planted_items:
-            plant = (
-                plant_db.get_plant_by_id(item.plant_id)
-                if plant_db is not None
-                else None
-            )
-            if plant:
-                items_with_plants.append({"item": item, "plant": plant})
+        if planted_items_data and plant_db is not None:
+            plant_ids = [plant_id for _, plant_id in planted_items_data]
+            plants_dict = plant_db.get_plants_by_ids(plant_ids)
+
+            # Combine items with their plant details
+            for item, plant_id in planted_items_data:
+                plant = plants_dict.get(plant_id)
+                if plant:
+                    items_with_plants.append({"item": item, "plant": plant})
 
         return render_template(
             "view_plot.html", plot=plot, planted_items=items_with_plants

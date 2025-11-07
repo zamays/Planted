@@ -438,6 +438,33 @@ class PlantDatabase:
             row = cursor.fetchone()
             return self._row_to_plant(row) if row else None
 
+    def get_plants_by_ids(self, plant_ids: List[int]) -> dict[int, Plant]:
+        """
+        Retrieve multiple plants by their IDs in a single query.
+
+        This method is optimized for batch fetching to avoid N+1 query problems.
+
+        Args:
+            plant_ids: List of plant IDs to retrieve
+
+        Returns:
+            dict[int, Plant]: Dictionary mapping plant_id to Plant object
+        """
+        if not plant_ids:
+            return {}
+
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            # Create placeholders for IN clause
+            placeholders = ','.join('?' * len(plant_ids))
+            cursor.execute(
+                f"SELECT * FROM plants WHERE id IN ({placeholders})",
+                plant_ids
+            )
+            rows = cursor.fetchall()
+            # Return as dictionary for O(1) lookup
+            return {row[0]: self._row_to_plant(row) for row in rows}
+
     def update_plant(self, plant_id: int, plant_spec: PlantSpec) -> bool:
         """
         Update an existing plant in the database.
