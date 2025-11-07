@@ -10,6 +10,8 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for
 from garden_manager.database.models import PlantingInfo
 from garden_manager.web.blueprints.utils import get_current_user_id
+from garden_manager.utils.date_utils import SeasonCalculator
+from garden_manager.utils.plant_utils import is_plant_suggested
 
 garden_bp = Blueprint('garden', __name__, url_prefix='/garden')
 
@@ -21,9 +23,10 @@ def init_blueprint(services):
     Args:
         services: Dictionary containing service instances
     """
-    global garden_db, plant_db
+    global garden_db, plant_db, location_service
     garden_db = services.get('garden_db')
     plant_db = services.get('plant_db')
+    location_service = services.get('location_service')
 
 
 @garden_bp.route("")
@@ -214,8 +217,33 @@ def _handle_plant_to_plot_get(plot_id, plot, user_id=None):
     # Get all available plants
     unique_plants = _get_all_unique_plants(user_id)
 
+    # Get current season and climate zone
+    current_season = SeasonCalculator.get_current_season()
+    climate_zone = (location_service.get_climate_zone()
+                    if location_service is not None else 7)
+
+    # Mark plants as suggested or not
+    plants_with_suggestion = []
+    for plant in unique_plants:
+        suggested = is_plant_suggested(
+            plant.season,
+            plant.compatibility.climate_zones,
+            current_season,
+            climate_zone
+        )
+        plants_with_suggestion.append({
+            'plant': plant,
+            'is_suggested': suggested
+        })
+
     return render_template(
-        "plant_to_plot.html", plot=plot, plants=unique_plants, x=x, y=y
+        "plant_to_plot.html",
+        plot=plot,
+        plants=plants_with_suggestion,
+        x=x,
+        y=y,
+        current_season=current_season,
+        climate_zone=climate_zone
     )
 
 
@@ -258,7 +286,10 @@ def plant_to_plot(plot_id):
         print(f"Plant to plot error: {e}")
 
         traceback.print_exc()
-        return "<h1>Plant to Plot Error</h1><p>An internal error occurred while planting to plot. Please try again later.</p>"
+        return (
+            "<h1>Plant to Plot Error</h1>"
+            "<p>An internal error occurred while planting to plot. Please try again later.</p>"
+        )
 
 
 @garden_bp.route("/create", methods=["GET", "POST"])

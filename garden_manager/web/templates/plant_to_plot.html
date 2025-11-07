@@ -30,24 +30,34 @@
             <input type="hidden" name="y_position" value="{{ y }}">
 
             <div class="form-group">
-                <label for="plant_id">Select Plant: *</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <label for="plant_id">Select Plant: *</label>
+                    <label style="font-weight: normal; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="filter-suggested" onchange="filterPlants()" style="cursor: pointer;">
+                        Show only suggested plants
+                    </label>
+                </div>
                 <select id="plant_id" name="plant_id" required aria-required="true" onchange="updatePlantInfo()" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
                     <option value="">-- Choose a plant --</option>
-                    {% for plant in plants %}
-                    <option value="{{ plant.id }}"
-                            data-scientific="{{ plant.scientific_name }}"
-                            data-type="{{ plant.plant_type }}"
-                            data-season="{{ plant.season }}"
-                            data-spacing="{{ plant.spacing_inches }}"
-                            data-sun="{{ plant.sun_requirements }}"
-                            data-water="{{ plant.water_needs }}"
-                            data-germination="{{ plant.days_to_germination }}"
-                            data-maturity="{{ plant.days_to_maturity }}"
-                            data-custom="{{ plant.is_custom }}">
-                        {{ plant.name }}{% if plant.is_custom %} (Custom){% endif %}
+                    {% for item in plants %}
+                    <option value="{{ item.plant.id }}"
+                            data-scientific="{{ item.plant.scientific_name }}"
+                            data-type="{{ item.plant.plant_type }}"
+                            data-season="{{ item.plant.season }}"
+                            data-spacing="{{ item.plant.spacing_inches }}"
+                            data-sun="{{ item.plant.sun_requirements }}"
+                            data-water="{{ item.plant.water_needs }}"
+                            data-germination="{{ item.plant.days_to_germination }}"
+                            data-maturity="{{ item.plant.days_to_maturity }}"
+                            data-custom="{{ item.plant.is_custom }}"
+                            data-suggested="{{ 'true' if item.is_suggested else 'false' }}">
+                        {{ item.plant.name }}{% if item.is_suggested %} ⭐ Suggested{% endif %}{% if item.plant.is_custom %} (Custom){% endif %}
                     </option>
                     {% endfor %}
                 </select>
+                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                    <span style="color: #4A7C59;">⭐</span> = Recommended for {{ current_season|title }} in Zone {{ climate_zone }}
+                </div>
             </div>
 
             <div id="plant-preview" style="display: none; margin: 2rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #4A7C59;">
@@ -115,6 +125,35 @@
 </style>
 
 <script>
+function filterPlants() {
+    const select = document.getElementById('plant_id');
+    const filterCheckbox = document.getElementById('filter-suggested');
+    const showOnlySuggested = filterCheckbox.checked;
+    
+    // Store current selection
+    const currentValue = select.value;
+    
+    // Show/hide options based on filter
+    for (let i = 0; i < select.options.length; i++) {
+        const option = select.options[i];
+        if (i === 0) continue; // Skip the "-- Choose a plant --" option
+        
+        const isSuggested = option.dataset.suggested === 'true';
+        
+        if (showOnlySuggested) {
+            option.style.display = isSuggested ? '' : 'none';
+        } else {
+            option.style.display = '';
+        }
+    }
+    
+    // Reset selection if current option is now hidden
+    if (currentValue && select.options[select.selectedIndex].style.display === 'none') {
+        select.value = '';
+        updatePlantInfo();
+    }
+}
+
 function updatePlantInfo() {
     const select = document.getElementById('plant_id');
     const preview = document.getElementById('plant-preview');
