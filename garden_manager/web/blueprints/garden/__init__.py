@@ -110,7 +110,8 @@ def delete_plot(plot_id):
         return redirect(url_for("garden.index"))
     except (sqlite3.Error, ValueError) as e:
         print(f"Delete plot error: {e}")
-        return f"<h1>Delete Plot Error</h1><p>{str(e)}</p>"
+        traceback.print_exc()
+        return "<h1>Delete Plot Error</h1><p>An internal error occurred while deleting the plot.</p>"
 
 
 def _validate_position_in_bounds(x_pos, y_pos, plot):
