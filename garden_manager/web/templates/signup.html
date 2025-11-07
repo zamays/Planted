@@ -21,9 +21,11 @@
                 <input type="text" id="username" name="username" required 
                        placeholder="Choose a username (3-50 characters)"
                        minlength="3" maxlength="50"
+                       pattern="[a-zA-Z0-9_-]+"
                        autocomplete="username"
+                       aria-required="true"
                        value="{{ request.form.get('username', '') }}">
-                <small>Your username will be displayed on your account</small>
+                <small>Username must be 3-50 characters (letters, numbers, underscores, hyphens only)</small>
             </div>
             
             <div class="form-group">
@@ -31,6 +33,7 @@
                 <input type="email" id="email" name="email" required 
                        placeholder="Enter your email address"
                        autocomplete="email"
+                       aria-required="true"
                        value="{{ request.form.get('email', '') }}">
                 <small>We'll use this to help you recover your account</small>
             </div>
@@ -40,7 +43,8 @@
                 <input type="password" id="password" name="password" required 
                        placeholder="Choose a strong password (min 6 characters)"
                        minlength="6"
-                       autocomplete="new-password">
+                       autocomplete="new-password"
+                       aria-required="true">
                 <small>Use at least 6 characters</small>
             </div>
             
@@ -49,7 +53,8 @@
                 <input type="password" id="confirm_password" name="confirm_password" required 
                        placeholder="Re-enter your password"
                        minlength="6"
-                       autocomplete="new-password">
+                       autocomplete="new-password"
+                       aria-required="true">
             </div>
             
             <button type="submit" class="btn btn-primary btn-block">

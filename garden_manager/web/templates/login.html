@@ -20,14 +20,19 @@
                 <label for="username">Username or Email</label>
                 <input type="text" id="username" name="username" required 
                        placeholder="Enter your username or email"
-                       autocomplete="username">
+                       autocomplete="username"
+                       minlength="3"
+                       maxlength="255"
+                       aria-required="true">
             </div>
             
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required 
                        placeholder="Enter your password"
-                       autocomplete="current-password">
+                       autocomplete="current-password"
+                       minlength="6"
+                       aria-required="true">
             </div>
             
             <button type="submit" class="btn btn-primary btn-block">

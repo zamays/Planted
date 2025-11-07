@@ -31,7 +31,7 @@
 
             <div class="form-group">
                 <label for="plant_id">Select Plant: *</label>
-                <select id="plant_id" name="plant_id" required onchange="updatePlantInfo()" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                <select id="plant_id" name="plant_id" required aria-required="true" onchange="updatePlantInfo()" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
                     <option value="">-- Choose a plant --</option>
                     {% for plant in plants %}
                     <option value="{{ plant.id }}"
@@ -82,7 +82,7 @@
 
             <div class="form-group">
                 <label for="notes">Notes (optional):</label>
-                <textarea id="notes" name="notes" rows="3" placeholder="Add any notes about this planting..." style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; font-family: inherit;"></textarea>
+                <textarea id="notes" name="notes" rows="3" placeholder="Add any notes about this planting..." maxlength="500" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; font-family: inherit;"></textarea>
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">

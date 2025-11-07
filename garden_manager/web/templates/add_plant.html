@@ -17,12 +17,12 @@
 
             <div class="form-group">
                 <label for="name">Plant Name: *</label>
-                <input type="text" id="name" name="name" placeholder="e.g., Heirloom Tomato" required>
+                <input type="text" id="name" name="name" placeholder="e.g., Heirloom Tomato" required minlength="1" maxlength="100" aria-required="true">
             </div>
 
             <div class="form-group">
                 <label for="scientific_name">Scientific Name:</label>
-                <input type="text" id="scientific_name" name="scientific_name" placeholder="e.g., Solanum lycopersicum">
+                <input type="text" id="scientific_name" name="scientific_name" placeholder="e.g., Solanum lycopersicum" maxlength="200">
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
@@ -60,24 +60,24 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
                 <div class="form-group">
                     <label for="days_to_germination">Days to Germination: *</label>
-                    <input type="number" id="days_to_germination" name="days_to_germination" value="7" min="0" max="365" required>
+                    <input type="number" id="days_to_germination" name="days_to_germination" value="7" min="0" max="365" required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="days_to_maturity">Days to Maturity: *</label>
-                    <input type="number" id="days_to_maturity" name="days_to_maturity" value="60" min="1" max="730" required>
+                    <input type="number" id="days_to_maturity" name="days_to_maturity" value="60" min="1" max="730" required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="spacing_inches">Spacing (inches): *</label>
-                    <input type="number" id="spacing_inches" name="spacing_inches" value="12" min="1" max="96" required>
+                    <input type="number" id="spacing_inches" name="spacing_inches" value="12" min="1" max="96" required aria-required="true">
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
                 <div class="form-group">
                     <label for="sun_requirements">Sun Requirements: *</label>
-                    <select id="sun_requirements" name="sun_requirements" required>
+                    <select id="sun_requirements" name="sun_requirements" required aria-required="true">
                         <option value="full_sun">Full Sun</option>
                         <option value="partial_shade">Partial Shade</option>
                         <option value="shade">Shade</option>
@@ -86,7 +86,7 @@
 
                 <div class="form-group">
                     <label for="water_needs">Water Needs: *</label>
-                    <select id="water_needs" name="water_needs" required>
+                    <select id="water_needs" name="water_needs" required aria-required="true">
                         <option value="low">Low</option>
                         <option value="medium" selected>Medium</option>
                         <option value="high">High</option>
@@ -98,19 +98,19 @@
 
             <div class="form-group">
                 <label for="companion_plants">Companion Plants:</label>
-                <input type="text" id="companion_plants" name="companion_plants" placeholder="e.g., basil, marigolds, carrots (comma-separated)">
+                <input type="text" id="companion_plants" name="companion_plants" placeholder="e.g., basil, marigolds, carrots (comma-separated)" maxlength="500">
                 <small style="color: #666;">Enter plant names separated by commas</small>
             </div>
 
             <div class="form-group">
                 <label for="avoid_plants">Plants to Avoid:</label>
-                <input type="text" id="avoid_plants" name="avoid_plants" placeholder="e.g., fennel, brassicas (comma-separated)">
+                <input type="text" id="avoid_plants" name="avoid_plants" placeholder="e.g., fennel, brassicas (comma-separated)" maxlength="500">
                 <small style="color: #666;">Enter plant names separated by commas</small>
             </div>
 
             <div class="form-group">
                 <label for="climate_zones">USDA Climate Zones:</label>
-                <input type="text" id="climate_zones" name="climate_zones" placeholder="e.g., 5,6,7,8,9 (comma-separated)">
+                <input type="text" id="climate_zones" name="climate_zones" placeholder="e.g., 5,6,7,8,9 (comma-separated)" pattern="^([1-9]|1[0-3])(,\s*([1-9]|1[0-3]))*$" maxlength="100" title="Enter zone numbers 1-13, separated by commas">
                 <small style="color: #666;">Enter zone numbers separated by commas (1-13)</small>
             </div>
 
@@ -118,7 +118,7 @@
 
             <div class="form-group">
                 <label for="care_notes">Care Notes:</label>
-                <textarea id="care_notes" name="care_notes" rows="4" placeholder="Enter any additional care instructions, tips, or notes about this plant..."></textarea>
+                <textarea id="care_notes" name="care_notes" rows="4" placeholder="Enter any additional care instructions, tips, or notes about this plant..." maxlength="2000"></textarea>
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">

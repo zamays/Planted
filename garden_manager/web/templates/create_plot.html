@@ -28,8 +28,11 @@
                        name="name" 
                        placeholder="e.g., Vegetable Garden, Herb Patch, Backyard Plot" 
                        required
-                       aria-required="true">
-                <span class="form-hint">Give your plot a memorable name to help identify it</span>
+                       minlength="1"
+                       maxlength="100"
+                       aria-required="true"
+                       aria-describedby="name-hint">
+                <span class="form-hint" id="name-hint">Give your plot a memorable name to help identify it</span>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
@@ -84,6 +87,8 @@
                        name="location" 
                        placeholder="e.g., Backyard Corner, Front Porch, Side Yard" 
                        required
+                       minlength="1"
+                       maxlength="200"
                        aria-required="true"
                        aria-describedby="location-hint">
                 <span class="form-hint" id="location-hint">Where is this plot physically located?</span>
