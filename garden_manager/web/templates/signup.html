@@ -21,7 +21,6 @@
                 <input type="text" id="username" name="username" required 
                        placeholder="Choose a username (3-50 characters)"
                        minlength="3" maxlength="50"
-                       pattern="[a-zA-Z0-9_-]+"
                        autocomplete="username"
                        aria-required="true"
                        value="{{ request.form.get('username', '') }}">
