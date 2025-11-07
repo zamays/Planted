@@ -255,7 +255,7 @@ def plant_to_plot(plot_id):
         print(f"Plant to plot error: {e}")
 
         traceback.print_exc()
-        return f"<h1>Plant to Plot Error</h1><p>{str(e)}</p>"
+        return "<h1>Plant to Plot Error</h1><p>An internal error occurred while planting to plot. Please try again later.</p>"
 
 
 @garden_bp.route("/create", methods=["GET", "POST"])
