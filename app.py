@@ -1107,30 +1107,44 @@ def weather():
 
     Shows current weather data, multi-day forecast, and location information
     to help with gardening decisions.
+    
+    Query Parameters:
+        refresh (str): If 'true', bypass cache and fetch fresh weather data
 
     Returns:
         str: Rendered weather information HTML template or error message
     """
     try:
-        current_weather = (
-            weather_service.current_weather if weather_service is not None else None
-        )
-        forecast = (
-            weather_service.forecast
-            if weather_service is not None and weather_service.forecast
-            else []
-        )
+        # Check if user requested a cache refresh
+        refresh = request.args.get("refresh", "false").lower() == "true"
+        
+        # Get location
         location_text = (
             location_service.get_location_display()
             if location_service is not None
             else "Unknown Location"
         )
+        
+        # Fetch weather data with optional cache bypass
+        if weather_service is not None and location_service is not None:
+            lat = location_service.current_location.get("latitude", 40.7128)
+            lon = location_service.current_location.get("longitude", -74.0060)
+            
+            current_weather = weather_service.get_current_weather(lat, lon, bypass_cache=refresh)
+            forecast = weather_service.get_forecast(lat, lon, bypass_cache=refresh)
+        else:
+            current_weather = None
+            forecast = []
+        
+        # Get cache statistics
+        cache_stats = weather_service.get_cache_stats() if weather_service is not None else None
 
         return render_template(
             "weather.html",
             current_weather=current_weather,
             forecast=forecast,
             location=location_text,
+            cache_stats=cache_stats,
         )
     except (AttributeError, KeyError) as e:
         print(f"Weather error: {e}")
@@ -1492,6 +1506,61 @@ def update_location():
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
         print(f"Error updating location: {e}")  # Log for debugging
         return jsonify({"status": "error", "message": "Failed to update location"})
+
+
+@app.route("/api/cache_stats", methods=["GET"])
+@limiter.limit("100 per hour")
+def get_cache_stats():
+    """
+    Get weather cache statistics via AJAX API.
+    
+    Returns cache performance metrics including hit rate, API calls saved, etc.
+    
+    Returns:
+        JSON: Cache statistics including hits, misses, hit rate, and cache sizes
+    """
+    try:
+        if weather_service is None:
+            return jsonify({
+                "status": "error",
+                "message": "Weather service is not initialized."
+            })
+        
+        stats = weather_service.get_cache_stats()
+        return jsonify({
+            "status": "success",
+            "stats": stats
+        })
+    except (AttributeError, KeyError) as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+
+@app.route("/api/clear_cache", methods=["POST"])
+@limiter.limit("10 per hour")
+def clear_weather_cache():
+    """
+    Clear weather cache via AJAX API.
+    
+    Forces fresh API calls on next weather data request.
+    Useful after location changes or for manual refresh.
+    
+    Returns:
+        JSON: Success/error status with message
+    """
+    try:
+        if weather_service is None:
+            return jsonify({
+                "status": "error",
+                "message": "Weather service is not initialized."
+            })
+        
+        weather_service.clear_cache()
+        return jsonify({
+            "status": "success",
+            "message": "Weather cache cleared successfully"
+        })
+    except (AttributeError, KeyError) as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 
 def get_app_configuration():
