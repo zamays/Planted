@@ -6,10 +6,10 @@
 <div class="page-header">
     <h2 class="page-title">🏡 Garden Dashboard</h2>
     <div class="page-actions">
-        <a href="{{ url_for('plants') }}" class="btn btn-small" title="Browse plant catalog">
+        <a href="{{ url_for('plants.index') }}" class="btn btn-small" title="Browse plant catalog">
             🌿 Browse Plants
         </a>
-        <a href="{{ url_for('create_plot') }}" class="btn btn-secondary btn-small" title="Create new garden plot">
+        <a href="{{ url_for('garden.create') }}" class="btn btn-secondary btn-small" title="Create new garden plot">
             ➕ New Plot
         </a>
     </div>
@@ -22,11 +22,11 @@
         <div class="stat-label">Garden Plots</div>
         <div style="margin-top: 1rem;">
             {% if stats.plots == 0 %}
-            <a href="{{ url_for('create_plot') }}" class="btn btn-small" style="font-size: 0.8rem;">
+            <a href="{{ url_for('garden.create') }}" class="btn btn-small" style="font-size: 0.8rem;">
                 Create First Plot
             </a>
             {% else %}
-            <a href="{{ url_for('garden_layout') }}" class="btn btn-small" style="font-size: 0.8rem;">
+            <a href="{{ url_for('garden.index') }}" class="btn btn-small" style="font-size: 0.8rem;">
                 View Plots
             </a>
             {% endif %}
@@ -38,7 +38,7 @@
         <div class="stat-label">Active Plants</div>
         {% if stats.active_plants == 0 and stats.plots > 0 %}
         <div style="margin-top: 1rem;">
-            <a href="{{ url_for('garden_layout') }}" class="btn btn-small" style="font-size: 0.8rem;">
+            <a href="{{ url_for('garden.index') }}" class="btn btn-small" style="font-size: 0.8rem;">
                 Add Plants
             </a>
         </div>
@@ -50,7 +50,7 @@
         <div class="stat-label">Tasks Due</div>
         {% if stats.tasks_due > 0 %}
         <div style="margin-top: 1rem;">
-            <a href="{{ url_for('care_schedule') }}" class="btn btn-danger btn-small" style="font-size: 0.8rem;">
+            <a href="{{ url_for('care.index') }}" class="btn btn-danger btn-small" style="font-size: 0.8rem;">
                 View Tasks
             </a>
         </div>
@@ -83,7 +83,7 @@
                 </div>
             </div>
             <div>
-                <a href="{{ url_for('weather') }}" class="btn btn-secondary btn-small">
+                <a href="{{ url_for('main.weather') }}" class="btn btn-secondary btn-small">
                     View Forecast →
                 </a>
             </div>
@@ -124,13 +124,13 @@
         </div>
         
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="{{ url_for('plants') }}" class="btn">
+            <a href="{{ url_for('plants.index') }}" class="btn">
                 🌿 Browse Plants
             </a>
-            <a href="{{ url_for('create_plot') }}" class="btn btn-secondary">
+            <a href="{{ url_for('garden.create') }}" class="btn btn-secondary">
                 🗂️ Create Garden Plot
             </a>
-            <a href="{{ url_for('care_schedule') }}" class="btn btn-secondary">
+            <a href="{{ url_for('care.index') }}" class="btn btn-secondary">
                 📅 View Care Schedule
             </a>
         </div>
@@ -144,15 +144,15 @@
     </div>
     <div class="card-body">
         <div class="action-grid">
-            <a href="{{ url_for('plants') }}" class="action-card">
+            <a href="{{ url_for('plants.index') }}" class="action-card">
                 <span class="action-card-icon">🔍</span>
                 <span class="action-card-label">Search Plants</span>
             </a>
-            <a href="{{ url_for('garden_layout') }}" class="action-card">
+            <a href="{{ url_for('garden.index') }}" class="action-card">
                 <span class="action-card-icon">🗺️</span>
                 <span class="action-card-label">View Gardens</span>
             </a>
-            <a href="{{ url_for('add_plant') }}" class="action-card">
+            <a href="{{ url_for('plants.add') }}" class="action-card">
                 <span class="action-card-icon">➕</span>
                 <span class="action-card-label">Add Custom Plant</span>
             </a>
@@ -178,7 +178,7 @@
                 if (confirm('📍 Would you like to automatically detect your location for personalized weather and plant recommendations?\n\nYou can also set this later in Account Settings.')) {
                     navigator.geolocation.getCurrentPosition(
                         function(position) {
-                            fetch('{{ url_for("update_location") }}', {
+                            fetch('{{ url_for("api.update_location") }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

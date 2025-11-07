@@ -4,7 +4,7 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <a href="{{ url_for('view_plot', plot_id=plot.id) }}" style="color: #4A7C59; text-decoration: none;">← Back to Plot</a>
+    <a href="{{ url_for('garden.view_plot', plot_id=plot.id) }}" style="color: #4A7C59; text-decoration: none;">← Back to Plot</a>
 </div>
 
 <h2 style="margin-bottom: 2rem; color: #4A7C59;">Add Plant to {{ plot.name }}</h2>
@@ -87,7 +87,7 @@
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                 <button type="submit" class="btn">Plant Here</button>
-                <a href="{{ url_for('view_plot', plot_id=plot.id) }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ url_for('garden.view_plot', plot_id=plot.id) }}" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>

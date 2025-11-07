@@ -5,7 +5,7 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
     <h2 style="color: var(--primary-green); margin: 0; font-size: 1.75rem;">🗂️ Garden Layout Manager</h2>
-    <a href="{{ url_for('create_plot') }}" class="btn" title="Create a new garden plot">
+    <a href="{{ url_for('garden.create') }}" class="btn" title="Create a new garden plot">
         ➕ Create New Plot
     </a>
 </div>
@@ -62,7 +62,7 @@
             <span>Created {{ plot.created_date.strftime('%B %d, %Y') }}</span>
         </div>
         
-        <a href="{{ url_for('view_plot', plot_id=plot.id) }}" class="btn" style="width: 100%;" title="View and manage this plot">
+        <a href="{{ url_for('garden.view_plot', plot_id=plot.id) }}" class="btn" style="width: 100%;" title="View and manage this plot">
             🗺️ View Plot Details
         </a>
     </div>
@@ -111,10 +111,10 @@
         </div>
         
         <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="{{ url_for('create_plot') }}" class="btn btn-large">
+            <a href="{{ url_for('garden.create') }}" class="btn btn-large">
                 ➕ Create Your First Plot
             </a>
-            <a href="{{ url_for('plants') }}" class="btn btn-secondary">
+            <a href="{{ url_for('plants.index') }}" class="btn btn-secondary">
                 🌿 Browse Plants First
             </a>
         </div>

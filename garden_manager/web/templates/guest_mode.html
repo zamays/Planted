@@ -22,7 +22,7 @@
             
             <h3>To save your data:</h3>
             <ul>
-                <li>✅ <a href="{{ url_for('signup') }}">Create a free account</a></li>
+                <li>✅ <a href="{{ url_for('auth.signup') }}">Create a free account</a></li>
                 <li>✅ Get personalized location-based recommendations</li>
                 <li>✅ Access your garden from anywhere</li>
                 <li>✅ Keep your data safe and secure</li>
@@ -30,13 +30,13 @@
         </div>
         
         <div class="warning-actions">
-            <a href="{{ url_for('signup') }}" class="btn btn-primary">
+            <a href="{{ url_for('auth.signup') }}" class="btn btn-primary">
                 Create Free Account
             </a>
-            <a href="{{ url_for('login') }}" class="btn btn-secondary">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">
                 Sign In
             </a>
-            <form method="POST" action="{{ url_for('guest_mode') }}" style="margin-top: 1rem;">
+            <form method="POST" action="{{ url_for('auth.guest_mode') }}" style="margin-top: 1rem;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <button type="submit" class="btn btn-text">
                     Continue as Guest (Not Recommended)

@@ -4,7 +4,7 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <a href="{{ url_for('garden_layout') }}" style="color: #4A7C59; text-decoration: none;">← Back to Garden Layout</a>
+    <a href="{{ url_for('garden.index') }}" style="color: #4A7C59; text-decoration: none;">← Back to Garden Layout</a>
 </div>
 
 <div class="card" style="margin-bottom: 2rem;">
@@ -34,7 +34,7 @@
 </div>
 
 <!-- Hidden form for plot deletion -->
-<form id="delete-plot-form" method="POST" action="{{ url_for('delete_plot', plot_id=plot.id) }}" style="display: none;">
+<form id="delete-plot-form" method="POST" action="{{ url_for('garden.delete_plot', plot_id=plot.id) }}" style="display: none;">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 </form>
 
@@ -61,7 +61,7 @@
                     <div style="font-size: 2rem; line-height: 1;">🪴</div>
                 </div>
                 {% else %}
-                <a href="{{ url_for('plant_to_plot', plot_id=plot.id, x=x, y=y) }}" class="grid-square empty" title="Click to plant at ({{ x }}, {{ y }})">
+                <a href="{{ url_for('garden.plant_to_plot', plot_id=plot.id, x=x, y=y) }}" class="grid-square empty" title="Click to plant at ({{ x }}, {{ y }})">
                     <div style="font-size: 2rem; line-height: 1; opacity: 0.3;">🌱</div>
                 </a>
                 {% endif %}
@@ -134,7 +134,7 @@
             {{ item_data['item'].notes }}
         </div>
         {% endif %}
-        <a href="{{ url_for('plant_detail', plant_id=item_data['plant'].id) }}" class="btn" style="margin-top: 1rem;">View Plant Info</a>
+        <a href="{{ url_for('plants.detail', plant_id=item_data['plant'].id) }}" class="btn" style="margin-top: 1rem;">View Plant Info</a>
     </div>
     {% endfor %}
 </div>

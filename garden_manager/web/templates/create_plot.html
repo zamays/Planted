@@ -4,7 +4,7 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <a href="{{ url_for('garden_layout') }}" style="color: var(--primary-green); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">
+    <a href="{{ url_for('garden.index') }}" style="color: var(--primary-green); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">
         ← Back to Garden Layout
     </a>
 </div>
@@ -117,7 +117,7 @@
                 <button type="submit" class="btn">
                     ✓ Create Plot
                 </button>
-                <a href="{{ url_for('garden_layout') }}" class="btn btn-secondary">
+                <a href="{{ url_for('garden.index') }}" class="btn btn-secondary">
                     ✕ Cancel
                 </a>
             </div>
