@@ -110,10 +110,15 @@ function setupFieldValidation(field, formId) {
     
     // Add real-time validation on input for certain fields
     if (shouldValidateOnInput(field)) {
+        let validationTimeout;
         field.addEventListener('input', () => {
-            if (field.classList.contains('is-invalid') || field.classList.contains('is-valid')) {
-                validateField(field, formId);
-            }
+            // Debounce validation to avoid excessive calls
+            clearTimeout(validationTimeout);
+            validationTimeout = setTimeout(() => {
+                if (field.classList.contains('is-invalid') || field.classList.contains('is-valid')) {
+                    validateField(field, formId);
+                }
+            }, 300);
         });
     }
     
@@ -491,22 +496,36 @@ function showPasswordStrength(field) {
         color = '#ffc107';
     }
     
-    strengthIndicator.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
-            <div style="flex: 1; height: 4px; background: #e9ecef; border-radius: 2px; overflow: hidden;">
-                <div class="strength-bar strength-${strength}" style="height: 100%; background: ${color}; transition: width 0.3s;"></div>
-            </div>
-            <span style="font-size: 0.85rem; color: ${color}; font-weight: 600;">${strengthText}</span>
-        </div>
-        <small style="display: block; margin-top: 0.25rem; color: #666;">
-            ${getPasswordStrengthTips(password)}
-        </small>
-    `;
-    
-    // Animate the strength bar
-    const strengthBar = strengthIndicator.querySelector('.strength-bar');
     const width = strength === 'very-strong' ? '100%' : strength === 'strong' ? '75%' : strength === 'medium' ? '50%' : '25%';
-    strengthBar.style.width = width;
+    
+    // Create elements safely to avoid XSS
+    strengthIndicator.innerHTML = '';
+    
+    const container = document.createElement('div');
+    container.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;';
+    
+    const barContainer = document.createElement('div');
+    barContainer.style.cssText = 'flex: 1; height: 4px; background: #e9ecef; border-radius: 2px; overflow: hidden;';
+    
+    const bar = document.createElement('div');
+    bar.className = 'strength-bar strength-' + strength;
+    bar.style.cssText = 'height: 100%; background: ' + color + '; transition: width 0.3s; width: ' + width;
+    
+    barContainer.appendChild(bar);
+    
+    const label = document.createElement('span');
+    label.style.cssText = 'font-size: 0.85rem; color: ' + color + '; font-weight: 600;';
+    label.textContent = strengthText;
+    
+    container.appendChild(barContainer);
+    container.appendChild(label);
+    
+    const tips = document.createElement('small');
+    tips.style.cssText = 'display: block; margin-top: 0.25rem; color: #666;';
+    tips.textContent = getPasswordStrengthTips(password);
+    
+    strengthIndicator.appendChild(container);
+    strengthIndicator.appendChild(tips);
 }
 
 /**
@@ -546,7 +565,7 @@ function getPasswordStrengthTips(password) {
  * Generate a unique form ID
  */
 function generateFormId(form) {
-    return 'form-' + Math.random().toString(36).substr(2, 9);
+    return 'form-' + Math.random().toString(36).substring(2, 11);
 }
 
 /**
