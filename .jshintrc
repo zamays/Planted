@@ -1,5 +1,5 @@
 {
-  "esversion": 6,
+  "esversion": 11,
   "strict": "global",
   "browser": true,
   "devel": true,
@@ -7,9 +7,10 @@
   "globals": {
     "fetch": true
   },
+  "exported": ["completeTask"],
   "undef": true,
-  "unused": true,
-  "curly": true,
+  "unused": "vars",
+  "curly": false,
   "eqeqeq": true,
   "freeze": true,
   "futurehostile": true,
