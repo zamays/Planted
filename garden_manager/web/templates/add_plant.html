@@ -4,7 +4,7 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <a href="{{ url_for('plants') }}" style="color: #4A7C59; text-decoration: none;">← Back to Plants</a>
+    <a href="{{ url_for('plants.index') }}" style="color: #4A7C59; text-decoration: none;">← Back to Plants</a>
 </div>
 
 <h2 style="margin-bottom: 2rem; color: #4A7C59;">Add Custom Plant</h2>
@@ -123,7 +123,7 @@
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                 <button type="submit" class="btn">Add Custom Plant</button>
-                <a href="{{ url_for('plants') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ url_for('plants.index') }}" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>

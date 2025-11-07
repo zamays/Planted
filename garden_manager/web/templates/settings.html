@@ -68,7 +68,7 @@
             <span>OR</span>
         </div>
 
-        <form method="POST" action="{{ url_for('settings') }}" class="location-form">
+        <form method="POST" action="{{ url_for('auth.settings') }}" class="location-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <h3>Manual Location Entry</h3>
             <p class="help-text">
@@ -163,7 +163,7 @@
             Update your account password. Make sure to use a strong password with at least 6 characters.
         </p>
 
-        <form method="POST" action="{{ url_for('change_password') }}" class="password-form">
+        <form method="POST" action="{{ url_for('auth.change_password') }}" class="password-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group">
                 <label for="current_password">Current Password *</label>
@@ -224,7 +224,7 @@
             <strong>Current Email:</strong> {{ user.email }}
         </div>
 
-        <form method="POST" action="{{ url_for('update_user_email') }}" class="email-form">
+        <form method="POST" action="{{ url_for('auth.update_user_email') }}" class="email-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group">
                 <label for="new_email">New Email Address *</label>
@@ -490,7 +490,7 @@
                 const longitude = position.coords.longitude;
                 
                 // Send to server
-                fetch('{{ url_for("update_location") }}', {
+                fetch('{{ url_for("api.update_location") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

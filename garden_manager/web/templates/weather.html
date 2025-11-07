@@ -5,7 +5,7 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <h2 style="margin: 0; color: #4A7C59;">Weather Details</h2>
-    <a href="{{ url_for('weather', refresh='true') }}" class="btn" style="background: #4A7C59; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 4px;">
+    <a href="{{ url_for('main.weather', refresh='true') }}" class="btn" style="background: #4A7C59; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 4px;">
         🔄 Refresh Weather
     </a>
 </div>
@@ -119,7 +119,7 @@
             Check the Care Schedule page for personalized watering and care suggestions.
         </p>
         
-        <a href="{{ url_for('care_schedule') }}" class="btn">📅 View Care Schedule</a>
+        <a href="{{ url_for('care.index') }}" class="btn">📅 View Care Schedule</a>
     </div>
 </div>
 

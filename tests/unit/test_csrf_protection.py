@@ -7,7 +7,11 @@ AJAX requests include proper CSRF tokens.
 
 import pytest
 from flask import session
-from app import app
+from app import app, register_blueprints, initialize_services
+
+# Initialize services and register blueprints for testing
+initialize_services()
+register_blueprints()
 
 
 @pytest.fixture

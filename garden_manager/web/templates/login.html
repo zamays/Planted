@@ -14,7 +14,7 @@
         </div>
         {% endif %}
         
-        <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+        <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group">
                 <label for="username">Username or Email</label>
@@ -41,9 +41,9 @@
         </form>
         
         <div class="auth-links">
-            <p>Don't have an account? <a href="{{ url_for('signup') }}">Create one</a></p>
+            <p>Don't have an account? <a href="{{ url_for('auth.signup') }}">Create one</a></p>
             <p>or</p>
-            <p><a href="{{ url_for('guest_mode') }}" class="guest-link">Continue as Guest</a></p>
+            <p><a href="{{ url_for('auth.guest_mode') }}" class="guest-link">Continue as Guest</a></p>
             <p class="guest-warning">⚠️ Guest mode data is not saved</p>
         </div>
     </div>

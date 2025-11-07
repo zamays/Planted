@@ -8,8 +8,12 @@ to protect against brute force and DoS attacks.
 import os
 import tempfile
 import pytest
-from app import app, limiter
+from app import app, limiter, register_blueprints, initialize_services
 from garden_manager.services.auth_service import AuthService
+
+# Initialize services and register blueprints for testing
+initialize_services()
+register_blueprints()
 
 
 @pytest.fixture

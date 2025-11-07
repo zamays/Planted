@@ -4,7 +4,7 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <a href="{{ url_for('plants') }}" class="btn btn-secondary">← Back to Plants</a>
+    <a href="{{ url_for('plants.index') }}" class="btn btn-secondary">← Back to Plants</a>
 </div>
 
 <div class="card">
@@ -22,7 +22,7 @@
     
     <div class="card-body">
         <div style="margin-bottom: 2rem;">
-            <a href="{{ url_for('edit_plant', plant_id=plant.id) }}" class="btn">✏️ Edit Plant</a>
+            <a href="{{ url_for('plants.edit', plant_id=plant.id) }}" class="btn">✏️ Edit Plant</a>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
