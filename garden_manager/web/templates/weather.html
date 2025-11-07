@@ -3,7 +3,12 @@
 {% block title %}Weather - Planted{% endblock %}
 
 {% block content %}
-<h2 style="margin-bottom: 2rem; color: #4A7C59;">Weather Details</h2>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="margin: 0; color: #4A7C59;">Weather Details</h2>
+    <a href="{{ url_for('weather', refresh='true') }}" class="btn" style="background: #4A7C59; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 4px;">
+        🔄 Refresh Weather
+    </a>
+</div>
 
 {% if location %}
 <div style="margin-bottom: 1rem; color: #666;">
@@ -117,4 +122,36 @@
         <a href="{{ url_for('care_schedule') }}" class="btn">📅 View Care Schedule</a>
     </div>
 </div>
+
+{% if cache_stats %}
+<div class="card">
+    <div class="card-header">
+        📊 Cache Performance
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+            <div>
+                <div style="font-weight: bold; color: #4A7C59;">Cache Hits</div>
+                <div style="font-size: 1.5rem;">{{ cache_stats.cache_hits }}</div>
+            </div>
+            <div>
+                <div style="font-weight: bold; color: #4A7C59;">Cache Misses</div>
+                <div style="font-size: 1.5rem;">{{ cache_stats.cache_misses }}</div>
+            </div>
+            <div>
+                <div style="font-weight: bold; color: #4A7C59;">Hit Rate</div>
+                <div style="font-size: 1.5rem;">{{ cache_stats.hit_rate_percent }}%</div>
+            </div>
+            <div>
+                <div style="font-weight: bold; color: #4A7C59;">API Calls Saved</div>
+                <div style="font-size: 1.5rem;">{{ cache_stats.cache_hits }}</div>
+            </div>
+        </div>
+        <p style="color: #666; font-size: 0.9rem; margin: 0;">
+            Weather data is cached for 15 minutes to reduce API calls and improve page load times.
+            Cache hit rate shows how often cached data is used instead of making fresh API calls.
+        </p>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
