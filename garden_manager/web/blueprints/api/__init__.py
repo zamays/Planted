@@ -6,6 +6,9 @@ Handles AJAX API endpoints for task completion, location updates, and cache mana
 
 import sqlite3
 from flask import Blueprint, request, jsonify
+import logging
+
+logger = logging.getLogger(__name__)
 from garden_manager.web.blueprints.utils import get_current_user_id
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -59,7 +62,8 @@ def complete_task():
         garden_db.complete_care_task(task_id, notes)
         return jsonify({"status": "success"})
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
-        return jsonify({"status": "error", "message": str(e)})
+        logger.error("Exception in complete_task: %s", e, exc_info=True)
+        return jsonify({"status": "error", "message": "Failed to complete task."})
 
 
 @api_bp.route("/update_location", methods=["POST"])
