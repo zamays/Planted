@@ -17,12 +17,12 @@
 
             <div class="form-group">
                 <label for="name">Plant Name: *</label>
-                <input type="text" id="name" name="name" placeholder="e.g., Heirloom Tomato" value="{{ plant.name }}" required>
+                <input type="text" id="name" name="name" placeholder="e.g., Heirloom Tomato" value="{{ plant.name }}" required minlength="1" maxlength="100" aria-required="true">
             </div>
 
             <div class="form-group">
                 <label for="scientific_name">Scientific Name:</label>
-                <input type="text" id="scientific_name" name="scientific_name" placeholder="e.g., Solanum lycopersicum" value="{{ plant.scientific_name }}">
+                <input type="text" id="scientific_name" name="scientific_name" placeholder="e.g., Solanum lycopersicum" value="{{ plant.scientific_name }}" maxlength="200">
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
@@ -60,17 +60,17 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
                 <div class="form-group">
                     <label for="days_to_germination">Days to Germination: *</label>
-                    <input type="number" id="days_to_germination" name="days_to_germination" value="{{ plant.days_to_germination }}" min="0" max="365" required>
+                    <input type="number" id="days_to_germination" name="days_to_germination" value="{{ plant.days_to_germination }}" min="0" max="365" required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="days_to_maturity">Days to Maturity: *</label>
-                    <input type="number" id="days_to_maturity" name="days_to_maturity" value="{{ plant.days_to_maturity }}" min="1" max="730" required>
+                    <input type="number" id="days_to_maturity" name="days_to_maturity" value="{{ plant.days_to_maturity }}" min="1" max="730" required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="spacing_inches">Spacing (inches): *</label>
-                    <input type="number" id="spacing_inches" name="spacing_inches" value="{{ plant.spacing_inches }}" min="1" max="96" required>
+                    <input type="number" id="spacing_inches" name="spacing_inches" value="{{ plant.spacing_inches }}" min="1" max="96" required aria-required="true">
                 </div>
             </div>
 
@@ -98,19 +98,19 @@
 
             <div class="form-group">
                 <label for="companion_plants">Companion Plants:</label>
-                <input type="text" id="companion_plants" name="companion_plants" placeholder="e.g., basil, marigolds, carrots (comma-separated)" value="{{ plant.companion_plants|join(', ') }}">
+                <input type="text" id="companion_plants" name="companion_plants" placeholder="e.g., basil, marigolds, carrots (comma-separated)" value="{{ plant.companion_plants|join(', ') }}" maxlength="500">
                 <small style="color: #666;">Enter plant names separated by commas</small>
             </div>
 
             <div class="form-group">
                 <label for="avoid_plants">Plants to Avoid:</label>
-                <input type="text" id="avoid_plants" name="avoid_plants" placeholder="e.g., fennel, brassicas (comma-separated)" value="{{ plant.avoid_plants|join(', ') }}">
+                <input type="text" id="avoid_plants" name="avoid_plants" placeholder="e.g., fennel, brassicas (comma-separated)" value="{{ plant.avoid_plants|join(', ') }}" maxlength="500">
                 <small style="color: #666;">Enter plant names separated by commas</small>
             </div>
 
             <div class="form-group">
                 <label for="climate_zones">USDA Climate Zones:</label>
-                <input type="text" id="climate_zones" name="climate_zones" placeholder="e.g., 5,6,7,8,9 (comma-separated)" value="{{ plant.climate_zones|join(',') }}">
+                <input type="text" id="climate_zones" name="climate_zones" placeholder="e.g., 5,6,7,8,9 (comma-separated)" value="{{ plant.climate_zones|join(',') }}" pattern="^([1-9]|1[0-3])(,\s*([1-9]|1[0-3]))*$" maxlength="100" title="Enter zone numbers 1-13, separated by commas">
                 <small style="color: #666;">Enter zone numbers separated by commas (1-13)</small>
             </div>
 
@@ -118,7 +118,7 @@
 
             <div class="form-group">
                 <label for="care_notes">Care Notes:</label>
-                <textarea id="care_notes" name="care_notes" rows="4" placeholder="Enter any additional care instructions, tips, or notes about this plant...">{{ plant.care_notes }}</textarea>
+                <textarea id="care_notes" name="care_notes" rows="4" placeholder="Enter any additional care instructions, tips, or notes about this plant..." maxlength="2000">{{ plant.care_notes }}</textarea>
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">

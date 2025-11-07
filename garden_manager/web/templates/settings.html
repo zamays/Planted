@@ -90,6 +90,7 @@
                         value="{{ user.location.latitude if user.location else '' }}"
                         placeholder="e.g., 40.7128"
                         required
+                        aria-required="true"
                     >
                     <small>Range: -90 to 90</small>
                 </div>
@@ -106,6 +107,7 @@
                         value="{{ user.location.longitude if user.location else '' }}"
                         placeholder="e.g., -74.0060"
                         required
+                        aria-required="true"
                     >
                     <small>Range: -180 to 180</small>
                 </div>
@@ -120,6 +122,7 @@
                         name="city" 
                         value="{{ user.location.city if user.location else '' }}"
                         placeholder="e.g., New York"
+                        maxlength="100"
                     >
                 </div>
 
@@ -131,6 +134,7 @@
                         name="region" 
                         value="{{ user.location.region if user.location else '' }}"
                         placeholder="e.g., NY"
+                        maxlength="100"
                     >
                 </div>
             </div>
@@ -143,6 +147,7 @@
                     name="country" 
                     value="{{ user.location.country if user.location else '' }}"
                     placeholder="e.g., USA"
+                    maxlength="100"
                 >
             </div>
 
@@ -159,6 +164,7 @@
         </p>
 
         <form method="POST" action="{{ url_for('change_password') }}" class="password-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group">
                 <label for="current_password">Current Password *</label>
                 <input 
@@ -167,7 +173,9 @@
                     name="current_password" 
                     placeholder="Enter your current password"
                     required
+                    minlength="6"
                     autocomplete="current-password"
+                    aria-required="true"
                 >
             </div>
 
@@ -181,6 +189,7 @@
                     minlength="6"
                     required
                     autocomplete="new-password"
+                    aria-required="true"
                 >
                 <small>Minimum 6 characters</small>
             </div>
@@ -195,6 +204,7 @@
                     minlength="6"
                     required
                     autocomplete="new-password"
+                    aria-required="true"
                 >
             </div>
 
@@ -215,6 +225,7 @@
         </div>
 
         <form method="POST" action="{{ url_for('update_user_email') }}" class="email-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group">
                 <label for="new_email">New Email Address *</label>
                 <input 
@@ -224,6 +235,7 @@
                     placeholder="Enter new email address"
                     required
                     autocomplete="email"
+                    aria-required="true"
                 >
             </div>
 
@@ -236,6 +248,7 @@
                     placeholder="Re-enter new email address"
                     required
                     autocomplete="email"
+                    aria-required="true"
                 >
             </div>
 
