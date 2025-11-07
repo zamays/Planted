@@ -100,7 +100,7 @@ body {
     list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem;
+    gap: 0.1rem;
 }
 
 .nav li {
@@ -110,12 +110,12 @@ body {
 .nav a {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 1.5rem;
+    gap: 0.4rem;
+    padding: 1rem 1rem;
     text-decoration: none;
     color: var(--text-gray);
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     border-bottom: 3px solid transparent;
     transition: all var(--transition-normal);
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
