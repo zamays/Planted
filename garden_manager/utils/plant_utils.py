@@ -8,6 +8,34 @@ companion planting, and care scheduling based on plant needs.
 from typing import List, Dict, Tuple
 
 
+def is_plant_suggested(plant_season: str, plant_climate_zones: List[int],
+                       current_season: str, user_climate_zone: int) -> bool:
+    """
+    Determine if a plant is suggested for the user based on season and climate.
+
+    A plant is suggested when it matches both the current season and is compatible
+    with the user's climate zone.
+
+    Args:
+        plant_season: Plant's optimal planting season (spring, summer, fall, winter)
+        plant_climate_zones: List of USDA climate zones where plant can grow
+        current_season: Current season (spring, summer, fall, winter)
+        user_climate_zone: User's USDA climate zone
+
+    Returns:
+        bool: True if plant is suggested for the user
+    """
+    # Check if plant matches current season
+    season_match = plant_season.lower() == current_season.lower()
+
+    # Check if plant is compatible with user's climate zone
+    # If no zones specified, assume it's compatible with all zones
+    climate_match = (not plant_climate_zones or
+                     user_climate_zone in plant_climate_zones)
+
+    return season_match and climate_match
+
+
 class GardenLayoutCalculator:
     """
     Utility class for garden layout calculations and optimization.
