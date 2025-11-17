@@ -249,3 +249,90 @@ class TestLocationService:
         assert location['city'] == "Custom City"
         assert location['region'] == "Custom Region"
         assert location['country'] == "Custom Country"
+
+
+class TestAPIIntegrationWithReverseGeocoding:
+    """Test that API properly integrates reverse geocoding with database."""
+
+    @pytest.fixture
+    def auth_service(self, tmp_path):
+        """Create a test auth service with temporary database."""
+        db_path = tmp_path / "test_auth.db"
+        return AuthService(str(db_path))
+
+    @pytest.fixture
+    def location_service(self):
+        """Create a test location service."""
+        return LocationService()
+
+    @pytest.fixture
+    def test_user(self, auth_service):
+        """Create a test user."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "password123")
+        return user_id
+
+    @patch('garden_manager.services.location_service.requests.get')
+    def test_api_saves_geocoded_location_to_database(
+        self, mock_get, auth_service, location_service, test_user
+    ):
+        """Test that geocoded city information is saved to database."""
+        # Mock successful Nominatim API response
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "address": {
+                "city": "Seattle",
+                "state": "Washington",
+                "country": "United States"
+            }
+        }
+        mock_get.return_value = mock_response
+
+        # Simulate what the API does:
+        # 1. Call location_service.set_manual_location with just coordinates
+        location_result = location_service.set_manual_location(47.6062, -122.3321, {})
+
+        # 2. Use the geocoded result to update the database
+        city = location_result.get("city", "")
+        region = location_result.get("region", "")
+        country = location_result.get("country", "")
+
+        auth_service.update_user_location(
+            test_user, 47.6062, -122.3321, city, region, country
+        )
+
+        # 3. Verify the database has the geocoded city information
+        user = auth_service.get_user_by_id(test_user)
+        assert user is not None
+        assert user['location'] is not None
+        assert user['location']['city'] == "Seattle"
+        assert user['location']['region'] == "Washington"
+        assert user['location']['country'] == "United States"
+
+    def test_api_preserves_manual_city_in_database(
+        self, auth_service, location_service, test_user
+    ):
+        """Test that manually provided city information is preserved in database."""
+        # When city is provided, reverse geocoding should be skipped
+        location_result = location_service.set_manual_location(
+            34.0522,
+            -118.2437,
+            {"city": "Los Angeles", "region": "CA", "country": "USA"}
+        )
+
+        # Update database with the result
+        city = location_result.get("city", "")
+        region = location_result.get("region", "")
+        country = location_result.get("country", "")
+
+        auth_service.update_user_location(
+            test_user, 34.0522, -118.2437, city, region, country
+        )
+
+        # Verify manual data is preserved
+        user = auth_service.get_user_by_id(test_user)
+        assert user is not None
+        assert user['location'] is not None
+        assert user['location']['city'] == "Los Angeles"
+        assert user['location']['region'] == "CA"
+        assert user['location']['country'] == "USA"
