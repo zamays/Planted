@@ -10,18 +10,26 @@ import sys
 import json
 import os
 import sqlite3
+import logging
 from pathlib import Path
 from garden_manager.database.plant_data import PlantDatabase
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Set up simple logging for this test script
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 
 def print_section(title):
     """Print a section header."""
-    print(f"\n{'='*60}")
-    print(f"  {title}")
-    print(f"{'='*60}\n")
+    logger.info("\n%s", "=" * 60)
+    logger.info("  %s", title)
+    logger.info("%s\n", "=" * 60)
 
 
 def get_plant_count(db_path='garden.db'):
@@ -42,24 +50,24 @@ def test_initial_database_creation(db_path):
     # Remove existing database if it exists
     if os.path.exists(db_path):
         os.remove(db_path)
-        print("✅ Removed existing database")
+        logger.info("✅ Removed existing database")
 
-    print("Creating new database...")
+    logger.info("Creating new database...")
     PlantDatabase(db_path)  # Create database
 
     default_count, custom_count = get_plant_count(db_path)
-    print(f"✅ Database created with {default_count} default plants and {custom_count} custom plants")
+    logger.info("✅ Database created with %d default plants and %d custom plants", default_count, custom_count)
 
 
 def test_sync_on_reinitialization(db_path):
     """Test sync on second initialization."""
     print_section("Test 2: Sync on Subsequent Launch")
-    print("Reinitializing database (simulates app restart)...")
+    logger.info("Reinitializing database (simulates app restart)...")
     PlantDatabase(db_path)  # Reinitialize database
 
     default_count, custom_count = get_plant_count(db_path)
-    print(f"✅ Database synced: {default_count} default plants, {custom_count} custom plants")
-    print("   (No duplicates created - sync is idempotent)")
+    logger.info("✅ Database synced: %d default plants, %d custom plants", default_count, custom_count)
+    logger.info("   (No duplicates created - sync is idempotent)")
 
 
 def test_json_modification_sync(db_path):
@@ -81,12 +89,12 @@ def test_json_modification_sync(db_path):
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
-    print(f"✅ Modified care notes for '{plant_name}' in JSON")
-    print(f"   Old: {original_notes}")
-    print(f"   New: {test_notes}")
+    logger.info("✅ Modified care notes for '%s' in JSON", plant_name)
+    logger.info("   Old: %s", original_notes)
+    logger.info("   New: %s", test_notes)
 
     # Reinitialize to trigger sync
-    print("\nReinitializing database...")
+    logger.info("\nReinitializing database...")
     PlantDatabase(db_path)  # Reinitialize to sync changes
 
     # Check if change was synced
@@ -96,40 +104,40 @@ def test_json_modification_sync(db_path):
         synced_notes = cursor.fetchone()[0]
 
     if synced_notes == test_notes:
-        print("✅ Change successfully synced to database!")
+        logger.info("✅ Change successfully synced to database!")
     else:
-        print("❌ Sync failed - notes don't match")
+        logger.error("❌ Sync failed - notes don't match")
 
     # Restore original
     data['plants'][0]['care']['care_notes'] = original_notes
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
-    print("✅ Restored original JSON")
+    logger.info("✅ Restored original JSON")
 
 
 def print_summary():
     """Print test summary."""
     print_section("Summary")
-    print("✅ All tests passed!")
-    print("\nThe plant sync feature is working correctly:")
-    print("• Changes to default_plants.json are detected on app startup")
-    print("• Database is updated automatically without creating duplicates")
-    print("• Custom plants (is_custom = TRUE) are never modified")
-    print("\nTo add or modify plants, simply edit:")
-    print("  garden_manager/database/seeds/default_plants.json")
-    print("\nChanges will be synced the next time the app starts!")
+    logger.info("✅ All tests passed!")
+    logger.info("\nThe plant sync feature is working correctly:")
+    logger.info("• Changes to default_plants.json are detected on app startup")
+    logger.info("• Database is updated automatically without creating duplicates")
+    logger.info("• Custom plants (is_custom = TRUE) are never modified")
+    logger.info("\nTo add or modify plants, simply edit:")
+    logger.info("  garden_manager/database/seeds/default_plants.json")
+    logger.info("\nChanges will be synced the next time the app starts!")
 
 
 def main():
     """Run the plant sync test."""
     print_section("Plant Sync Feature Test")
 
-    print("This test demonstrates the automatic plant sync feature:")
-    print("• On first launch, all plants are loaded from JSON")
-    print("• On subsequent launches, changes are synced automatically")
-    print("• Custom plants are preserved during sync")
-    print("• New plants in JSON are added automatically")
-    print("• Existing plants in JSON are updated automatically")
+    logger.info("This test demonstrates the automatic plant sync feature:")
+    logger.info("• On first launch, all plants are loaded from JSON")
+    logger.info("• On subsequent launches, changes are synced automatically")
+    logger.info("• Custom plants are preserved during sync")
+    logger.info("• New plants in JSON are added automatically")
+    logger.info("• Existing plants in JSON are updated automatically")
 
     db_path = 'garden.db'
 

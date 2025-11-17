@@ -9,11 +9,19 @@ import os
 import sqlite3
 import tempfile
 import time
+import logging
 from datetime import datetime, timedelta
 
 from garden_manager.database.plant_data import PlantDatabase
 from garden_manager.database.garden_db import GardenDatabase
 from garden_manager.database.models import PlantingInfo
+
+# Set up simple logging for this benchmark script
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 def create_test_data(db_path, num_users=10, plots_per_user=5, plants_per_plot=10):
@@ -121,9 +129,9 @@ def benchmark_query(conn, query, params=None, iterations=100):
 
 def run_benchmarks():
     """Run performance benchmarks with and without indexes."""
-    print("=" * 70)
-    print("DATABASE INDEX PERFORMANCE BENCHMARK")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("DATABASE INDEX PERFORMANCE BENCHMARK")
+    logger.info("=" * 70)
 
     # Create two temporary databases: one with indexes, one without
     # Using NamedTemporaryFile with delete=False for security and proper cleanup
@@ -136,19 +144,19 @@ def run_benchmarks():
     db_without_indexes_file.close()
 
     try:
-        print("\n1. Creating test databases...")
-        print("   - Database WITH indexes")
+        logger.info("\n1. Creating test databases...")
+        logger.info("   - Database WITH indexes")
         _ = PlantDatabase(db_with_indexes)
-        print("   - Database WITHOUT indexes")
+        logger.info("   - Database WITHOUT indexes")
         _ = PlantDatabase(db_without_indexes)
         drop_all_indexes(db_without_indexes)
 
-        print("\n2. Populating with test data...")
+        logger.info("\n2. Populating with test data...")
         stats = create_test_data(db_with_indexes, num_users=5, plots_per_user=10, plants_per_plot=20)
         create_test_data(db_without_indexes, num_users=5, plots_per_user=10, plants_per_plot=20)
-        print(f"   - Created {stats[0]} plots")
-        print(f"   - Created {stats[1]} planted items")
-        print(f"   - Created {stats[2]} care tasks")
+        logger.info(f"   - Created {stats[0]} plots")
+        logger.info(f"   - Created {stats[1]} planted items")
+        logger.info(f"   - Created {stats[2]} care tasks")
 
         # Define test queries
         queries = [
@@ -163,9 +171,9 @@ def run_benchmarks():
              None),
         ]
 
-        print("\n3. Running benchmarks (100 iterations per query)...\n")
-        print(f"{'Query':<20} {'Without Index':<15} {'With Index':<15} {'Speedup':<10}")
-        print("-" * 70)
+        logger.info("\n3. Running benchmarks (100 iterations per query)...\n")
+        logger.info(f"{'Query':<20} {'Without Index':<15} {'With Index':<15} {'Speedup':<10}")
+        logger.info("-" * 70)
 
         conn_with = sqlite3.connect(db_with_indexes)
         conn_without = sqlite3.connect(db_without_indexes)
@@ -178,7 +186,7 @@ def run_benchmarks():
             time_without = benchmark_query(conn_without, query, params)
             speedup = time_without / time_with if time_with > 0 else 1.0
 
-            print(f"{name:<20} {time_without:>10.3f} ms   {time_with:>10.3f} ms   {speedup:>6.1f}x")
+            logger.info(f"{name:<20} {time_without:>10.3f} ms   {time_with:>10.3f} ms   {speedup:>6.1f}x")
 
             total_speedup += speedup
             count += 1
@@ -188,15 +196,15 @@ def run_benchmarks():
 
         avg_speedup = total_speedup / count if count > 0 else 1.0
 
-        print("-" * 70)
-        print(f"{'Average Speedup:':<20} {avg_speedup:>42.1f}x")
+        logger.info("-" * 70)
+        logger.info(f"{'Average Speedup:':<20} {avg_speedup:>42.1f}x")
 
-        print("\n4. Summary:")
-        print(f"   ✅ Average performance improvement: {avg_speedup:.1f}x faster")
-        print("   ✅ Indexes significantly improve query performance")
-        print("   ✅ Complex queries benefit most from compound indexes")
+        logger.info("\n4. Summary:")
+        logger.info(f"   ✅ Average performance improvement: {avg_speedup:.1f}x faster")
+        logger.info("   ✅ Indexes significantly improve query performance")
+        logger.info("   ✅ Complex queries benefit most from compound indexes")
 
-        print("\n" + "=" * 70)
+        logger.info("\n" + "=" * 70)
 
     finally:
         # Clean up temporary database files
