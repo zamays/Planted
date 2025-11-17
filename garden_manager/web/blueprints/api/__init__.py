@@ -131,7 +131,26 @@ def update_location():
         region = data.get("region", "")
         country = data.get("country", "")
 
-        # Update in database
+        # Update location service for this session (with reverse geocoding if needed)
+        location_result = None
+        if location_service is not None:
+            location_result = location_service.set_manual_location(
+                latitude, longitude,
+                {"city": city, "region": region, "country": country}
+            )
+
+            # Use the geocoded location data (may have been enriched with city info)
+            if location_result:
+                city = location_result.get("city", city)
+                region = location_result.get("region", region)
+                country = location_result.get("country", country)
+
+            # Update weather for new location
+            if weather_service is not None:
+                weather_service.get_current_weather(latitude, longitude)
+                weather_service.get_forecast(latitude, longitude)
+
+        # Update in database with potentially geocoded city information
         if auth_service is None:
             return jsonify({
                 "status": "error",
@@ -141,18 +160,6 @@ def update_location():
         auth_service.update_user_location(
             user_id, latitude, longitude, city, region, country
         )
-
-        # Update location service for this session
-        if location_service is not None:
-            location_service.set_manual_location(
-                latitude, longitude,
-                {"city": city, "region": region, "country": country}
-            )
-
-            # Update weather for new location
-            if weather_service is not None:
-                weather_service.get_current_weather(latitude, longitude)
-                weather_service.get_forecast(latitude, longitude)
 
         return jsonify({
             "status": "success",

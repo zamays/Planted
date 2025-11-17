@@ -56,6 +56,68 @@ class LocationService:
             print(f"Error getting location: {e}")
         return None
 
+    def _reverse_geocode(
+        self, latitude: float, longitude: float
+    ) -> Optional[Dict[str, str]]:
+        """
+        Convert coordinates to location names using reverse geocoding.
+
+        Uses Nominatim (OpenStreetMap) API to convert latitude/longitude
+        to human-readable city, region, and country names.
+
+        Args:
+            latitude: Geographic latitude
+            longitude: Geographic longitude
+
+        Returns:
+            Optional[Dict[str, str]]: Dictionary with 'city', 'region', 'country'
+                                     keys, or None if geocoding fails
+        """
+        try:
+            # Use Nominatim API (OpenStreetMap) for reverse geocoding
+            # Free service, no API key required
+            url = "https://nominatim.openstreetmap.org/reverse"
+            params = {
+                "lat": latitude,
+                "lon": longitude,
+                "format": "json",
+                "addressdetails": 1,
+            }
+            headers = {
+                # Nominatim requires a User-Agent header
+                "User-Agent": "Planted-Garden-App/1.0"
+            }
+
+            response = requests.get(url, params=params, headers=headers, timeout=5)
+
+            if response.status_code == 200:
+                data = response.json()
+                address = data.get("address", {})
+
+                # Extract location information
+                # Try various fields for city (in order of preference)
+                city = (
+                    address.get("city")
+                    or address.get("town")
+                    or address.get("village")
+                    or address.get("municipality")
+                    or address.get("hamlet")
+                    or ""
+                )
+
+                # Get region/state
+                region = address.get("state") or address.get("province") or ""
+
+                # Get country
+                country = address.get("country") or ""
+
+                return {"city": city, "region": region, "country": country}
+
+        except (requests.RequestException, KeyError, ValueError) as e:
+            print(f"Error reverse geocoding location: {e}")
+
+        return None
+
     def set_manual_location(
         self,
         latitude: float,
@@ -75,6 +137,12 @@ class LocationService:
         """
         if location_details is None:
             location_details = {}
+
+        # If no city information provided, try reverse geocoding
+        if not location_details.get("city"):
+            geocoded = self._reverse_geocode(latitude, longitude)
+            if geocoded:
+                location_details = geocoded
 
         self.current_location = {
             "city": location_details.get("city", ""),
