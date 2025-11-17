@@ -8,6 +8,9 @@ recommendations. Uses IP-based geolocation with manual location override.
 
 from typing import Dict, Optional
 import requests
+from garden_manager.config import get_logger
+
+logger = get_logger(__name__)
 
 
 class LocationService:
@@ -51,9 +54,10 @@ class LocationService:
                         "timezone": data["timezone"],
                     }
                     self.climate_zone = self._determine_climate_zone(data["lat"])
+                    logger.info("Location detected: %s, %s (%s)", data["city"], data["regionName"], data["country"])
                     return self.current_location
         except (requests.RequestException, KeyError, ValueError) as e:
-            print(f"Error getting location: {e}")
+            logger.error("Error getting location by IP: %s", e, exc_info=True)
         return None
 
     def _reverse_geocode(
@@ -114,7 +118,7 @@ class LocationService:
                 return {"city": city, "region": region, "country": country}
 
         except (requests.RequestException, KeyError, ValueError) as e:
-            print(f"Error reverse geocoding location: {e}")
+            logger.error("Error reverse geocoding location: %s", e, exc_info=True)
 
         return None
 
