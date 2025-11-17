@@ -25,10 +25,10 @@ request_id_var: ContextVar[Optional[str]] = ContextVar('request_id', default=Non
 class RequestIdFilter(logging.Filter):
     """
     Logging filter that adds request ID to log records for distributed tracing.
-    
+
     Uses context variables to track request IDs across async operations.
     """
-    
+
     def filter(self, record):
         """Add request_id to the log record."""
         record.request_id = request_id_var.get() or 'N/A'
@@ -38,10 +38,10 @@ class RequestIdFilter(logging.Filter):
 class ColoredFormatter(logging.Formatter):
     """
     Colored console formatter for better readability in development.
-    
+
     Uses ANSI color codes to highlight different log levels.
     """
-    
+
     # ANSI color codes
     COLORS = {
         'DEBUG': '\033[36m',      # Cyan
@@ -51,12 +51,12 @@ class ColoredFormatter(logging.Formatter):
         'CRITICAL': '\033[35m',   # Magenta
     }
     RESET = '\033[0m'
-    
+
     def format(self, record):
         """Format log record with colors for console output."""
         log_color = self.COLORS.get(record.levelname, self.RESET)
         record.levelname_colored = f"{log_color}{record.levelname}{self.RESET}"
-        
+
         # Format the message using the parent class
         formatted = super().format(record)
         return formatted
@@ -71,7 +71,7 @@ def setup_logging(
 ) -> logging.Logger:
     """
     Set up comprehensive logging for the application.
-    
+
     Args:
         app_name: Name of the application (used for logger name)
         log_dir: Directory to store log files (defaults to 'logs' in project root)
@@ -79,10 +79,10 @@ def setup_logging(
                   If None, uses DEBUG for development, INFO for production
         enable_console: Whether to enable console logging
         enable_file: Whether to enable file logging
-    
+
     Returns:
         logging.Logger: Configured root logger
-    
+
     Example:
         >>> logger = setup_logging('planted')
         >>> logger.info('Application started')
@@ -91,9 +91,9 @@ def setup_logging(
     if log_level is None:
         env = os.environ.get('FLASK_ENV', 'production').lower()
         log_level = 'DEBUG' if env == 'development' else 'INFO'
-    
+
     log_level_value = getattr(logging, log_level.upper(), logging.INFO)
-    
+
     # Set up log directory
     if log_dir is None:
         # Default to 'logs' directory in project root
@@ -101,39 +101,39 @@ def setup_logging(
         log_dir = project_root / 'logs'
     else:
         log_dir = Path(log_dir)
-    
+
     # Create log directory if it doesn't exist
     log_dir.mkdir(exist_ok=True)
-    
+
     # Get root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(log_level_value)
-    
+
     # Remove existing handlers to avoid duplicates
     root_logger.handlers.clear()
-    
+
     # Define log formats
     detailed_format = (
         '%(asctime)s - %(name)s - %(levelname)s - '
         '[%(filename)s:%(lineno)d] - [RequestID: %(request_id)s] - '
         '%(message)s'
     )
-    
+
     simple_format = '%(asctime)s - %(levelname)s - %(message)s'
-    
+
     console_format = (
         '%(asctime)s - %(name)s - %(levelname_colored)s - '
         '[%(filename)s:%(lineno)d] - %(message)s'
     )
-    
+
     # Date format
     date_format = '%Y-%m-%d %H:%M:%S'
-    
+
     # Console Handler (with colors for better development experience)
     if enable_console:
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(log_level_value)
-        
+
         console_formatter = ColoredFormatter(
             console_format,
             datefmt=date_format
@@ -141,7 +141,7 @@ def setup_logging(
         console_handler.setFormatter(console_formatter)
         console_handler.addFilter(RequestIdFilter())
         root_logger.addHandler(console_handler)
-    
+
     if enable_file:
         # Application Log Handler (all logs)
         app_log_file = log_dir / f'{app_name}.log'
@@ -156,7 +156,7 @@ def setup_logging(
         app_handler.setFormatter(app_formatter)
         app_handler.addFilter(RequestIdFilter())
         root_logger.addHandler(app_handler)
-        
+
         # Error Log Handler (ERROR and CRITICAL only)
         error_log_file = log_dir / f'{app_name}_error.log'
         error_handler = logging.handlers.RotatingFileHandler(
@@ -170,7 +170,7 @@ def setup_logging(
         error_handler.setFormatter(error_formatter)
         error_handler.addFilter(RequestIdFilter())
         root_logger.addHandler(error_handler)
-        
+
         # Access Log Handler (INFO level, for HTTP requests)
         access_log_file = log_dir / f'{app_name}_access.log'
         access_handler = logging.handlers.RotatingFileHandler(
@@ -184,27 +184,27 @@ def setup_logging(
         access_handler.setFormatter(access_formatter)
         # Access log doesn't need request ID filter (will be in message)
         root_logger.addHandler(access_handler)
-    
+
     # Log the logging setup
     logger = logging.getLogger(__name__)
     logger.info('Logging system initialized')
-    logger.info(f'Log level: {log_level}')
-    logger.info(f'Log directory: {log_dir}')
+    logger.info('Log level: %s', log_level)
+    logger.info('Log directory: %s', log_dir)
     logger.debug('Debug logging is enabled')
-    
+
     return root_logger
 
 
 def get_logger(name: str) -> logging.Logger:
     """
     Get a logger instance for a specific module.
-    
+
     Args:
         name: Name of the module (typically __name__)
-    
+
     Returns:
         logging.Logger: Logger instance for the module
-    
+
     Example:
         >>> logger = get_logger(__name__)
         >>> logger.info('Module loaded')
@@ -215,13 +215,13 @@ def get_logger(name: str) -> logging.Logger:
 def set_request_id(request_id: Optional[str] = None) -> str:
     """
     Set the request ID for the current context.
-    
+
     Args:
         request_id: Request ID to set. If None, generates a new UUID.
-    
+
     Returns:
         str: The request ID that was set
-    
+
     Example:
         >>> request_id = set_request_id()
         >>> logger.info('Processing request')  # Will include request_id
@@ -235,7 +235,7 @@ def set_request_id(request_id: Optional[str] = None) -> str:
 def get_request_id() -> Optional[str]:
     """
     Get the current request ID from context.
-    
+
     Returns:
         Optional[str]: Current request ID or None if not set
     """
@@ -245,7 +245,7 @@ def get_request_id() -> Optional[str]:
 def clear_request_id():
     """
     Clear the request ID from current context.
-    
+
     Useful for cleaning up after request processing.
     """
     request_id_var.set(None)
@@ -254,34 +254,34 @@ def clear_request_id():
 def log_function_call(func):
     """
     Decorator to log function calls with arguments and return values.
-    
+
     Useful for debugging and tracing execution flow.
-    
+
     Args:
         func: Function to decorate
-    
+
     Returns:
         Wrapped function with logging
-    
+
     Example:
         >>> @log_function_call
         >>> def my_function(x, y):
         >>>     return x + y
     """
     import functools
-    
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger = get_logger(func.__module__)
-        logger.debug(f'Calling {func.__name__} with args={args}, kwargs={kwargs}')
+        logger.debug('Calling %s with args=%s, kwargs=%s', func.__name__, args, kwargs)
         try:
             result = func(*args, **kwargs)
-            logger.debug(f'{func.__name__} returned {result}')
+            logger.debug('%s returned %s', func.__name__, result)
             return result
         except Exception as e:
-            logger.error(f'{func.__name__} raised {type(e).__name__}: {e}', exc_info=True)
+            logger.error('%s raised %s: %s', func.__name__, type(e).__name__, e, exc_info=True)
             raise
-    
+
     return wrapper
 
 
@@ -306,7 +306,7 @@ Integration with Cloud Services:
    - Install: pip install watchtower
    - Configure CloudWatch handler in logging_config.py
    - Set environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
-   
+
    Example:
    import watchtower
    cloudwatch_handler = watchtower.CloudWatchLogHandler(
@@ -319,7 +319,7 @@ Integration with Cloud Services:
    - Install: pip install datadog
    - Configure Datadog handler in logging_config.py
    - Set environment variable: DD_API_KEY
-   
+
    Example:
    from datadog import initialize, statsd
    initialize(api_key='your_api_key', app_key='your_app_key')
@@ -328,7 +328,7 @@ Integration with Cloud Services:
    - Install: pip install splunk-handler
    - Configure Splunk HEC handler in logging_config.py
    - Set environment variables: SPLUNK_HOST, SPLUNK_TOKEN
-   
+
    Example:
    from splunk_handler import SplunkHandler
    splunk = SplunkHandler(
@@ -341,7 +341,7 @@ Integration with Cloud Services:
 4. ELK Stack (Elasticsearch, Logstash, Kibana):
    - Install: pip install python-logstash
    - Configure Logstash handler in logging_config.py
-   
+
    Example:
    import logstash
    elk_handler = logstash.TCPLogstashHandler(
@@ -352,7 +352,7 @@ Integration with Cloud Services:
 5. Sentry (Error Tracking):
    - Install: pip install sentry-sdk
    - Initialize Sentry in app.py
-   
+
    Example:
    import sentry_sdk
    sentry_sdk.init(

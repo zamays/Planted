@@ -31,7 +31,7 @@ def main():
     """
     # Get logger (logging is initialized in app.py)
     logger = logging.getLogger(__name__)
-    
+
     try:
         # Run the Flask app
         run_app()

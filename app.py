@@ -186,7 +186,7 @@ def before_request_logging():
     # Generate and set request ID for tracking
     request_id = set_request_id()
     request.request_id = request_id
-    
+
     # Log incoming request
     access_logger = get_logger('planted.access')
     access_logger.info(
@@ -297,7 +297,7 @@ def register_blueprints():
     # Check if blueprints are already registered
     if 'auth' in [bp.name for bp in app.blueprints.values()]:
         return  # Already registered
-    
+
     # Create services dictionary for blueprint initialization
     services = {
         'plant_db': plant_db,
@@ -323,13 +323,13 @@ def register_blueprints():
 
     init_api_bp(services, limiter)
     app.register_blueprint(api_bp)
-    
+
     # Apply rate limiting to API endpoints
     limiter.limit("100 per hour")(api_bp)
 
     init_main_bp(services)
     app.register_blueprint(main_bp)
-    
+
     # Apply rate limiting to auth routes after registration
     limiter.limit("5 per minute", methods=["POST"])(app.view_functions['auth.login'])
     limiter.limit("3 per minute", methods=["POST"])(app.view_functions['auth.signup'])

@@ -9,6 +9,7 @@ and filtering capabilities for plant selection.
 import sqlite3
 import json
 from typing import List, Optional, Dict
+from garden_manager.config import get_logger
 from .default_plants_data import get_default_plants_data
 from .models import (
     Plant,
@@ -17,7 +18,6 @@ from .models import (
     PlantCareRequirements,
     PlantCompatibility,
 )
-from garden_manager.config import get_logger
 
 logger = get_logger(__name__)
 
