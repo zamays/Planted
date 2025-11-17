@@ -98,7 +98,7 @@ class AuthService:
         Args:
             username: Unique username (3-50 characters)
             email: Valid email address
-            password: Password (minimum 6 characters)
+            password: Password (minimum 8 characters)
 
         Returns:
             Optional[int]: User ID if successful, None if username/email already exists
@@ -110,8 +110,8 @@ class AuthService:
         if not username or len(username) < 3 or len(username) > 50:
             raise ValueError("Username must be between 3 and 50 characters")
         self._validate_email(email)
-        if not password or len(password) < 6:
-            raise ValueError("Password must be at least 6 characters")
+        if not password or len(password) < 8:
+            raise ValueError("Password must be at least 8 characters")
 
         # Hash password using bcrypt
         password_hash = self._hash_password(password)
@@ -274,8 +274,8 @@ class AuthService:
             ValueError: If new password validation fails
         """
         # Validate new password
-        if not new_password or len(new_password) < 6:
-            raise ValueError("New password must be at least 6 characters")
+        if not new_password or len(new_password) < 8:
+            raise ValueError("New password must be at least 8 characters")
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()

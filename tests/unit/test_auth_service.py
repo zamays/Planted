@@ -68,7 +68,7 @@ class TestUserRegistration:
 
     def test_register_short_password(self, auth_service):
         """Test that short passwords are rejected."""
-        with pytest.raises(ValueError, match="Password must be at least 6 characters"):
+        with pytest.raises(ValueError, match="Password must be at least 8 characters"):
             auth_service.register_user("testuser", "test@example.com", "pass")
 
     def test_register_empty_fields(self, auth_service):
@@ -232,13 +232,13 @@ class TestPasswordChange:
     def test_change_password_short_new_password(self, auth_service):
         """Test password change with short new password."""
         user_id = auth_service.register_user("testuser", "test@example.com", "password123")
-        with pytest.raises(ValueError, match="New password must be at least 6 characters"):
+        with pytest.raises(ValueError, match="New password must be at least 8 characters"):
             auth_service.change_password(user_id, "password123", "short")
 
     def test_change_password_empty_new_password(self, auth_service):
         """Test password change with empty new password."""
         user_id = auth_service.register_user("testuser", "test@example.com", "password123")
-        with pytest.raises(ValueError, match="New password must be at least 6 characters"):
+        with pytest.raises(ValueError, match="New password must be at least 8 characters"):
             auth_service.change_password(user_id, "password123", "")
 
     def test_change_password_nonexistent_user(self, auth_service):
