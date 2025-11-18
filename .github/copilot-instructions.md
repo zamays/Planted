@@ -420,12 +420,356 @@ Falls back to mock data if API key is not configured.
 - **Hardiness Zone**: USDA climate zone classification
 - **Days to Maturity**: Time from planting to harvest
 
+## Dependencies Management
+
+### Adding New Dependencies
+
+**IMPORTANT: Security Check Required**
+
+Before adding any new dependencies, you MUST:
+
+1. **Check for security vulnerabilities** using the GitHub Advisory Database
+2. **Use the latest stable version** unless there's a specific reason not to
+3. **Keep dependencies minimal** - only add if absolutely necessary
+
+**Process:**
+
+```bash
+# 1. Add dependency to requirements.txt
+echo "package-name>=X.Y.Z" >> requirements.txt
+
+# 2. Install and test
+pip install -r requirements.txt
+
+# 3. Verify it works
+python3 main.py
+
+# 4. Update pyproject.toml if it's a dev dependency
+# Add to [project.optional-dependencies] dev section
+```
+
+### Checking for Vulnerabilities
+
+```bash
+# Check installed packages for known vulnerabilities
+pip list --outdated
+
+# Before adding a new package, research it:
+# - Check GitHub repository activity and stars
+# - Review security advisories
+# - Check last update date (avoid abandoned packages)
+```
+
+### Dependency Updates
+
+```bash
+# Update a specific package
+pip install --upgrade package-name
+
+# Update all packages (use with caution)
+pip install --upgrade -r requirements.txt
+
+# Always test after updates
+pytest && pylint $(git ls-files '*.py')
+```
+
+## Git Workflow and Commit Conventions
+
+### Branch Naming
+
+Follow these patterns:
+
+```bash
+feature/short-description      # New features
+bugfix/short-description       # Bug fixes
+hotfix/short-description       # Urgent production fixes
+docs/short-description         # Documentation only
+refactor/short-description     # Code refactoring
+test/short-description         # Test additions/fixes
+```
+
+**Examples:**
+- `feature/companion-planting-ui`
+- `bugfix/weather-api-timeout`
+- `docs/setup-instructions`
+
+### Commit Message Conventions
+
+**Format:**
+```
+<type>: <subject>
+
+<body>
+
+<footer>
+```
+
+**Types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style changes (formatting, no logic change)
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
+
+**Examples:**
+
+```
+feat: Add companion planting recommendations to layout
+
+Implements visual indicators for plant compatibility in the garden
+layout interface. Shows beneficial, neutral, and antagonistic
+relationships using color-coded icons.
+
+Closes #123
+```
+
+```
+fix: Correct watering schedule calculation for container plants
+
+Container plants were receiving same schedule as in-ground plants.
+Now correctly adjusts frequency based on container size.
+
+Fixes #456
+```
+
+**Best Practices:**
+- Use present tense ("Add feature" not "Added feature")
+- Keep subject line under 50 characters
+- Capitalize subject line
+- No period at end of subject line
+- Separate subject from body with blank line
+- Wrap body at 72 characters
+- Explain *what* and *why*, not *how*
+
+## CI/CD and Automated Checks
+
+### GitHub Actions Workflows
+
+The repository uses GitHub Actions for automated quality checks:
+
+#### Pylint Workflow (`.github/workflows/pylint.yml`)
+
+**Triggers:**
+- Push to main branch
+- Pull request to main branch
+
+**What it does:**
+- Installs Python dependencies
+- Runs pylint on all Python files
+- Reports any linting errors
+
+**If it fails:**
+```bash
+# Run locally to see issues
+pylint $(git ls-files '*.py')
+
+# Fix issues and commit
+git add .
+git commit -m "fix: Resolve linting issues"
+```
+
+### Pre-commit Checklist
+
+Before pushing code, always:
+
+```bash
+# 1. Run linting
+pylint $(git ls-files '*.py')
+
+# 2. Run tests
+pytest
+
+# 3. Test the application
+python3 main.py
+# Manually test your changes in browser
+
+# 4. Check git status
+git status
+
+# 5. Review your changes
+git diff
+
+# 6. Stage and commit
+git add <files>
+git commit -m "type: description"
+
+# 7. Push
+git push origin <branch-name>
+```
+
+## Debugging and Troubleshooting
+
+### Common Issues and Solutions
+
+#### Issue: Import Errors
+
+```bash
+# Solution: Ensure you're in the right directory and dependencies are installed
+cd /path/to/Planted
+pip install -r requirements.txt
+```
+
+#### Issue: Database Errors
+
+```bash
+# Solution: Database might be corrupted or need migration
+# Delete and recreate (local development only!)
+rm -f garden_manager/database/garden.db
+python3 main.py  # Will recreate with defaults
+```
+
+#### Issue: Port Already in Use
+
+```bash
+# Solution: Kill process using port 5000
+# On Unix/macOS:
+lsof -ti:5000 | xargs kill -9
+
+# On Windows:
+netstat -ano | findstr :5000
+taskkill /PID <PID> /F
+```
+
+#### Issue: Weather API Not Working
+
+```bash
+# Solution: Check .env file exists and has valid API key
+# Or just use mock data (app works without API key)
+cat .env
+# If missing:
+cp .env.example .env
+```
+
+### Debugging Tools and Techniques
+
+#### Using Python Debugger (pdb)
+
+```python
+# Add to code where you want to break
+import pdb; pdb.set_trace()
+
+# Common pdb commands:
+# n (next) - Execute next line
+# s (step) - Step into function
+# c (continue) - Continue execution
+# p variable - Print variable value
+# l - List code around current line
+# q - Quit debugger
+```
+
+#### Flask Debug Mode
+
+Already enabled in `main.py` for development:
+
+```python
+app.run(debug=True, host='0.0.0.0', port=5000)
+```
+
+Benefits:
+- Auto-reload on code changes
+- Detailed error pages with stack traces
+- Interactive debugger in browser
+
+#### Logging
+
+The application uses Python's logging module:
+
+```python
+import logging
+
+# Add debug logging
+logging.debug("Variable value: %s", variable)
+logging.info("Operation completed")
+logging.warning("Potential issue detected")
+logging.error("Error occurred: %s", error)
+```
+
+View logs in terminal where you ran `python3 main.py`.
+
+#### Database Inspection
+
+```bash
+# Use SQLite CLI to inspect database
+sqlite3 garden_manager/database/garden.db
+
+# Useful SQLite commands:
+.tables              # List all tables
+.schema plants       # Show table structure
+SELECT * FROM plants LIMIT 5;  # Query data
+.quit                # Exit
+```
+
+### Performance Profiling
+
+If you need to profile code:
+
+```python
+import cProfile
+import pstats
+
+# Profile a function
+profiler = cProfile.Profile()
+profiler.enable()
+
+# Your code here
+your_function()
+
+profiler.disable()
+stats = pstats.Stats(profiler)
+stats.sort_stats('cumulative')
+stats.print_stats(20)  # Top 20 slowest functions
+```
+
 ## Getting Help
 
-- Check existing issues in the repository
-- Review documentation in `docs/` directory
-- See `CONTRIBUTING.md` for contribution guidelines
-- Create new issues for bugs or feature requests
+### Internal Resources
+
+1. **Documentation**: Start with `docs/` directory
+   - `docs/architecture.md` - System design
+   - `docs/api.md` - API documentation
+   - `docs/database_migrations.md` - Database changes
+   - `docs/deployment.md` - Deployment guide
+
+2. **Code Examples**: Look for similar implementations
+   - Check existing routes in `app.py`
+   - Review service classes in `garden_manager/services/`
+   - Study database operations in `garden_manager/database/`
+
+3. **Issue Tracker**: Search for similar problems
+   - [Open Issues](https://github.com/zamays/Planted/issues)
+   - [Closed Issues](https://github.com/zamays/Planted/issues?q=is%3Aissue+is%3Aclosed)
+
+### External Resources
+
+**Python & Flask:**
+- [Flask Documentation](https://flask.palletsprojects.com/)
+- [Python Official Docs](https://docs.python.org/3/)
+- [PEP 8 Style Guide](https://pep8.org/)
+
+**Gardening Domain Knowledge:**
+- USDA Plant Database
+- University Extension Programs
+- See `docs/plant_data_sources.md` for verified sources
+
+**Tools:**
+- [Pylint Documentation](https://pylint.readthedocs.io/)
+- [Pytest Documentation](https://docs.pytest.org/)
+- [SQLite Documentation](https://www.sqlite.org/docs.html)
+
+### When Stuck
+
+1. **Read the error message carefully** - Most errors are self-explanatory
+2. **Check recent changes** - Use `git diff` to see what changed
+3. **Reproduce the issue** - Create minimal test case
+4. **Search existing issues** - Someone may have hit this before
+5. **Add debug logging** - Print variables and execution flow
+6. **Ask for help** - Create a detailed issue with:
+   - What you're trying to do
+   - What you've tried
+   - Error messages and stack traces
+   - System information (OS, Python version)
 
 ## Summary for Copilot
 
