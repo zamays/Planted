@@ -1,3 +1,21 @@
+# Render.com Deployment Configuration for Planted
+#
+# IMPORTANT: Before deploying, you MUST set FLASK_SECRET_KEY in Render Dashboard
+#
+# 1. Generate a secure secret key on your local machine:
+#    python3 -c "import secrets; print(secrets.token_hex(32))"
+#
+# 2. In Render Dashboard:
+#    - Go to your service > Environment
+#    - Add Environment Variable
+#    - Key: FLASK_SECRET_KEY
+#    - Value: (paste the generated key from step 1)
+#    - Save Changes
+#
+# 3. Deploy or redeploy your service
+#
+# For full deployment instructions, see: docs/deployment.md
+
 services:
   - type: web
     name: planted
@@ -9,7 +27,9 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.0
+      - key: RENDER
+        value: true
       - key: FLASK_SECRET_KEY
-        generateValue: true
+        sync: false
       - key: OPENWEATHERMAP_API_KEY
         sync: false
