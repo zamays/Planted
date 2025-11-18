@@ -8,6 +8,7 @@ Provides error handling and user-friendly troubleshooting messages.
 
 import sys
 import os
+import logging
 
 from app import run_app
 
@@ -28,12 +29,17 @@ def main():
         - Import errors with installation guidance
         - Other startup errors with debugging information
     """
+    # Get logger (logging is initialized in app.py)
+    logger = logging.getLogger(__name__)
+
     try:
         # Run the Flask app
         run_app()
     except KeyboardInterrupt:
+        logger.info("Application shutdown requested by user (Ctrl+C)")
         print("\n👋 Thanks for using Planted!")
     except (ImportError, ModuleNotFoundError) as e:
+        logger.critical("Failed to start application - missing dependencies: %s", e, exc_info=True)
         print(f"❌ Error starting Planted: {e}")
         print("\n🔧 Troubleshooting:")
         print("1. Make sure you have Flask installed: pip install flask requests")
@@ -41,6 +47,7 @@ def main():
         print("3. Check that all files are in the correct location")
         sys.exit(1)
     except (OSError, RuntimeError) as e:
+        logger.critical("Failed to start application - system error: %s", e, exc_info=True)
         print(f"❌ Error starting Planted: {e}")
         print("\n🔧 Troubleshooting:")
         print("1. Check if port 5000 is already in use")

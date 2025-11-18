@@ -12,6 +12,9 @@ from garden_manager.database.models import PlantingInfo
 from garden_manager.web.blueprints.utils import get_current_user_id
 from garden_manager.utils.date_utils import SeasonCalculator
 from garden_manager.utils.plant_utils import is_plant_suggested
+from garden_manager.config import get_logger
+
+logger = get_logger(__name__)
 
 garden_bp = Blueprint('garden', __name__, url_prefix='/garden')
 
@@ -45,7 +48,7 @@ def index():
         plots = garden_db.get_garden_plots(user_id) if garden_db is not None else []
         return render_template("garden.html", plots=plots)
     except (sqlite3.Error, AttributeError) as e:
-        print(f"Garden error: {e}")
+        logger.error("Garden error: %s", e, exc_info=True)
         return "<h1>Garden Error</h1><p>An internal error occurred while loading the garden.</p>"
 
 
@@ -89,7 +92,7 @@ def view_plot(plot_id):
             "view_plot.html", plot=plot, planted_items=items_with_plants
         )
     except (sqlite3.Error, AttributeError, KeyError) as e:
-        print(f"View plot error: {e}")
+        logger.error("View plot error: %s", e, exc_info=True)
         return "<h1>View Plot Error</h1><p>An internal error occurred while loading the plot.</p>"
 
 
@@ -114,8 +117,7 @@ def delete_plot(plot_id):
 
         return redirect(url_for("garden.index"))
     except (sqlite3.Error, ValueError) as e:
-        print(f"Delete plot error: {e}")
-        traceback.print_exc()
+        logger.error("Delete plot error: %s", e, exc_info=True)
         return "<h1>Delete Plot Error</h1><p>An internal error occurred while deleting the plot.</p>"
 
 
@@ -283,9 +285,7 @@ def plant_to_plot(plot_id):
         return _handle_plant_to_plot_get(plot_id, plot, user_id)
 
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
-        print(f"Plant to plot error: {e}")
-
-        traceback.print_exc()
+        logger.error("Plant to plot error: %s", e, exc_info=True)
         return (
             "<h1>Plant to Plot Error</h1>"
             "<p>An internal error occurred while planting to plot. Please try again later.</p>"
@@ -335,5 +335,5 @@ def create():
 
         return render_template("create_plot.html")
     except (sqlite3.Error, ValueError, KeyError) as e:
-        print(f"Create plot error: {e}")
+        logger.error("Create plot error: %s", e, exc_info=True)
         return "<h1>Create Plot Error</h1><p>An error occurred while creating the plot. Please try again later.</p>"

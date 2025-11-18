@@ -9,6 +9,7 @@ and filtering capabilities for plant selection.
 import sqlite3
 import json
 from typing import List, Optional, Dict
+from garden_manager.config import get_logger
 from .default_plants_data import get_default_plants_data
 from .models import (
     Plant,
@@ -17,6 +18,8 @@ from .models import (
     PlantCareRequirements,
     PlantCompatibility,
 )
+
+logger = get_logger(__name__)
 
 
 class PlantDatabase:
@@ -211,7 +214,7 @@ class PlantDatabase:
                     """,
                         plant_data,
                     )
-                print(f"   ✅ Loaded {len(plants_data)} default plants into database")
+                logger.info("Loaded %d default plants into database", len(plants_data))
             else:
                 # Sync mode - update existing plants and add new ones
                 updated_count = 0
@@ -264,7 +267,7 @@ class PlantDatabase:
                         )
                         added_count += 1
 
-                print(f"   ✅ Plant sync: {added_count} added, {updated_count} updated")
+                logger.info("Plant sync completed: %d added, %d updated", added_count, updated_count)
 
             conn.commit()
 

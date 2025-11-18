@@ -10,6 +10,9 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import requests
 from cachetools import TTLCache
+from garden_manager.config import get_logger
+
+logger = get_logger(__name__)
 
 
 class WeatherService:
@@ -37,10 +40,8 @@ class WeatherService:
         self.api_key = api_key or os.getenv("OPENWEATHERMAP_API_KEY")
 
         if not self.api_key:
-            print("⚠️  No OpenWeatherMap API key found. Using mock weather data.")
-            print(
-                "   To use real weather data, add OPENWEATHERMAP_API_KEY to your .env file"
-            )
+            logger.warning("No OpenWeatherMap API key found. Using mock weather data.")
+            logger.info("To use real weather data, add OPENWEATHERMAP_API_KEY to your .env file")
             self.api_key = "demo_key"
 
         self.base_url = "https://api.openweathermap.org/data/2.5"
@@ -117,12 +118,13 @@ class WeatherService:
                 return weather_data
 
             # API error - return mock data as fallback
+            logger.warning("Weather API returned error, using mock data")
             weather_data = self._get_mock_weather()
             self._weather_cache[cache_key] = weather_data
             self.current_weather = weather_data
             return weather_data
         except (requests.RequestException, KeyError, ValueError) as e:
-            print(f"Error fetching weather: {e}")
+            logger.error("Error fetching weather: %s", e, exc_info=True)
             weather_data = self._get_mock_weather()
             self._weather_cache[cache_key] = weather_data
             self.current_weather = weather_data
@@ -201,12 +203,13 @@ class WeatherService:
                 return forecast
 
             # API error - return mock data as fallback
+            logger.warning("Weather forecast API returned error, using mock data")
             forecast_data = self._get_mock_forecast(days)
             self._forecast_cache[cache_key] = forecast_data
             self.forecast = forecast_data
             return forecast_data
         except (requests.RequestException, KeyError, ValueError, IndexError) as e:
-            print(f"Error fetching forecast: {e}")
+            logger.error("Error fetching forecast: %s", e, exc_info=True)
             forecast_data = self._get_mock_forecast(days)
             self._forecast_cache[cache_key] = forecast_data
             self.forecast = forecast_data

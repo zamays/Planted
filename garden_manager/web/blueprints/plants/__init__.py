@@ -317,7 +317,7 @@ def edit(plant_id):
 
         return render_template("edit_plant.html", plant=plant)
     except (ValueError, sqlite3.Error, KeyError) as e:
-        print(f"Edit plant error: {e}")
+        logger.error("Edit plant error: %s", e, exc_info=True)
         error_msg = (
             "Invalid plant data. Please check your inputs and try again."
             if isinstance(e, ValueError)
@@ -346,8 +346,8 @@ def delete(plant_id):
             return redirect(url_for("plants.index"))
         return "<h1>Error</h1><p>Failed to delete plant.</p>"
     except ValueError as e:
-        print(f"Delete plant validation error: {e}")
+        logger.warning("Delete plant validation error: %s", e)
         return "<h1>Delete Plant Error</h1><p>Cannot delete default plants. Only custom plants can be deleted.</p>"
     except sqlite3.Error as e:
-        print(f"Delete plant database error: {e}")
+        logger.error("Delete plant database error: %s", e, exc_info=True)
         return "<h1>Delete Plant Error</h1><p>An error occurred while deleting the plant. Please try again later.</p>"

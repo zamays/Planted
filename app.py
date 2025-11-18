@@ -27,6 +27,10 @@ from garden_manager.services.location_service import LocationService
 from garden_manager.services.scheduler import CareReminder
 from garden_manager.services.auth_service import AuthService
 
+# Import logging configuration
+from garden_manager.config import setup_logging, get_logger
+from garden_manager.config.logging_config import set_request_id, clear_request_id
+
 # Import blueprints
 from garden_manager.web.blueprints.auth import auth_bp, init_blueprint as init_auth_bp
 from garden_manager.web.blueprints.plants import plants_bp, init_blueprint as init_plants_bp
@@ -42,6 +46,10 @@ load_dotenv(dotenv_path=env_path)
 # Add the project root to the Python path
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
+
+# Initialize logging system
+setup_logging('planted')
+logger = get_logger(__name__)
 
 # Create Flask app with proper template and static directories
 template_dir = os.path.join(
@@ -89,7 +97,7 @@ def initialize_services():
     # pylint: disable=global-statement
     global plant_db, garden_db, location_service, weather_service, care_reminder, auth_service
 
-    print("🔧 Initializing services...")
+    logger.info("Initializing services...")
 
     try:
         # Initialize core database services
@@ -99,24 +107,25 @@ def initialize_services():
         weather_service = WeatherService()
         auth_service = AuthService()
 
-        print("   ✅ Database services initialized")
+        logger.info("Database services initialized successfully")
 
         # Set default location (New York) as fallback - do NOT use server IP
         # Users will set their location via browser geolocation or account settings
         location_service.set_manual_location(
             40.7128, -74.0060, {"city": "New York", "state": "NY", "country": "USA"}
         )
+        logger.debug("Default location set to New York, NY")
 
         # Initialize care reminder system
         try:
             care_reminder = CareReminder(garden_db, weather_service)
             care_reminder.start()
-            print("   ✅ Care reminder system started")
+            logger.info("Care reminder system started successfully")
         except (sqlite3.Error, ValueError, AttributeError, OSError) as e:
-            print(f"   ⚠️ Care reminder failed: {e}")
+            logger.warning("Care reminder system failed to start: %s", e)
 
     except (OSError, sqlite3.Error, ValueError, ImportError) as e:
-        print(f"⚠️ Service initialization warning: {e}")
+        logger.warning("Service initialization encountered issues: %s", e)
         # Continue with partially initialized services
 
 
@@ -172,6 +181,48 @@ def load_user_location():
 
 
 @app.before_request
+def before_request_logging():
+    """Set up request ID and log incoming requests."""
+    # Generate and set request ID for tracking
+    request_id = set_request_id()
+    request.request_id = request_id
+
+    # Log incoming request
+    access_logger = get_logger('planted.access')
+    access_logger.info(
+        '%s %s %s - User: %s - IP: %s - RequestID: %s',
+        request.method,
+        request.path,
+        request.scheme.upper(),
+        session.get('user_id', 'guest'),
+        request.remote_addr,
+        request_id
+    )
+
+
+@app.after_request
+def after_request_logging(response):
+    """Log request completion with status code."""
+    access_logger = get_logger('planted.access')
+    access_logger.info(
+        'Response: %s %s - Status: %d - RequestID: %s',
+        request.method,
+        request.path,
+        response.status_code,
+        getattr(request, 'request_id', 'N/A')
+    )
+    return response
+
+
+@app.teardown_request
+def teardown_request_logging(exception=None):
+    """Clean up request ID after request completion."""
+    if exception:
+        logger.error('Request failed with exception: %s', exception, exc_info=True)
+    clear_request_id()
+
+
+@app.before_request
 def check_auth():
     """Check authentication before each request."""
     # Public routes that don't require authentication
@@ -182,6 +233,7 @@ def check_auth():
 
     # Check if user is authenticated or in guest mode
     if not session.get('user_id') and not session.get('is_guest'):
+        logger.debug('Unauthenticated user redirected to login from %s', request.path)
         return redirect(url_for('auth.login'))
 
     # Load user location once per session
@@ -245,7 +297,7 @@ def register_blueprints():
     # Check if blueprints are already registered
     if 'auth' in [bp.name for bp in app.blueprints.values()]:
         return  # Already registered
-    
+
     # Create services dictionary for blueprint initialization
     services = {
         'plant_db': plant_db,
@@ -271,13 +323,13 @@ def register_blueprints():
 
     init_api_bp(services, limiter)
     app.register_blueprint(api_bp)
-    
+
     # Apply rate limiting to API endpoints
     limiter.limit("100 per hour")(api_bp)
 
     init_main_bp(services)
     app.register_blueprint(main_bp)
-    
+
     # Apply rate limiting to auth routes after registration
     limiter.limit("5 per minute", methods=["POST"])(app.view_functions['auth.login'])
     limiter.limit("3 per minute", methods=["POST"])(app.view_functions['auth.signup'])
@@ -317,25 +369,27 @@ def run_app():
     The function handles service initialization failures gracefully and
     provides fallback functionality.
     """
-    print("🌱 Starting Planted Web App...")
+    logger.info("Starting Planted Web App...")
 
     # Get application configuration
     is_production, host, port = get_app_configuration()
+    env_mode = 'production' if is_production else 'development'
+    logger.info("Running in %s mode", env_mode)
 
     try:
         initialize_services()
-        print("   ✅ All services initialized successfully")
+        logger.info("All services initialized successfully")
     except (OSError, sqlite3.Error, ValueError, ImportError) as e:
-        print(f"   ❌ Service initialization failed: {e}")
-        print("   🔧 Starting with limited functionality...")
+        logger.error("Service initialization failed: %s", e, exc_info=True)
+        logger.info("Starting with limited functionality...")
 
     # Register blueprints after services are initialized
     register_blueprints()
-    print("   ✅ Blueprints registered successfully")
+    logger.info("Blueprints registered successfully")
 
     # Only open browser in development mode
     if not is_production:
-        print("   🌐 Opening browser...")
+        logger.info("Opening browser...")
 
         # Open browser after a short delay to ensure server is ready
         def open_browser():
@@ -343,21 +397,21 @@ def run_app():
             time.sleep(2)
             try:
                 webbrowser.open(f"http://127.0.0.1:{port}")
-                print("   ✅ Browser opened")
+                logger.info("Browser opened successfully")
             except (OSError, webbrowser.Error) as e:
-                print(f"   ⚠️ Could not open browser: {e}")
-                print(f"   📱 Please manually open: http://127.0.0.1:{port}")
+                logger.warning("Could not open browser: %s", e)
+                logger.info("Please manually open: http://127.0.0.1:%d", port)
 
         threading.Thread(target=open_browser, daemon=True).start()
 
-    print(f"   🚀 Server starting at http://{host}:{port}")
+    logger.info("Server starting at http://%s:%d", host, port)
     if not is_production:
-        print(f"   📄 Test page available at: http://127.0.0.1:{port}/test")
+        logger.info("Test page available at: http://127.0.0.1:%d/test", port)
 
     try:
         app.run(debug=False, host=host, port=port, use_reloader=False)
     except (OSError, RuntimeError) as e:
-        print(f"   ❌ Flask server error: {e}")
+        logger.error("Flask server error: %s", e, exc_info=True)
 
 
 if __name__ == "__main__":

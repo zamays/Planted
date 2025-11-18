@@ -10,6 +10,9 @@ from typing import List, Dict, Callable
 import threading
 import time
 import sqlite3
+from garden_manager.config import get_logger
+
+logger = get_logger(__name__)
 
 
 class TaskScheduler:
@@ -123,7 +126,7 @@ class TaskScheduler:
                         self.scheduled_tasks.remove(task)
 
                 except (sqlite3.Error, AttributeError, KeyError, ValueError, TypeError) as e:
-                    print(f"Error running scheduled task '{task['name']}': {e}")
+                    logger.error("Error running scheduled task '%s': %s", task['name'], e, exc_info=True)
 
             time.sleep(60)  # Check every minute
 
@@ -263,12 +266,12 @@ class CareReminder:
         """
         Send a notification message to the user.
 
-        Currently prints to console. Can be extended for email, SMS, or push notifications.
+        Currently logs notification. Can be extended for email, SMS, or push notifications.
 
         Args:
             message: Notification message to send
         """
-        print(f"🌱 Garden Reminder: {message}")
+        logger.info("Garden Reminder: %s", message)
 
     def start(self):
         """Start the care reminder system."""
