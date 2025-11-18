@@ -5,6 +5,8 @@ Revises:
 Create Date: 2025-11-18 16:39:23.382916
 
 """
+# pylint: disable=invalid-name,no-member,wrong-import-order
+# Alembic migrations use specific naming conventions and dynamic imports
 from typing import Sequence, Union
 
 from alembic import op

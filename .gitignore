@@ -175,5 +175,7 @@ Desktop.ini
 
 # Application specific
 *.db
+*.db.backup*
+backups/
 Claude.md
 settings.json
