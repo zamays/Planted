@@ -59,7 +59,39 @@ static_dir = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "garden_manager", "web", "static"
 )
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
-app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "garden_manager_secret_key")
+
+# Configure secret key with strict security validation
+secret_key = os.getenv("FLASK_SECRET_KEY")
+
+# List of known weak/placeholder keys that should never be used
+WEAK_SECRET_KEYS = [
+    "garden_manager_secret_key",
+    "planted_secret_key_change_this_in_production",
+    "your_secret_key_here",
+    "change_this",
+    "secret",
+]
+
+# Validate secret key
+if not secret_key:
+    raise ValueError(
+        "FLASK_SECRET_KEY must be set in the .env file. "
+        "Generate a secure key with: python3 -c \"import secrets; print(secrets.token_hex(32))\""
+    )
+
+if secret_key in WEAK_SECRET_KEYS:
+    raise ValueError(
+        f"FLASK_SECRET_KEY is set to a known weak/placeholder value: '{secret_key}'. "
+        "Generate a secure key with: python3 -c \"import secrets; print(secrets.token_hex(32))\""
+    )
+
+if len(secret_key) < 32:
+    raise ValueError(
+        f"FLASK_SECRET_KEY must be at least 32 characters long (current: {len(secret_key)}). "
+        "Generate a secure key with: python3 -c \"import secrets; print(secrets.token_hex(32))\""
+    )
+
+app.config["SECRET_KEY"] = secret_key
 
 # Initialize CSRF protection
 csrf = CSRFProtect(app)
