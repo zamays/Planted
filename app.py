@@ -206,7 +206,6 @@ def load_user_location():
                     loc['latitude'],
                     loc['longitude']
                 )
-            return
 
     # For guest mode or users without location: use default location
     # DO NOT use server IP as this gives wrong location when app is hosted remotely
