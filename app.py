@@ -257,7 +257,7 @@ def teardown_request_logging(exception=None):
 def check_auth():
     """Check authentication before each request."""
     # Public routes that don't require authentication
-    public_routes = ['auth.login', 'auth.signup', 'auth.guest_mode', 'static']
+    public_routes = ['auth.login', 'auth.signup', 'auth.guest_mode', 'auth.reset_password', 'static']
 
     if request.endpoint in public_routes:
         return None

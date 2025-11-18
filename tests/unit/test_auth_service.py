@@ -208,7 +208,7 @@ class TestPasswordChange:
         """Test successful password change."""
         user_id = auth_service.register_user("testuser", "test@example.com", "oldpassword")
         result = auth_service.change_password(user_id, "oldpassword", "newpassword123")
-        assert result is True
+        assert result['success'] is True
 
         # Verify old password no longer works
         user = auth_service.verify_login("testuser", "oldpassword")
@@ -223,7 +223,7 @@ class TestPasswordChange:
         """Test password change with wrong current password."""
         user_id = auth_service.register_user("testuser", "test@example.com", "password123")
         result = auth_service.change_password(user_id, "wrongpassword", "newpassword123")
-        assert result is False
+        assert result['success'] is False
 
         # Verify original password still works
         user = auth_service.verify_login("testuser", "password123")
@@ -232,19 +232,21 @@ class TestPasswordChange:
     def test_change_password_short_new_password(self, auth_service):
         """Test password change with short new password."""
         user_id = auth_service.register_user("testuser", "test@example.com", "password123")
-        with pytest.raises(ValueError, match="New password must be at least 8 characters"):
-            auth_service.change_password(user_id, "password123", "short")
+        result = auth_service.change_password(user_id, "password123", "short")
+        assert result['success'] is False
+        assert 'at least 8 characters' in result['message']
 
     def test_change_password_empty_new_password(self, auth_service):
         """Test password change with empty new password."""
         user_id = auth_service.register_user("testuser", "test@example.com", "password123")
-        with pytest.raises(ValueError, match="New password must be at least 8 characters"):
-            auth_service.change_password(user_id, "password123", "")
+        result = auth_service.change_password(user_id, "password123", "")
+        assert result['success'] is False
+        assert 'at least 8 characters' in result['message']
 
     def test_change_password_nonexistent_user(self, auth_service):
         """Test password change for nonexistent user."""
         result = auth_service.change_password(999999, "anypassword", "newpassword123")
-        assert result is False
+        assert result['success'] is False
 
 
 class TestEmailUpdate:
@@ -292,6 +294,56 @@ class TestEmailUpdate:
         user_id = auth_service.register_user("testuser", "test@example.com", "password123")
         with pytest.raises(ValueError, match="Invalid email address"):
             auth_service.update_email(user_id, "")
+
+
+class TestPasswordReset:
+    """Tests for password reset functionality."""
+
+    def test_reset_password_with_username(self, auth_service):
+        """Test password reset using username."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "oldpassword")
+        result = auth_service.reset_password("testuser", "newpassword123")
+        assert result['success'] is True
+
+        # Verify old password no longer works
+        user = auth_service.verify_login("testuser", "oldpassword")
+        assert user is None
+
+        # Verify new password works
+        user = auth_service.verify_login("testuser", "newpassword123")
+        assert user is not None
+        assert user['id'] == user_id
+
+    def test_reset_password_with_email(self, auth_service):
+        """Test password reset using email."""
+        user_id = auth_service.register_user("testuser", "test@example.com", "oldpassword")
+        result = auth_service.reset_password("test@example.com", "newpassword123")
+        assert result['success'] is True
+
+        # Verify new password works
+        user = auth_service.verify_login("testuser", "newpassword123")
+        assert user is not None
+        assert user['id'] == user_id
+
+    def test_reset_password_nonexistent_user(self, auth_service):
+        """Test password reset for nonexistent user."""
+        result = auth_service.reset_password("nonexistent", "newpassword123")
+        assert result['success'] is False
+        assert 'not found' in result['message']
+
+    def test_reset_password_short_password(self, auth_service):
+        """Test password reset with short password."""
+        auth_service.register_user("testuser", "test@example.com", "password123")
+        result = auth_service.reset_password("testuser", "short")
+        assert result['success'] is False
+        assert 'at least 8 characters' in result['message']
+
+    def test_reset_password_empty_password(self, auth_service):
+        """Test password reset with empty password."""
+        auth_service.register_user("testuser", "test@example.com", "password123")
+        result = auth_service.reset_password("testuser", "")
+        assert result['success'] is False
+        assert 'at least 8 characters' in result['message']
 
 
 class TestDatabaseSchema:

@@ -13,7 +13,7 @@ auth_bp = Blueprint('auth', __name__)
 def init_blueprint(services):
     """
     Initialize the blueprint with required services.
-    
+
     Args:
         services: Dictionary containing service instances
     """
@@ -98,7 +98,7 @@ def signup():
         # Create user
         try:
             user_id = auth_service.register_user(username, email, password)
-            
+
             if user_id is None:
                 flash("Username or email already exists", "error")
                 return render_template("signup.html")
@@ -109,7 +109,7 @@ def signup():
             session["is_guest"] = False
             flash(f"Welcome to Planted, {username}!", "success")
             return redirect(url_for("main.dashboard"))
-        
+
         except ValueError as e:
             flash(str(e), "error")
             return render_template("signup.html")
@@ -176,19 +176,19 @@ def settings():
                 auth_service.update_user_location(
                     user_id, latitude, longitude, city, region, country
                 )
-                
+
                 # Update location service
                 if location_service:
                     location_service.set_manual_location(
                         latitude, longitude,
                         {'city': city, 'region': region, 'country': country}
                     )
-                
+
                 # Update weather for new location
                 if weather_service:
                     weather_service.get_current_weather(latitude, longitude)
                     weather_service.get_forecast(latitude, longitude)
-                
+
                 flash("Location updated successfully", "success")
             else:
                 flash("Unable to update location in guest mode", "error")
@@ -248,7 +248,7 @@ def change_password():
         return redirect(url_for("auth.settings"))
 
     result = auth_service.change_password(user_id, current_password, new_password)
-    
+
     if result.get("success"):
         flash("Password changed successfully", "success")
     else:
@@ -290,10 +290,59 @@ def update_user_email():
 
     # Update email
     result = auth_service.update_user_email(user_id, new_email)
-    
+
     if result.get("success"):
         flash("Email updated successfully", "success")
     else:
         flash(result.get("message", "Email update failed"), "error")
 
     return redirect(url_for("auth.settings"))
+
+
+@auth_bp.route("/reset-password", methods=["GET", "POST"])
+def reset_password():
+    """
+    Handle password reset for users who forgot their password.
+
+    This is a simplified implementation without email verification.
+    Users need to know their username or email to reset.
+
+    GET: Display password reset form
+    POST: Process password reset
+
+    Returns:
+        str: Rendered password reset page or redirect to login
+    """
+    if request.method == "POST":
+        username_or_email = request.form.get("username_or_email")
+        new_password = request.form.get("new_password")
+        confirm_password = request.form.get("confirm_password")
+
+        # Validation
+        if not all([username_or_email, new_password, confirm_password]):
+            flash("All fields are required", "error")
+            return render_template("reset_password.html")
+
+        if new_password != confirm_password:
+            flash("Passwords do not match", "error")
+            return render_template("reset_password.html")
+
+        if len(new_password) < 8:
+            flash("Password must be at least 8 characters", "error")
+            return render_template("reset_password.html")
+
+        if auth_service is None:
+            flash("Authentication service unavailable", "error")
+            return render_template("reset_password.html")
+
+        # Reset password
+        result = auth_service.reset_password(username_or_email, new_password)
+
+        if result.get("success"):
+            flash("Password reset successfully. You can now log in with your new password.", "success")
+            return redirect(url_for("auth.login"))
+
+        flash(result.get("message", "Password reset failed"), "error")
+        return render_template("reset_password.html")
+
+    return render_template("reset_password.html")
