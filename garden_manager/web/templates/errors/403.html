@@ -41,7 +41,7 @@
             <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">
                 🏠 Go to Dashboard
             </a>
-            <a href="{{ url_for('main.settings') }}" class="btn btn-secondary">
+            <a href="{{ url_for('auth.settings') }}" class="btn btn-secondary">
                 ⚙️ Account Settings
             </a>
             {% endif %}
@@ -53,7 +53,7 @@
         <div class="error-support">
             <p class="support-text">
                 If you believe this is an error, please contact support or check our 
-                <a href="{{ url_for('main.help') }}" class="support-link">help page</a>
+                <a href="{{ url_for('main.help_page') }}" class="support-link">help page</a>
             </p>
         </div>
     </div>
