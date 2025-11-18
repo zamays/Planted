@@ -200,5 +200,5 @@ The application's database initialization code (`PlantDatabase.init_database()` 
 ---
 
 **Implementation Date**: November 18, 2024  
-**Alembic Version**: 1.17.2  
+**Alembic Version**: 1.13.3  
 **Initial Migration**: e01efa1a265a
