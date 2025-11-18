@@ -218,25 +218,127 @@ sudo certbot --nginx -d your_domain.com
 
 ### Security
 
-1. **Change Secret Key**: Generate a secure secret key:
-   ```python
-   import secrets
-   print(secrets.token_hex(32))
-   ```
+#### 1. Secret Key Management (CRITICAL)
 
-2. **Disable Debug Mode**: Ensure `debug=False` in production
+The Flask secret key is used for session management, CSRF protection, and secure cookie signing. A weak or compromised secret key can lead to:
+- Session hijacking
+- Cookie tampering
+- CSRF token prediction
+- Complete application compromise
 
-3. **Use HTTPS**: Always use SSL/TLS in production
+**Generate a Secure Secret Key:**
 
-4. **Restrict Database Access**: Set proper file permissions:
-   ```bash
-   chmod 600 garden.db
-   ```
+```bash
+# Generate a cryptographically secure 64-character hex string
+python3 -c "import secrets; print(secrets.token_hex(32))"
+```
 
-5. **Keep Dependencies Updated**: Regularly update packages:
-   ```bash
-   pip install --upgrade -r requirements.txt
-   ```
+**Configuration:**
+
+The application **requires** a secure secret key to be set in your `.env` file:
+
+```bash
+# In your .env file
+FLASK_SECRET_KEY=your_generated_secure_key_here
+```
+
+**Security Requirements:**
+- The secret key **must** be at least 32 characters long
+- The secret key **must not** be a known placeholder value (like `your_secret_key_here` or `change_this`)
+- The secret key **must** be kept secret and never committed to version control
+- Each environment (development, staging, production) should use a different secret key
+
+**Important Notes:**
+- The application will refuse to start if no secret key is set
+- The application will refuse to start if a weak/placeholder key is detected
+- The application will refuse to start if the key is less than 32 characters
+- The `.env` file is already in `.gitignore` to prevent accidental commits
+
+**Environment-Specific Secret Management:**
+
+For production deployments, consider using environment-specific secret management services:
+
+- **AWS Secrets Manager**: Store secrets in AWS and retrieve them at runtime
+  ```bash
+  # Install AWS SDK
+  pip install boto3
+  
+  # In your deployment script
+  export FLASK_SECRET_KEY=$(aws secretsmanager get-secret-value \
+    --secret-id planted/flask-secret-key \
+    --query SecretString --output text)
+  ```
+
+- **Azure Key Vault**: Store secrets in Azure
+  ```bash
+  # Install Azure SDK
+  pip install azure-keyvault-secrets azure-identity
+  
+  # Retrieve secret at runtime (add to app.py or startup script)
+  from azure.keyvault.secrets import SecretClient
+  from azure.identity import DefaultAzureCredential
+  
+  client = SecretClient(vault_url="https://your-vault.vault.azure.net", 
+                        credential=DefaultAzureCredential())
+  secret = client.get_secret("flask-secret-key")
+  os.environ["FLASK_SECRET_KEY"] = secret.value
+  ```
+
+- **HashiCorp Vault**: Enterprise secret management
+  ```bash
+  # Using Vault CLI
+  export FLASK_SECRET_KEY=$(vault kv get -field=value secret/planted/flask-secret-key)
+  ```
+
+- **Render.com/Heroku**: Use platform environment variables
+  ```bash
+  # Render.com
+  # Go to Dashboard > Environment > Add Environment Variable
+  # Key: FLASK_SECRET_KEY
+  # Value: (paste your generated key)
+  
+  # Heroku
+  heroku config:set FLASK_SECRET_KEY=your_generated_key_here
+  ```
+
+**Secret Key Rotation:**
+
+Periodically rotate your secret keys for enhanced security:
+
+1. Generate a new secret key
+2. Update your environment configuration
+3. Restart the application
+4. Note: This will invalidate all existing user sessions
+
+**Security Checklist:**
+- ✅ Generated a cryptographically secure secret key (at least 64 characters recommended)
+- ✅ Stored the key in `.env` file (not committed to git)
+- ✅ Used environment-specific keys (different for dev/staging/production)
+- ✅ Set up automated secret rotation (for production environments)
+- ✅ Restricted access to the `.env` file (chmod 600)
+- ✅ Documented the key location for your team (in secure internal documentation)
+
+#### 2. Disable Debug Mode
+
+Ensure `debug=False` in production (this is the default)
+
+#### 3. Use HTTPS
+
+Always use SSL/TLS in production to encrypt data in transit
+
+#### 4. Restrict Database Access
+
+Set proper file permissions:
+```bash
+chmod 600 garden.db
+```
+
+#### 5. Keep Dependencies Updated
+
+Regularly update packages to patch security vulnerabilities:
+```bash
+pip install --upgrade -r requirements.txt
+```
 
 ### Performance
 

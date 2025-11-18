@@ -40,7 +40,7 @@ This application uses environment variables to securely manage API keys and othe
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
 | `OPENWEATHERMAP_API_KEY` | Your OpenWeatherMap API key for real weather data | No | Falls back to mock data |
-| `FLASK_SECRET_KEY` | Secret key for Flask sessions | No | Default development key |
+| `FLASK_SECRET_KEY` | Secret key for Flask sessions (min 32 characters) | **YES** | None - must be set |
 
 ### Running Without an API Key
 
@@ -54,9 +54,13 @@ If you don't provide an OpenWeatherMap API key, the application will automatical
 ### Security Best Practices
 
 1. **Never commit `.env` to git** - It's already in `.gitignore`
-2. **Use different API keys for development and production**
-3. **Rotate your API keys periodically**
-4. **Don't share your `.env` file** - Share `.env.example` instead
+2. **Generate a secure Flask secret key** - Required for application security
+   ```bash
+   python3 -c "import secrets; print(secrets.token_hex(32))"
+   ```
+3. **Use different secret keys for development and production** - Never reuse keys across environments
+4. **Rotate your API keys and secret keys periodically**
+5. **Don't share your `.env` file** - Share `.env.example` instead
 
 ### For Collaborators
 
