@@ -137,6 +137,9 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 pip install gunicorn
+
+# Initialize database with migrations
+alembic upgrade head
 ```
 
 #### 3. Configure Environment
@@ -455,15 +458,84 @@ Currently, Planted is designed for single-user local use. For multi-user:
 - Use Redis for session storage
 - Deploy static files to CDN
 
+## Database Migrations
+
+Planted uses Alembic for database schema version control. When deploying or updating, you may need to run migrations to update the database schema.
+
+### Initial Setup (New Installation)
+
+For a fresh installation:
+
+```bash
+# Initialize database with migrations
+cd /var/www/Planted
+source venv/bin/activate
+alembic upgrade head
+```
+
+### Existing Installations
+
+If you have an existing database from before migrations were introduced, stamp it with the current version:
+
+```bash
+# Mark existing database as up-to-date
+alembic stamp head
+```
+
+### Running Migrations
+
+When updating the application with new database changes:
+
+```bash
+# 1. Backup database first!
+cp garden.db garden.db.backup.$(date +%Y%m%d_%H%M%S)
+
+# 2. Check current migration version
+alembic current
+
+# 3. Apply new migrations
+alembic upgrade head
+
+# 4. Verify migration succeeded
+alembic current
+```
+
+### Migration Best Practices
+
+1. **Always backup before migrations** - Database changes can't be undone without a backup
+2. **Stop the application** before running migrations to avoid conflicts
+3. **Test migrations** on a copy of production data first
+4. **Review migration SQL** before applying: `alembic upgrade head --sql`
+
+For detailed migration documentation, see [docs/database_migrations.md](database_migrations.md).
+
 ## Updating the Application
 
 ```bash
 # On server
 cd /var/www/Planted
+
+# 1. Stop the application
+sudo systemctl stop planted
+
+# 2. Backup the database
+cp garden.db garden.db.backup.$(date +%Y%m%d_%H%M%S)
+
+# 3. Pull latest code
 git pull origin main
+
+# 4. Update dependencies
 source venv/bin/activate
 pip install -r requirements.txt
-sudo systemctl restart planted
+
+# 5. Run database migrations (if any)
+alembic upgrade head
+
+# 6. Restart the application
+sudo systemctl start planted
+
+# 7. Verify application is working
+sudo systemctl status planted
 ```
 
 ## Support

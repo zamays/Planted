@@ -216,6 +216,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed information on:
 - [Copilot Issue Instructions](COPILOT-ISSUE-INSTRUCTIONS.md) - Guide for creating high-quality issues with GitHub Copilot
 - [Plant Data Sources](docs/plant_data_sources.md) - Information about plant database sources
 - [Architecture Documentation](docs/architecture.md) - System design and structure
+- [Database Migrations](docs/database_migrations.md) - How to manage database schema changes
 - [Deployment Guide](docs/deployment.md) - How to deploy to the web
 - [Changelog](CHANGELOG.md) - Version history and updates
 

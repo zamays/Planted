@@ -1,0 +1,38 @@
+Alembic Database Migrations for Planted
+========================================
+
+This directory contains Alembic database migration scripts for the Planted garden management application.
+
+Quick Start
+-----------
+
+Check current migration version:
+    $ alembic current
+
+Apply all pending migrations:
+    $ alembic upgrade head
+
+Rollback the last migration:
+    $ alembic downgrade -1
+
+Create a new migration:
+    $ alembic revision -m "Description of changes"
+
+For detailed documentation, see:
+    docs/database_migrations.md
+
+Important
+---------
+Always backup your database before running migrations!
+Use the provided backup script:
+    $ ./scripts/backup_database.sh
+
+Directory Structure
+-------------------
+alembic/
+├── versions/           # Migration scripts (auto-generated)
+├── env.py             # Runtime environment configuration
+├── script.py.mako     # Template for new migrations
+└── README             # This file
+
+Migration files in versions/ should never be modified after being applied to production.
