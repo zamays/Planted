@@ -223,3 +223,83 @@ class TestSecretKeySecurity:
 
         with pytest.raises(ValueError, match="known weak/placeholder value"):
             import app  # pylint: disable=import-outside-toplevel,unused-import
+
+    def test_render_missing_key_shows_dashboard_instructions(self, monkeypatch):
+        """Test that missing key on Render shows Dashboard-specific instructions."""
+        original_getenv = os.getenv
+
+        def mock_getenv(key, default=None):
+            if key == 'FLASK_SECRET_KEY':
+                return None
+            if key == 'RENDER':
+                return 'true'
+            return original_getenv(key, default)
+
+        monkeypatch.setattr('os.getenv', mock_getenv)
+
+        # Clear any previously imported app module
+        if 'app' in sys.modules:
+            del sys.modules['app']
+
+        with pytest.raises(ValueError, match="Render Dashboard"):
+            import app  # pylint: disable=import-outside-toplevel,unused-import
+
+    def test_render_weak_key_shows_dashboard_instructions(self, monkeypatch):
+        """Test that weak key on Render shows Dashboard-specific instructions."""
+        original_getenv = os.getenv
+
+        def mock_getenv(key, default=None):
+            if key == 'FLASK_SECRET_KEY':
+                return 'planted_secret_key_change_this_in_production'
+            if key == 'RENDER':
+                return 'true'
+            return original_getenv(key, default)
+
+        monkeypatch.setattr('os.getenv', mock_getenv)
+
+        # Clear any previously imported app module
+        if 'app' in sys.modules:
+            del sys.modules['app']
+
+        with pytest.raises(ValueError, match="Render Dashboard.*Edit FLASK_SECRET_KEY"):
+            import app  # pylint: disable=import-outside-toplevel,unused-import
+
+    def test_render_short_key_shows_dashboard_instructions(self, monkeypatch):
+        """Test that short key on Render shows Dashboard-specific instructions."""
+        original_getenv = os.getenv
+
+        def mock_getenv(key, default=None):
+            if key == 'FLASK_SECRET_KEY':
+                return 'short_key'
+            if key == 'RENDER':
+                return 'true'
+            return original_getenv(key, default)
+
+        monkeypatch.setattr('os.getenv', mock_getenv)
+
+        # Clear any previously imported app module
+        if 'app' in sys.modules:
+            del sys.modules['app']
+
+        with pytest.raises(ValueError, match="Render Dashboard.*Edit FLASK_SECRET_KEY"):
+            import app  # pylint: disable=import-outside-toplevel,unused-import
+
+    def test_non_render_missing_key_shows_env_file_instructions(self, monkeypatch):
+        """Test that missing key on non-Render deployment shows .env file instructions."""
+        original_getenv = os.getenv
+
+        def mock_getenv(key, default=None):
+            if key == 'FLASK_SECRET_KEY':
+                return None
+            if key == 'RENDER':
+                return None
+            return original_getenv(key, default)
+
+        monkeypatch.setattr('os.getenv', mock_getenv)
+
+        # Clear any previously imported app module
+        if 'app' in sys.modules:
+            del sys.modules['app']
+
+        with pytest.raises(ValueError, match="\\.env file"):
+            import app  # pylint: disable=import-outside-toplevel,unused-import
