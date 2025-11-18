@@ -65,7 +65,7 @@ class AuthService:
 
     def _verify_password(self, password: str, password_hash: str) -> bool:
         """
-        Verify a password against a bcrypt hash.
+        Verify a password against a bcrypt hash (internal method).
 
         Args:
             password: Plain text password
@@ -77,6 +77,19 @@ class AuthService:
         password_bytes = password.encode('utf-8')
         hash_bytes = password_hash.encode('utf-8')
         return bcrypt.checkpw(password_bytes, hash_bytes)
+
+    def verify_password(self, password: str, password_hash: str) -> bool:
+        """
+        Verify a password against a bcrypt hash.
+
+        Args:
+            password: Plain text password
+            password_hash: Bcrypt hash to verify against
+
+        Returns:
+            bool: True if password matches, False otherwise
+        """
+        return self._verify_password(password, password_hash)
 
     def _validate_email(self, email: str) -> None:
         """
@@ -258,7 +271,7 @@ class AuthService:
             )
             conn.commit()
 
-    def change_password(self, user_id: int, current_password: str, new_password: str) -> bool:
+    def change_password(self, user_id: int, current_password: str, new_password: str) -> Dict:
         """
         Change user's password.
 
@@ -268,14 +281,11 @@ class AuthService:
             new_password: New password to set
 
         Returns:
-            bool: True if password changed successfully, False if current password is incorrect
-
-        Raises:
-            ValueError: If new password validation fails
+            Dict: {'success': bool, 'message': str}
         """
         # Validate new password
         if not new_password or len(new_password) < 8:
-            raise ValueError("New password must be at least 8 characters")
+            return {'success': False, 'message': 'New password must be at least 8 characters'}
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -288,13 +298,13 @@ class AuthService:
             row = cursor.fetchone()
 
             if not row:
-                return False
+                return {'success': False, 'message': 'User not found'}
 
             current_hash = row[0]
 
             # Verify current password
             if not self._verify_password(current_password, current_hash):
-                return False
+                return {'success': False, 'message': 'Current password is incorrect'}
 
             # Hash new password and update
             new_hash = self._hash_password(new_password)
@@ -303,7 +313,7 @@ class AuthService:
                 (new_hash, user_id)
             )
             conn.commit()
-            return True
+            return {'success': True, 'message': 'Password changed successfully'}
 
     def update_email(self, user_id: int, new_email: str) -> bool:
         """
@@ -334,3 +344,67 @@ class AuthService:
         except sqlite3.IntegrityError:
             # Email already exists
             return False
+
+    def update_user_email(self, user_id: int, new_email: str) -> Dict:
+        """
+        Update user's email address (returns dict format for consistency with change_password).
+
+        Args:
+            user_id: User ID
+            new_email: New email address
+
+        Returns:
+            Dict: {'success': bool, 'message': str}
+        """
+        try:
+            result = self.update_email(user_id, new_email)
+            if result:
+                return {'success': True, 'message': 'Email updated successfully'}
+            return {'success': False, 'message': 'Email already in use'}
+        except ValueError as e:
+            return {'success': False, 'message': str(e)}
+
+    def reset_password(self, username_or_email: str, new_password: str) -> Dict:
+        """
+        Reset user's password using username or email verification.
+
+        This is a simplified password reset without email verification.
+        In production, this should be combined with email verification tokens.
+
+        Args:
+            username_or_email: Username or email to identify the user
+            new_password: New password to set
+
+        Returns:
+            Dict: {'success': bool, 'message': str}
+        """
+        # Validate new password
+        if not new_password or len(new_password) < 8:
+            return {'success': False, 'message': 'Password must be at least 8 characters'}
+
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+
+            # Find user by username or email
+            cursor.execute(
+                """
+                SELECT id FROM users
+                WHERE username = ? OR email = ?
+                """,
+                (username_or_email, username_or_email)
+            )
+            row = cursor.fetchone()
+
+            if not row:
+                return {'success': False, 'message': 'User not found'}
+
+            user_id = row[0]
+
+            # Hash new password and update
+            new_hash = self._hash_password(new_password)
+            cursor.execute(
+                "UPDATE users SET password_hash = ? WHERE id = ?",
+                (new_hash, user_id)
+            )
+            conn.commit()
+            return {'success': True, 'message': 'Password reset successfully'}
