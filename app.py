@@ -72,20 +72,44 @@ WEAK_SECRET_KEYS = [
     "secret",
 ]
 
+# Detect if running on Render.com
+is_render = os.getenv("RENDER") == "true"
+
 # Validate secret key
 if not secret_key:
+    if is_render:
+        raise ValueError(
+            "FLASK_SECRET_KEY is not set. "
+            "In Render Dashboard: Go to Environment > Add Environment Variable > "
+            "Key: FLASK_SECRET_KEY, Value: (run 'python3 -c \"import secrets; "
+            "print(secrets.token_hex(32))\"' locally and paste result)"
+        )
     raise ValueError(
         "FLASK_SECRET_KEY must be set in the .env file. "
         "Generate a secure key with: python3 -c \"import secrets; print(secrets.token_hex(32))\""
     )
 
 if secret_key in WEAK_SECRET_KEYS:
+    if is_render:
+        raise ValueError(
+            f"FLASK_SECRET_KEY is set to a weak placeholder value: '{secret_key}'. "
+            "In Render Dashboard: Go to Environment > Edit FLASK_SECRET_KEY > "
+            "Generate a new value: python3 -c \"import secrets; print(secrets.token_hex(32))\" "
+            "and paste the output as the new value. Then redeploy."
+        )
     raise ValueError(
         f"FLASK_SECRET_KEY is set to a known weak/placeholder value: '{secret_key}'. "
         "Generate a secure key with: python3 -c \"import secrets; print(secrets.token_hex(32))\""
     )
 
 if len(secret_key) < 32:
+    if is_render:
+        raise ValueError(
+            f"FLASK_SECRET_KEY must be at least 32 characters (current: {len(secret_key)}). "
+            "In Render Dashboard: Go to Environment > Edit FLASK_SECRET_KEY > "
+            "Generate: python3 -c \"import secrets; print(secrets.token_hex(32))\" "
+            "and paste the output. Then redeploy."
+        )
     raise ValueError(
         f"FLASK_SECRET_KEY must be at least 32 characters long (current: {len(secret_key)}). "
         "Generate a secure key with: python3 -c \"import secrets; print(secrets.token_hex(32))\""
