@@ -151,7 +151,7 @@ class TestLocationService:
         assert "40.71" in display
         assert "-74.01" in display
 
-    @patch('garden_manager.services.location_service.requests.get')
+    @patch('garden_manager.services.location_service.requests.Session.get')
     def test_reverse_geocoding_success(self, mock_get):
         """Test successful reverse geocoding of coordinates to city name."""
         service = LocationService()
@@ -187,7 +187,7 @@ class TestLocationService:
         assert "New York" in display
         assert "40.71" not in display  # Should not show coordinates
 
-    @patch('garden_manager.services.location_service.requests.get')
+    @patch('garden_manager.services.location_service.requests.Session.get')
     def test_reverse_geocoding_with_town(self, mock_get):
         """Test reverse geocoding returns town when city is not available."""
         service = LocationService()
@@ -211,7 +211,7 @@ class TestLocationService:
         assert location['city'] == "Springfield"
         assert location['region'] == "Illinois"
 
-    @patch('garden_manager.services.location_service.requests.get')
+    @patch('garden_manager.services.location_service.requests.Session.get')
     def test_reverse_geocoding_fallback_on_failure(self, mock_get):
         """Test that coordinates are displayed when reverse geocoding fails."""
         service = LocationService()
@@ -271,7 +271,7 @@ class TestAPIIntegrationWithReverseGeocoding:
         user_id = auth_service.register_user("testuser", "test@example.com", "password123")
         return user_id
 
-    @patch('garden_manager.services.location_service.requests.get')
+    @patch('garden_manager.services.location_service.requests.Session.get')
     def test_api_saves_geocoded_location_to_database(
         self, mock_get, auth_service, location_service, test_user
     ):

@@ -162,7 +162,7 @@ class TestWeatherCaching:
         assert stats['cache_hits'] == 1
         assert stats['cache_misses'] == 1
 
-    @patch('garden_manager.services.weather_service.requests.get')
+    @patch('garden_manager.services.weather_service.requests.Session.get')
     def test_real_api_caching(self, mock_get):
         """Test caching with simulated real API calls."""
         # Mock successful API response
@@ -199,7 +199,7 @@ class TestWeatherCaching:
         assert stats['cache_misses'] == 1
         assert stats['api_calls'] == 1
 
-    @patch('garden_manager.services.weather_service.requests.get')
+    @patch('garden_manager.services.weather_service.requests.Session.get')
     def test_api_error_fallback_to_mock(self, mock_get):
         """Test that API errors fall back to mock data and cache it."""
         # Mock API error (use RequestException which is caught in the code)
