@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}Access Forbidden - Planted{% endblock %}
+
+{% block content %}
+<main id="main-content" class="main-content">
+    <div class="error-container">
+        <div class="error-icon">
+            🚫
+        </div>
+        
+        <div class="error-header">
+            <h1>Access Forbidden</h1>
+            <p class="error-code">Error 403</p>
+        </div>
+        
+        <div class="error-message">
+            <p>Sorry, you don't have permission to access this resource.</p>
+            <p>This area of the garden is off-limits to your current access level.</p>
+        </div>
+        
+        <div class="error-suggestions">
+            <h3>Why might this happen?</h3>
+            <ul>
+                <li>You're not logged in to your account</li>
+                <li>Your account doesn't have the required permissions</li>
+                <li>You're trying to access another user's private data</li>
+                <li>The resource has restricted access</li>
+            </ul>
+        </div>
+        
+        <div class="error-actions">
+            {% if session.get('is_guest') %}
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                🔐 Login to Your Account
+            </a>
+            <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary">
+                ✨ Create Account
+            </a>
+            {% else %}
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">
+                🏠 Go to Dashboard
+            </a>
+            <a href="{{ url_for('auth.settings') }}" class="btn btn-secondary">
+                ⚙️ Account Settings
+            </a>
+            {% endif %}
+            <button onclick="history.back()" class="btn btn-tertiary">
+                ← Go Back
+            </button>
+        </div>
+        
+        <div class="error-support">
+            <p class="support-text">
+                If you believe this is an error, please contact support or check our 
+                <a href="{{ url_for('main.help_page') }}" class="support-link">help page</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<style>
+.error-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 40px;
+    background: var(--background-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.error-header h1 {
+    color: var(--danger);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.error-code {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.error-message {
+    margin: 30px 0;
+    padding: 25px;
+    background: rgba(230, 57, 70, 0.05);
+    border-left: 4px solid var(--danger);
+    text-align: left;
+    border-radius: var(--radius-sm);
+}
+
+.error-message p {
+    margin: 10px 0;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+.error-suggestions {
+    margin: 30px 0;
+    padding: 25px;
+    background: var(--background-light);
+    border-radius: var(--radius-sm);
+    text-align: left;
+}
+
+.error-suggestions h3 {
+    color: var(--text-dark);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.error-suggestions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.error-suggestions li {
+    padding: 8px 0 8px 30px;
+    position: relative;
+    color: var(--text-dark);
+}
+
+.error-suggestions li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--danger);
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary {
+    background: var(--primary-green);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-green-dark);
+}
+
+.btn-secondary {
+    background: var(--info);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #0077a8;
+}
+
+.btn-tertiary {
+    background: var(--text-gray);
+    color: white;
+}
+
+.btn-tertiary:hover {
+    background: var(--text-dark);
+}
+
+.error-support {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-light);
+}
+
+.support-text {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+}
+
+.support-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.support-link:hover {
+    color: var(--primary-green-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .error-container {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .error-icon {
+        font-size: 4rem;
+    }
+    
+    .error-header h1 {
+        font-size: 2rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

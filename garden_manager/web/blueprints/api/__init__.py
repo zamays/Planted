@@ -222,3 +222,77 @@ def clear_weather_cache():
         })
     except (AttributeError, KeyError):
         return jsonify({"status": "error", "message": "Failed to clear cache"})
+
+
+# API-specific error handlers that return JSON responses
+@api_bp.errorhandler(404)
+def api_not_found(e):  # pylint: disable=unused-argument
+    """
+    Handle 404 errors for API endpoints with JSON response.
+
+    Args:
+        e: NotFound exception
+
+    Returns:
+        JSON error response with 404 status
+    """
+    return jsonify({
+        'error': 'Not Found',
+        'message': 'The requested resource was not found',
+        'status': 404
+    }), 404
+
+
+@api_bp.errorhandler(403)
+def api_forbidden(e):  # pylint: disable=unused-argument
+    """
+    Handle 403 errors for API endpoints with JSON response.
+
+    Args:
+        e: Forbidden exception
+
+    Returns:
+        JSON error response with 403 status
+    """
+    return jsonify({
+        'error': 'Forbidden',
+        'message': 'You do not have permission to access this resource',
+        'status': 403
+    }), 403
+
+
+@api_bp.errorhandler(500)
+def api_internal_error(e):
+    """
+    Handle 500 errors for API endpoints with JSON response.
+
+    Args:
+        e: Internal server error exception
+
+    Returns:
+        JSON error response with 500 status
+    """
+    logger.error("API internal server error: %s", e, exc_info=True)
+    return jsonify({
+        'error': 'Internal Server Error',
+        'message': 'An internal error occurred while processing your request',
+        'status': 500
+    }), 500
+
+
+@api_bp.errorhandler(400)
+def api_bad_request(e):  # pylint: disable=unused-argument
+    """
+    Handle 400 Bad Request errors for API endpoints with JSON response.
+
+    Args:
+        e: Bad request exception
+
+    Returns:
+        JSON error response with 400 status
+    """
+    return jsonify({
+        'error': 'Bad Request',
+        'message': 'The request could not be understood or was missing required parameters',
+        'status': 400
+    }), 400
