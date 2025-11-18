@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Internal Server Error - Planted{% endblock %}
+
+{% block content %}
+<main id="main-content" class="main-content">
+    <div class="error-container">
+        <div class="error-icon">
+            🔧
+        </div>
+        
+        <div class="error-header">
+            <h1>Something Went Wrong</h1>
+            <p class="error-code">Error 500</p>
+        </div>
+        
+        <div class="error-message">
+            <p>Oops! Our garden tools hit a snag. We're working on fixing it.</p>
+            <p>An internal server error occurred while processing your request.</p>
+        </div>
+        
+        <div class="error-suggestions">
+            <h3>What can you do?</h3>
+            <ul>
+                <li>Refresh the page and try again</li>
+                <li>Go back and try a different action</li>
+                <li>Clear your browser cache</li>
+                <li>Contact support if the problem persists</li>
+            </ul>
+        </div>
+        
+        <div class="error-details">
+            <p class="details-note">
+                <strong>Note:</strong> This error has been automatically logged. 
+                Our team has been notified and will investigate the issue.
+            </p>
+        </div>
+        
+        <div class="error-actions">
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">
+                🏠 Go to Dashboard
+            </a>
+            <button onclick="window.location.reload()" class="btn btn-secondary">
+                🔄 Refresh Page
+            </button>
+            <button onclick="history.back()" class="btn btn-tertiary">
+                ← Go Back
+            </button>
+        </div>
+        
+        <div class="error-support">
+            <p class="support-text">
+                Still having trouble? Contact support or check our 
+                <a href="{{ url_for('main.help') }}" class="support-link">help page</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<style>
+.error-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 40px;
+    background: var(--background-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-header h1 {
+    color: var(--warning);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.error-code {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.error-message {
+    margin: 30px 0;
+    padding: 25px;
+    background: rgba(255, 183, 3, 0.05);
+    border-left: 4px solid var(--warning);
+    text-align: left;
+    border-radius: var(--radius-sm);
+}
+
+.error-message p {
+    margin: 10px 0;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+.error-suggestions {
+    margin: 30px 0;
+    padding: 25px;
+    background: var(--background-light);
+    border-radius: var(--radius-sm);
+    text-align: left;
+}
+
+.error-suggestions h3 {
+    color: var(--text-dark);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.error-suggestions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.error-suggestions li {
+    padding: 8px 0 8px 30px;
+    position: relative;
+    color: var(--text-dark);
+}
+
+.error-suggestions li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--warning);
+    font-weight: bold;
+}
+
+.error-details {
+    margin: 20px 0;
+    padding: 20px;
+    background: var(--info);
+    color: white;
+    border-radius: var(--radius-sm);
+    text-align: left;
+}
+
+.details-note {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.details-note strong {
+    font-weight: 700;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary {
+    background: var(--primary-green);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-green-dark);
+}
+
+.btn-secondary {
+    background: var(--warning);
+    color: var(--text-dark);
+}
+
+.btn-secondary:hover {
+    background: #e5a700;
+}
+
+.btn-tertiary {
+    background: var(--text-gray);
+    color: white;
+}
+
+.btn-tertiary:hover {
+    background: var(--text-dark);
+}
+
+.error-support {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-light);
+}
+
+.support-text {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+}
+
+.support-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.support-link:hover {
+    color: var(--primary-green-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .error-container {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .error-icon {
+        font-size: 4rem;
+    }
+    
+    .error-header h1 {
+        font-size: 2rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

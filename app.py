@@ -323,6 +323,65 @@ def ratelimit_handler(error):
     ), 429
 
 
+@app.errorhandler(404)
+def page_not_found(e):  # pylint: disable=unused-argument
+    """
+    Handle 404 Page Not Found errors.
+
+    Args:
+        e: NotFound exception
+
+    Returns:
+        Rendered error page with appropriate status code
+    """
+    return render_template('errors/404.html'), 404
+
+
+@app.errorhandler(403)
+def forbidden(e):  # pylint: disable=unused-argument
+    """
+    Handle 403 Forbidden errors.
+
+    Args:
+        e: Forbidden exception
+
+    Returns:
+        Rendered error page with appropriate status code
+    """
+    return render_template('errors/403.html'), 403
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    """
+    Handle 500 Internal Server Error.
+
+    Logs the error for debugging and shows user-friendly error page.
+
+    Args:
+        e: Internal server error exception
+
+    Returns:
+        Rendered error page with appropriate status code
+    """
+    logger.error("Internal server error: %s", e, exc_info=True)
+    return render_template('errors/500.html'), 500
+
+
+@app.errorhandler(503)
+def service_unavailable(e):  # pylint: disable=unused-argument
+    """
+    Handle 503 Service Unavailable errors.
+
+    Args:
+        e: Service unavailable exception
+
+    Returns:
+        Rendered error page with appropriate status code
+    """
+    return render_template('errors/503.html'), 503
+
+
 def register_blueprints():
     """Register all application blueprints."""
     # Check if blueprints are already registered

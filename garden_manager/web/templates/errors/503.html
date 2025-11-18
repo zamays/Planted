@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Service Unavailable - Planted{% endblock %}
+
+{% block content %}
+<main id="main-content" class="main-content">
+    <div class="error-container">
+        <div class="error-icon">
+            ⏳
+        </div>
+        
+        <div class="error-header">
+            <h1>Service Temporarily Unavailable</h1>
+            <p class="error-code">Error 503</p>
+        </div>
+        
+        <div class="error-message">
+            <p>Our garden is undergoing maintenance. We'll be back shortly!</p>
+            <p>The service is temporarily unavailable due to maintenance or high load.</p>
+        </div>
+        
+        <div class="error-suggestions">
+            <h3>What can you do?</h3>
+            <ul>
+                <li>Wait a few minutes and try again</li>
+                <li>Check our status page for updates</li>
+                <li>Bookmark this page and come back later</li>
+                <li>Follow us on social media for updates</li>
+            </ul>
+        </div>
+        
+        <div class="error-details">
+            <p class="details-note">
+                <strong>Maintenance Notice:</strong> We're performing scheduled maintenance 
+                to improve your experience. This should only take a few minutes.
+            </p>
+        </div>
+        
+        <div class="error-actions">
+            <button onclick="window.location.reload()" class="btn btn-primary">
+                🔄 Try Again
+            </button>
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">
+                🏠 Go to Dashboard
+            </a>
+        </div>
+        
+        <div class="error-support">
+            <p class="support-text">
+                For status updates, visit our 
+                <a href="{{ url_for('main.help') }}" class="support-link">help page</a> 
+                or contact support
+            </p>
+        </div>
+    </div>
+</main>
+
+<style>
+.error-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 40px;
+    background: var(--background-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.error-header h1 {
+    color: var(--info);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.error-code {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.error-message {
+    margin: 30px 0;
+    padding: 25px;
+    background: rgba(0, 150, 199, 0.05);
+    border-left: 4px solid var(--info);
+    text-align: left;
+    border-radius: var(--radius-sm);
+}
+
+.error-message p {
+    margin: 10px 0;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+.error-suggestions {
+    margin: 30px 0;
+    padding: 25px;
+    background: var(--background-light);
+    border-radius: var(--radius-sm);
+    text-align: left;
+}
+
+.error-suggestions h3 {
+    color: var(--text-dark);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.error-suggestions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.error-suggestions li {
+    padding: 8px 0 8px 30px;
+    position: relative;
+    color: var(--text-dark);
+}
+
+.error-suggestions li:before {
+    content: "⏰";
+    position: absolute;
+    left: 0;
+}
+
+.error-details {
+    margin: 20px 0;
+    padding: 20px;
+    background: var(--accent-yellow);
+    color: var(--text-dark);
+    border-radius: var(--radius-sm);
+    text-align: left;
+}
+
+.details-note {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.details-note strong {
+    font-weight: 700;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary {
+    background: var(--info);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0077a8;
+}
+
+.btn-secondary {
+    background: var(--primary-green);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-green-dark);
+}
+
+.error-support {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-light);
+}
+
+.support-text {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+}
+
+.support-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.support-link:hover {
+    color: var(--primary-green-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .error-container {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .error-icon {
+        font-size: 4rem;
+    }
+    
+    .error-header h1 {
+        font-size: 2rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
