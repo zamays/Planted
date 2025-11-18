@@ -9,6 +9,9 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import requests
+from requests.exceptions import Timeout
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from cachetools import TTLCache
 from garden_manager.config import get_logger
 
@@ -53,6 +56,21 @@ class WeatherService:
         self._weather_cache = TTLCache(maxsize=100, ttl=cache_ttl)
         self._forecast_cache = TTLCache(maxsize=100, ttl=cache_ttl)
         self._cache_stats = {"hits": 0, "misses": 0, "api_calls": 0}
+
+        # Configure API timeout from environment (default: 10 seconds)
+        self.api_timeout = int(os.getenv("API_TIMEOUT", "10"))
+
+        # Configure retry strategy for transient failures
+        retry_strategy = Retry(
+            total=3,  # Maximum 3 retry attempts
+            backoff_factor=1,  # Wait 1s, 2s, 4s between retries
+            status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP status codes
+            allowed_methods=["GET"]  # Only retry GET requests
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self._session = requests.Session()
+        self._session.mount("https://", adapter)
+        self._session.mount("http://", adapter)
 
     def get_current_weather(self, latitude: float, longitude: float,
                            bypass_cache: bool = False) -> Optional[Dict]:
@@ -100,7 +118,7 @@ class WeatherService:
                 "units": "imperial",
             }
 
-            response = requests.get(url, params=params, timeout=5)
+            response = self._session.get(url, params=params, timeout=self.api_timeout)
             if response.status_code == 200:
                 data = response.json()
                 weather_data = {
@@ -119,6 +137,15 @@ class WeatherService:
 
             # API error - return mock data as fallback
             logger.warning("Weather API returned error, using mock data")
+            weather_data = self._get_mock_weather()
+            self._weather_cache[cache_key] = weather_data
+            self.current_weather = weather_data
+            return weather_data
+        except Timeout:
+            logger.warning(
+                "Request to %s timed out after %d seconds, using mock data",
+                url, self.api_timeout
+            )
             weather_data = self._get_mock_weather()
             self._weather_cache[cache_key] = weather_data
             self.current_weather = weather_data
@@ -180,7 +207,7 @@ class WeatherService:
                 "cnt": days * 8,  # 8 forecasts per day (every 3 hours)
             }
 
-            response = requests.get(url, params=params, timeout=5)
+            response = self._session.get(url, params=params, timeout=self.api_timeout)
             if response.status_code == 200:
                 data = response.json()
                 forecast = []
@@ -204,6 +231,15 @@ class WeatherService:
 
             # API error - return mock data as fallback
             logger.warning("Weather forecast API returned error, using mock data")
+            forecast_data = self._get_mock_forecast(days)
+            self._forecast_cache[cache_key] = forecast_data
+            self.forecast = forecast_data
+            return forecast_data
+        except Timeout:
+            logger.warning(
+                "Request to %s timed out after %d seconds, using mock data",
+                url, self.api_timeout
+            )
             forecast_data = self._get_mock_forecast(days)
             self._forecast_cache[cache_key] = forecast_data
             self.forecast = forecast_data

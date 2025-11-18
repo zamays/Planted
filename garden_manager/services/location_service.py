@@ -6,8 +6,12 @@ recommendations. Uses IP-based geolocation with manual location override.
 """
 
 
+import os
 from typing import Dict, Optional
 import requests
+from requests.exceptions import Timeout
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from garden_manager.config import get_logger
 
 logger = get_logger(__name__)
@@ -29,6 +33,21 @@ class LocationService:
         self.current_location = None
         self.climate_zone = None
 
+        # Configure API timeout from environment (default: 10 seconds)
+        self.api_timeout = int(os.getenv("API_TIMEOUT", "10"))
+
+        # Configure retry strategy for transient failures
+        retry_strategy = Retry(
+            total=3,  # Maximum 3 retry attempts
+            backoff_factor=1,  # Wait 1s, 2s, 4s between retries
+            status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP status codes
+            allowed_methods=["GET"]  # Only retry GET requests
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self._session = requests.Session()
+        self._session.mount("https://", adapter)
+        self._session.mount("http://", adapter)
+
     def get_location_by_ip(self) -> Optional[Dict[str, str]]:
         """
         Automatically detect user location using IP geolocation.
@@ -41,7 +60,8 @@ class LocationService:
                                     coordinates, and timezone. Returns None if detection fails.
         """
         try:
-            response = requests.get("http://ip-api.com/json/", timeout=5)
+            url = "http://ip-api.com/json/"
+            response = self._session.get(url, timeout=self.api_timeout)
             if response.status_code == 200:
                 data = response.json()
                 if data["status"] == "success":
@@ -56,6 +76,11 @@ class LocationService:
                     self.climate_zone = self._determine_climate_zone(data["lat"])
                     logger.info("Location detected: %s, %s (%s)", data["city"], data["regionName"], data["country"])
                     return self.current_location
+        except Timeout:
+            logger.warning(
+                "Request to %s timed out after %d seconds",
+                url, self.api_timeout
+            )
         except (requests.RequestException, KeyError, ValueError) as e:
             logger.error("Error getting location by IP: %s", e, exc_info=True)
         return None
@@ -92,7 +117,7 @@ class LocationService:
                 "User-Agent": "Planted-Garden-App/1.0"
             }
 
-            response = requests.get(url, params=params, headers=headers, timeout=5)
+            response = self._session.get(url, params=params, headers=headers, timeout=self.api_timeout)
 
             if response.status_code == 200:
                 data = response.json()
@@ -117,6 +142,11 @@ class LocationService:
 
                 return {"city": city, "region": region, "country": country}
 
+        except Timeout:
+            logger.warning(
+                "Request to %s timed out after %d seconds",
+                url, self.api_timeout
+            )
         except (requests.RequestException, KeyError, ValueError) as e:
             logger.error("Error reverse geocoding location: %s", e, exc_info=True)
 
