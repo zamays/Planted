@@ -36,14 +36,18 @@
             <h3>Current Location</h3>
             <div class="location-display">
                 {% if current_location.city %}
-                    <p><strong>📍 Location:</strong> 
+                    <p><strong>📍 Location:</strong>
                         {{ current_location.city }}
                         {% if current_location.region %}, {{ current_location.region }}{% endif %}
                         {% if current_location.country %}, {{ current_location.country }}{% endif %}
                     </p>
+                {% else %}
+                    <p style="color: #856404; background: #FFF3CD; padding: 0.5rem; border-radius: 4px;">
+                        <strong>⚠️ City name not set</strong> - Add your city, state/region, and country below for better display.
+                    </p>
                 {% endif %}
-                <p><strong>Coordinates:</strong> 
-                    {{ "%.4f"|format(current_location.latitude) }}, 
+                <p><strong>Coordinates:</strong>
+                    {{ "%.4f"|format(current_location.latitude) }},
                     {{ "%.4f"|format(current_location.longitude) }}
                 </p>
                 <p><strong>Climate Zone:</strong>

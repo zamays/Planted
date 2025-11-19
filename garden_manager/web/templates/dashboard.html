@@ -62,8 +62,20 @@
 <div class="card">
     <div class="card-header">
         🌦️ Current Weather Conditions
+        {% if is_default_location %}
+        <span style="background: #FFF3CD; color: #856404; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; margin-left: 0.5rem; font-weight: normal;">
+            Default location
+        </span>
+        {% endif %}
     </div>
     <div class="card-body">
+        {% if is_default_location %}
+        <div style="background: #FFF3CD; color: #856404; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.9rem;">
+            📍 Showing weather for <strong>{{ location }}</strong> (default).
+            <a href="{{ url_for('auth.settings') }}" style="color: #856404; text-decoration: underline;">Set your location</a>
+            for personalized weather and plant recommendations.
+        </div>
+        {% endif %}
         <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
             <div style="font-size: 3rem;" role="img" aria-label="Weather icon">
                 {% if 'clear' in weather.description or 'sunny' in weather.description %}☀️
@@ -168,12 +180,12 @@
         // Only run for logged-in users (not guests) who don't have a location set
         const isGuest = {{ 'true' if session.get('is_guest') else 'false' }};
         const hasLocation = {{ 'true' if user_has_location else 'false' }};
-        
+
         if (!isGuest && !hasLocation && navigator.geolocation) {
             // Check if user has already been prompted (use sessionStorage to avoid repeated prompts)
             if (!sessionStorage.getItem('location_prompt_shown')) {
                 sessionStorage.setItem('location_prompt_shown', 'true');
-                
+
                 // Show a friendly notification
                 if (confirm('📍 Would you like to automatically detect your location for personalized weather and plant recommendations?\n\nYou can also set this later in Account Settings.')) {
                     navigator.geolocation.getCurrentPosition(
@@ -192,16 +204,49 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.status === 'success') {
-                                    alert('✅ Location detected successfully! The page will refresh to show personalized recommendations.');
-                                    window.location.reload();
+                                    // Check if there's a warning (geocoding failed)
+                                    if (data.warning) {
+                                        alert('⚠️ ' + data.warning);
+                                        window.location.href = '{{ url_for("auth.settings") }}';
+                                        return;
+                                    }
+                                    // Get the detected location from response or show generic message
+                                    const locationName = data.location || 'your area';
+                                    if (confirm('✅ We detected your location as ' + locationName + '.\n\nIs this correct?\n\nClick OK to save, or Cancel to set manually in Settings.')) {
+                                        window.location.reload();
+                                    } else {
+                                        // User wants to set manually - redirect to settings
+                                        window.location.href = '{{ url_for("auth.settings") }}';
+                                    }
+                                } else {
+                                    alert('❌ Could not save location: ' + (data.message || 'Unknown error') + '\n\nYou can set your location manually in Account Settings.');
                                 }
                             })
                             .catch(error => {
                                 console.error('Error saving location:', error);
+                                alert('❌ Error communicating with server.\n\nYou can set your location manually in Account Settings.');
                             });
                         },
                         function(error) {
-                            console.log('Location detection declined or failed:', error);
+                            let errorMsg = '';
+                            switch(error.code) {
+                                case error.PERMISSION_DENIED:
+                                    errorMsg = 'Location access was denied.';
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    errorMsg = 'Location information is unavailable.';
+                                    break;
+                                case error.TIMEOUT:
+                                    errorMsg = 'Location request timed out.';
+                                    break;
+                                default:
+                                    errorMsg = 'An unknown error occurred.';
+                            }
+                            console.log('Location detection failed:', errorMsg);
+                            // Don't show alert for permission denied - user chose not to share
+                            if (error.code !== error.PERMISSION_DENIED) {
+                                alert('❌ ' + errorMsg + '\n\nYou can set your location manually in Account Settings.');
+                            }
                         },
                         {
                             enableHighAccuracy: true,

@@ -168,7 +168,8 @@ def initialize_services():
         # Set default location (New York) as fallback - do NOT use server IP
         # Users will set their location via browser geolocation or account settings
         location_service.set_manual_location(
-            40.7128, -74.0060, {"city": "New York", "state": "NY", "country": "USA"}
+            40.7128, -74.0060, {"city": "New York", "state": "NY", "country": "USA"},
+            is_default=True
         )
         logger.debug("Default location set to New York, NY")
 
@@ -218,7 +219,8 @@ def load_user_location():
                     'city': loc.get('city', ''),
                     'region': loc.get('region', ''),
                     'country': loc.get('country', '')
-                }
+                },
+                is_default=False  # User's saved location, not default
             )
             # Also update weather for user's location
             if weather_service is not None:

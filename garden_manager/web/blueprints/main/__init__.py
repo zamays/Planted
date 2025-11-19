@@ -68,6 +68,13 @@ def dashboard():
             user = auth_service.get_user_by_id(user_id)
             user_has_location = user and user.get('location') is not None
 
+        # Check if using default location
+        is_default_location = (
+            location_service.is_default_location
+            if location_service is not None
+            else True
+        )
+
         return render_template(
             "dashboard.html",
             stats=stats,
@@ -77,6 +84,7 @@ def dashboard():
             if weather_service is not None
             else None,
             user_has_location=user_has_location,
+            is_default_location=is_default_location,
         )
     except (sqlite3.Error, AttributeError, KeyError) as e:
         logging.error("Dashboard error: %s", e)
@@ -124,12 +132,20 @@ def weather():
         # Get cache statistics
         cache_stats = weather_service.get_cache_stats() if weather_service is not None else None
 
+        # Check if using default location
+        is_default_location = (
+            location_service.is_default_location
+            if location_service is not None
+            else True
+        )
+
         return render_template(
             "weather.html",
             current_weather=current_weather,
             forecast=forecast,
             location=location_text,
             cache_stats=cache_stats,
+            is_default_location=is_default_location,
         )
     except (AttributeError, KeyError) as e:
         logging.error("Weather error", exc_info=True)

@@ -136,7 +136,8 @@ def update_location():
         if location_service is not None:
             location_result = location_service.set_manual_location(
                 latitude, longitude,
-                {"city": city, "region": region, "country": country}
+                {"city": city, "region": region, "country": country},
+                is_default=False  # User updated location via API
             )
 
             # Use the geocoded location data (may have been enriched with city info)
@@ -145,8 +146,10 @@ def update_location():
                 region = location_result.get("region", region)
                 country = location_result.get("country", country)
 
-            # Update weather for new location
+            # Clear weather cache and fetch fresh data for new location
             if weather_service is not None:
+                if hasattr(weather_service, 'clear_cache'):
+                    weather_service.clear_cache()
                 weather_service.get_current_weather(latitude, longitude)
                 weather_service.get_forecast(latitude, longitude)
 
@@ -161,10 +164,32 @@ def update_location():
             user_id, latitude, longitude, city, region, country
         )
 
-        return jsonify({
+        # Build location display string for confirmation
+        location_display = ""
+        geocoding_warning = ""
+        if city and region:
+            location_display = f"{city}, {region}"
+        elif city and country:
+            location_display = f"{city}, {country}"
+        elif city:
+            location_display = city
+        elif region and country:
+            location_display = f"{region}, {country}"
+        elif country:
+            location_display = country
+        else:
+            # Geocoding failed to find a location name
+            geocoding_warning = "We saved your coordinates but couldn't determine your city name. You can add it manually in Settings."
+
+        response = {
             "status": "success",
-            "message": "Location updated successfully"
-        })
+            "message": "Location updated successfully",
+            "location": location_display
+        }
+        if geocoding_warning:
+            response["warning"] = geocoding_warning
+
+        return jsonify(response)
 
     except (sqlite3.Error, ValueError, KeyError, AttributeError) as e:
         logger.error("Error updating location: %s", e, exc_info=True)

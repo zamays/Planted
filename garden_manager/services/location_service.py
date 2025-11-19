@@ -32,6 +32,7 @@ class LocationService:
         """
         self.current_location = None
         self.climate_zone = None
+        self.is_default_location = False  # Track if using fallback default location
 
         # Configure API timeout from environment (default: 10 seconds)
         self.api_timeout = int(os.getenv("API_TIMEOUT", "10"))
@@ -157,6 +158,7 @@ class LocationService:
         latitude: float,
         longitude: float,
         location_details: Optional[Dict[str, str]] = None,
+        is_default: bool = False,
     ) -> Dict[str, str]:
         """
         Manually set user location with coordinates.
@@ -165,6 +167,7 @@ class LocationService:
             latitude: Geographic latitude (-90 to 90)
             longitude: Geographic longitude (-180 to 180)
             location_details: Optional dictionary with keys 'city', 'region', 'country'
+            is_default: Whether this is the default fallback location
 
         Returns:
             Dict[str, str]: The set location data
@@ -187,6 +190,7 @@ class LocationService:
             "timezone": "",
         }
         self.climate_zone = self._determine_climate_zone(latitude)
+        self.is_default_location = is_default
         return self.current_location
 
     def get_climate_zone(self) -> int:
@@ -242,7 +246,7 @@ class LocationService:
         Get a human-readable location string for display.
 
         Returns:
-            str: Formatted location string (e.g., "New York, NY" or coordinates)
+            str: Formatted location string (e.g., "New York, NY")
         """
         if not self.current_location:
             return "Location not set"
@@ -255,11 +259,32 @@ class LocationService:
             return f"{city}, {region}"
         if city and country:
             return f"{city}, {country}"
+        if city:
+            return city
         if region and country:
             return f"{region}, {country}"
+        if region:
+            return region
         if country:
             return country
-        return (
-            f"Lat: {self.current_location['latitude']:.2f}, "
-            f"Lon: {self.current_location['longitude']:.2f}"
-        )
+        # Fallback to a friendly message instead of raw coordinates
+        return "Your location"
+
+    def get_location_info(self) -> dict:
+        """
+        Get complete location information for display purposes.
+
+        Returns:
+            dict: Location info with display string, coordinates,
+                  climate zone, and default location status
+        """
+        return {
+            "display": self.get_location_display(),
+            "latitude": self.current_location.get("latitude") if self.current_location else None,
+            "longitude": self.current_location.get("longitude") if self.current_location else None,
+            "climate_zone": self.get_climate_zone(),
+            "is_default": self.is_default_location,
+            "city": self.current_location.get("city", "") if self.current_location else "",
+            "region": self.current_location.get("region", "") if self.current_location else "",
+            "country": self.current_location.get("country", "") if self.current_location else "",
+        }

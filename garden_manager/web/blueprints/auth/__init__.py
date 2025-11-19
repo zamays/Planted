@@ -181,7 +181,8 @@ def settings():
                 if location_service:
                     location_service.set_manual_location(
                         latitude, longitude,
-                        {'city': city, 'region': region, 'country': country}
+                        {'city': city, 'region': region, 'country': country},
+                        is_default=False  # User manually set location
                     )
 
                 # Update weather for new location
@@ -200,15 +201,19 @@ def settings():
     if user_id and auth_service:
         user = auth_service.get_user_by_id(user_id)
 
-    # Get current location
+    # Get current location and climate zone
     current_location = None
-    if location_service and location_service.current_location:
-        current_location = location_service.current_location
+    climate_zone = None
+    if location_service:
+        if location_service.current_location:
+            current_location = location_service.current_location
+        climate_zone = location_service.get_climate_zone()
 
     return render_template(
         "settings.html",
         user=user,
-        location=current_location,
+        current_location=current_location,
+        climate_zone=climate_zone,
         is_guest=session.get("is_guest", False)
     )
 
