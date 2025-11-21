@@ -145,11 +145,10 @@ class TestLocationService:
         assert "New York" in display
         assert "NY" in display
 
-        # With just coordinates
+        # With just coordinates - should show friendly message, not raw coordinates
         service.set_manual_location(40.7128, -74.0060, {})
         display = service.get_location_display()
-        assert "40.71" in display
-        assert "-74.01" in display
+        assert display == "Your location"  # Should not show raw coordinates
 
     @patch('garden_manager.services.location_service.requests.Session.get')
     def test_reverse_geocoding_success(self, mock_get):
@@ -185,7 +184,7 @@ class TestLocationService:
         # Verify display shows city name, not coordinates
         display = service.get_location_display()
         assert "New York" in display
-        assert "40.71" not in display  # Should not show coordinates
+        assert "40." not in display  # Should not show coordinates when city is available
 
     @patch('garden_manager.services.location_service.requests.Session.get')
     def test_reverse_geocoding_with_town(self, mock_get):
@@ -229,10 +228,9 @@ class TestLocationService:
         assert location['latitude'] == 40.7128
         assert location['longitude'] == -74.0060
 
-        # Verify display falls back to coordinates
+        # Verify display falls back to friendly message, not raw coordinates
         display = service.get_location_display()
-        assert "40.71" in display
-        assert "-74.01" in display
+        assert display == "Your location"  # Should not show raw coordinates to user
 
     def test_manual_location_with_city_skips_geocoding(self):
         """Test that reverse geocoding is skipped when city is provided."""
