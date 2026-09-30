@@ -483,6 +483,7 @@ body {
     font-family: inherit;
     transition: all var(--transition-normal);
     background: var(--background-white);
+    color: var(--text-dark);
 }
 
 .form-group input:hover,
@@ -539,6 +540,41 @@ body {
     border-radius: var(--radius-md);
     font-size: 0.95rem;
     transition: all var(--transition-normal);
+    background: var(--background-white);
+    color: var(--text-dark);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+textarea,
+select {
+    color: var(--text-dark);
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder,
+input[type="search"]::placeholder,
+input[type="url"]::placeholder,
+input[type="tel"]::placeholder,
+input[type="date"]::placeholder,
+input[type="datetime-local"]::placeholder,
+input[type="month"]::placeholder,
+input[type="time"]::placeholder,
+input[type="week"]::placeholder,
+textarea::placeholder {
+    color: var(--text-gray);
 }
 
 .filters select:hover,
@@ -907,6 +943,41 @@ body.dark-mode .alert-error {
     background-color: #3E1E23;
     border-color: #8B2D36;
     color: #FF6B7A;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="email"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="number"],
+body.dark-mode input[type="search"],
+body.dark-mode input[type="url"],
+body.dark-mode input[type="tel"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="datetime-local"],
+body.dark-mode input[type="month"],
+body.dark-mode input[type="time"],
+body.dark-mode input[type="week"],
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: var(--background-white) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--border-light) !important;
+}
+
+body.dark-mode input[type="text"]::placeholder,
+body.dark-mode input[type="email"]::placeholder,
+body.dark-mode input[type="password"]::placeholder,
+body.dark-mode input[type="number"]::placeholder,
+body.dark-mode input[type="search"]::placeholder,
+body.dark-mode input[type="url"]::placeholder,
+body.dark-mode input[type="tel"]::placeholder,
+body.dark-mode input[type="date"]::placeholder,
+body.dark-mode input[type="datetime-local"]::placeholder,
+body.dark-mode input[type="month"]::placeholder,
+body.dark-mode input[type="time"]::placeholder,
+body.dark-mode input[type="week"]::placeholder,
+body.dark-mode textarea::placeholder {
+    color: var(--text-light) !important;
 }
 
 /* Smooth transitions for theme switching - applied to key elements */
