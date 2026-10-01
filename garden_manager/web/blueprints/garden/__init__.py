@@ -3,6 +3,7 @@ Garden blueprint for Planted application.
 
 Handles garden plot management, viewing, creation, deletion, and planting operations.
 """
+# pylint: disable=invalid-name,global-statement
 
 import sqlite3
 import traceback
@@ -17,6 +18,9 @@ from garden_manager.config import get_logger
 logger = get_logger(__name__)
 
 garden_bp = Blueprint('garden', __name__, url_prefix='/garden')
+garden_db = None
+plant_db = None
+location_service = None
 
 
 def init_blueprint(services):
@@ -324,7 +328,9 @@ def create():
 
             if garden_db is not None:
                 user_id = get_current_user_id()
-                plot_id = garden_db.create_garden_plot(name, width, height, location, user_id)
+                plot_id = garden_db.create_garden_plot(
+                    name, width, height, location, user_id=user_id
+                )
 
                 # If user wants to add plants immediately, redirect to plot view
                 if add_plants == "yes":

@@ -31,6 +31,7 @@ class GardenDatabase:
     def create_garden_plot(
         self, name: str, width: int, height: int, location: str, user_id: Optional[int] = None
     ) -> int:
+        # pylint: disable=too-many-positional-arguments
         """
         Create a new garden plot in the database.
 

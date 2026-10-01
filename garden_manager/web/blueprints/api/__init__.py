@@ -3,18 +3,24 @@ API blueprint for Planted application.
 
 Handles AJAX API endpoints for task completion, location updates, and cache management.
 """
+# pylint: disable=invalid-name,global-statement
 
-import sqlite3
-from flask import Blueprint, request, jsonify
 import logging
+import sqlite3
 
-logger = logging.getLogger(__name__)
+from flask import Blueprint, jsonify, request
+
 from garden_manager.web.blueprints.utils import get_current_user_id
 
+logger = logging.getLogger(__name__)
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 # Global limiter instance set during initialization
-limiter = None
+RATE_LIMITER = None
+garden_db = None
+auth_service = None
+location_service = None
+weather_service = None
 
 
 def init_blueprint(services, limiter_instance):
@@ -25,12 +31,12 @@ def init_blueprint(services, limiter_instance):
         services: Dictionary containing service instances
         limiter_instance: Flask-Limiter instance for rate limiting
     """
-    global garden_db, auth_service, location_service, weather_service, limiter
+    global garden_db, auth_service, location_service, weather_service, RATE_LIMITER
     garden_db = services.get('garden_db')
     auth_service = services.get('auth_service')
     location_service = services.get('location_service')
     weather_service = services.get('weather_service')
-    limiter = limiter_instance
+    RATE_LIMITER = limiter_instance
 
 
 @api_bp.route("/complete_task", methods=["POST"])
@@ -68,6 +74,7 @@ def complete_task():
 
 @api_bp.route("/update_location", methods=["POST"])
 def update_location():
+    # pylint: disable=too-many-return-statements,too-many-branches,too-many-statements
     """
     Update user location via AJAX API.
 
@@ -111,12 +118,12 @@ def update_location():
             latitude = float(latitude)
             longitude = float(longitude)
 
-            if not (-90 <= latitude <= 90):
+            if not -90 <= latitude <= 90:
                 return jsonify({
                     "status": "error",
                     "message": "Latitude must be between -90 and 90"
                 })
-            if not (-180 <= longitude <= 180):
+            if not -180 <= longitude <= 180:
                 return jsonify({
                     "status": "error",
                     "message": "Longitude must be between -180 and 180"
@@ -179,7 +186,10 @@ def update_location():
             location_display = country
         else:
             # Geocoding failed to find a location name
-            geocoding_warning = "We saved your coordinates but couldn't determine your city name. You can add it manually in Settings."
+            geocoding_warning = (
+                "We saved your coordinates but couldn't determine your city name. "
+                "You can add it manually in Settings."
+            )
 
         response = {
             "status": "success",

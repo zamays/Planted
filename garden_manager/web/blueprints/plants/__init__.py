@@ -3,17 +3,26 @@ Plants blueprint for Planted application.
 
 Handles plant catalog browsing, searching, adding custom plants, and managing plant details.
 """
+# pylint: disable=invalid-name,global-statement
 
-import sqlite3
-from flask import Blueprint, render_template, request, redirect, url_for
 import logging
+import sqlite3
 
-logging.basicConfig(level=logging.INFO)
-from garden_manager.database.models import PlantSpec, PlantGrowingInfo, PlantCareRequirements, PlantCompatibility
+from flask import Blueprint, redirect, render_template, request, url_for
+
+from garden_manager.database.models import (
+    PlantCareRequirements,
+    PlantCompatibility,
+    PlantGrowingInfo,
+    PlantSpec,
+)
 from garden_manager.utils.date_utils import SeasonCalculator
 from garden_manager.web.blueprints.utils import get_current_user_id
 
 plants_bp = Blueprint('plants', __name__, url_prefix='/plants')
+logger = logging.getLogger(__name__)
+plant_db = None
+location_service = None
 
 
 def init_blueprint(services):
@@ -195,8 +204,8 @@ def index():
             recommendations=recommendations,
             filters={"season": season_filter, "type": type_filter, "search": search},
         )
-    except (sqlite3.Error, AttributeError, KeyError, ValueError) as e:
-        logging.exception("Exception in plants index route")
+    except (sqlite3.Error, AttributeError, KeyError, ValueError):
+        logger.exception("Exception in plants index route")
         return "<h1>Plants Error</h1><p>An internal error occurred. Please try again later.</p>"
 
 
@@ -242,7 +251,7 @@ def add():
 
         return render_template("add_plant.html")
     except (sqlite3.Error, ValueError, KeyError) as e:
-        logging.error(f"Add plant error: {e}")
+        logger.error("Add plant error: %s", e)
         return "<h1>Add Plant Error</h1><p>An internal error occurred while adding the plant.</p>"
 
 
@@ -264,7 +273,7 @@ def detail(plant_id):
 
         return render_template("plant_detail.html", plant=plant)
     except (sqlite3.Error, AttributeError) as e:
-        logging.error(f"Plant detail error: {e}", exc_info=True)
+        logger.error("Plant detail error: %s", e, exc_info=True)
         return "<h1>Plant Detail Error</h1><p>An internal error occurred while fetching plant detail.</p>"
 
 

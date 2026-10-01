@@ -3,14 +3,23 @@ Main blueprint for Planted application.
 
 Handles dashboard, weather, help pages, and test page.
 """
+# pylint: disable=invalid-name,global-statement
 
-import sqlite3
-from flask import Blueprint, render_template, request
 import logging
+import sqlite3
+
+from flask import Blueprint, render_template, request
+
 from garden_manager.utils.date_utils import SeasonCalculator
 from garden_manager.web.blueprints.utils import get_current_user_id
 
 main_bp = Blueprint('main', __name__)
+logger = logging.getLogger(__name__)
+garden_db = None
+plant_db = None
+location_service = None
+weather_service = None
+auth_service = None
 
 
 def init_blueprint(services):
@@ -87,7 +96,7 @@ def dashboard():
             is_default_location=is_default_location,
         )
     except (sqlite3.Error, AttributeError, KeyError) as e:
-        logging.error("Dashboard error: %s", e)
+        logger.error("Dashboard error: %s", e)
         return (
             "<h1>Dashboard Error</h1><p>An internal error occurred. Please try again later.</p>"
         )
@@ -147,8 +156,8 @@ def weather():
             cache_stats=cache_stats,
             is_default_location=is_default_location,
         )
-    except (AttributeError, KeyError) as e:
-        logging.error("Weather error", exc_info=True)
+    except (AttributeError, KeyError):
+        logger.error("Weather error", exc_info=True)
         current_weather = (
             weather_service.current_weather
             if weather_service is not None

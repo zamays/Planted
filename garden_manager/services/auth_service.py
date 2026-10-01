@@ -244,6 +244,7 @@ class AuthService:
         region: str = "",
         country: str = ""
     ):
+        # pylint: disable=too-many-positional-arguments
         """
         Update user's location information.
 

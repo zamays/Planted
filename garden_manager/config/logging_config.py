@@ -9,6 +9,7 @@ Provides structured logging with:
 - Proper formatting with timestamps, module names, and log levels
 """
 
+import functools
 import logging
 import logging.handlers
 import os
@@ -23,6 +24,7 @@ request_id_var: ContextVar[Optional[str]] = ContextVar('request_id', default=Non
 
 
 class RequestIdFilter(logging.Filter):
+    # pylint: disable=too-few-public-methods
     """
     Logging filter that adds request ID to log records for distributed tracing.
 
@@ -69,6 +71,7 @@ def setup_logging(
     enable_console: bool = True,
     enable_file: bool = True
 ) -> logging.Logger:
+    # pylint: disable=too-many-locals,too-many-statements
     """
     Set up comprehensive logging for the application.
 
@@ -268,8 +271,6 @@ def log_function_call(func):
         >>> def my_function(x, y):
         >>>     return x + y
     """
-    import functools
-
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger = get_logger(func.__module__)

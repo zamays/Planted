@@ -3,11 +3,15 @@ Authentication blueprint for Planted application.
 
 Handles user login, signup, logout, guest mode, and settings management.
 """
+# pylint: disable=invalid-name,global-statement
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from garden_manager.web.blueprints.utils import get_current_user_id, is_logged_in
 
 auth_bp = Blueprint('auth', __name__)
+auth_service = None
+location_service = None
+weather_service = None
 
 
 def init_blueprint(services):
@@ -63,6 +67,7 @@ def login():
 
 @auth_bp.route("/signup", methods=["GET", "POST"])
 def signup():
+    # pylint: disable=too-many-return-statements
     """
     Handle new user registration.
 
@@ -306,6 +311,7 @@ def update_user_email():
 
 @auth_bp.route("/reset-password", methods=["GET", "POST"])
 def reset_password():
+    # pylint: disable=too-many-return-statements
     """
     Handle password reset for users who forgot their password.
 

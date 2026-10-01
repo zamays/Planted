@@ -8,11 +8,12 @@ recommendations. Uses IP-based geolocation with manual location override.
 
 import os
 from typing import Dict, Optional
+
 import requests
 from requests.exceptions import Timeout
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+
 from garden_manager.config import get_logger
+from garden_manager.services.http_session import create_retry_session
 
 logger = get_logger(__name__)
 
@@ -37,17 +38,7 @@ class LocationService:
         # Configure API timeout from environment (default: 10 seconds)
         self.api_timeout = int(os.getenv("API_TIMEOUT", "10"))
 
-        # Configure retry strategy for transient failures
-        retry_strategy = Retry(
-            total=3,  # Maximum 3 retry attempts
-            backoff_factor=1,  # Wait 1s, 2s, 4s between retries
-            status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP status codes
-            allowed_methods=["GET"]  # Only retry GET requests
-        )
-        adapter = HTTPAdapter(max_retries=retry_strategy)
-        self._session = requests.Session()
-        self._session.mount("https://", adapter)
-        self._session.mount("http://", adapter)
+        self._session = create_retry_session()
 
     def get_location_by_ip(self) -> Optional[Dict[str, str]]:
         """
@@ -255,18 +246,9 @@ class LocationService:
         region = self.current_location.get("region", "")
         country = self.current_location.get("country", "")
 
-        if city and region:
-            return f"{city}, {region}"
-        if city and country:
-            return f"{city}, {country}"
-        if city:
-            return city
-        if region and country:
-            return f"{region}, {country}"
-        if region:
-            return region
-        if country:
-            return country
+        location_parts = [part for part in (city, region, country) if part]
+        if location_parts:
+            return ", ".join(location_parts[:2])
         # Fallback to a friendly message instead of raw coordinates
         return "Your location"
 

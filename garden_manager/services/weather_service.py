@@ -8,12 +8,13 @@ Includes gardening-specific weather analysis and recommendations.
 import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+
 import requests
-from requests.exceptions import Timeout
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 from cachetools import TTLCache
+from requests.exceptions import Timeout
+
 from garden_manager.config import get_logger
+from garden_manager.services.http_session import create_retry_session
 
 logger = get_logger(__name__)
 
@@ -60,17 +61,7 @@ class WeatherService:
         # Configure API timeout from environment (default: 10 seconds)
         self.api_timeout = int(os.getenv("API_TIMEOUT", "10"))
 
-        # Configure retry strategy for transient failures
-        retry_strategy = Retry(
-            total=3,  # Maximum 3 retry attempts
-            backoff_factor=1,  # Wait 1s, 2s, 4s between retries
-            status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP status codes
-            allowed_methods=["GET"]  # Only retry GET requests
-        )
-        adapter = HTTPAdapter(max_retries=retry_strategy)
-        self._session = requests.Session()
-        self._session.mount("https://", adapter)
-        self._session.mount("http://", adapter)
+        self._session = create_retry_session()
 
     def get_current_weather(self, latitude: float, longitude: float,
                            bypass_cache: bool = False) -> Optional[Dict]:

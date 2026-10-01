@@ -3,13 +3,18 @@ Care blueprint for Planted application.
 
 Handles care schedule viewing and task management.
 """
+# pylint: disable=invalid-name,global-statement
 
+import logging
 import sqlite3
 from datetime import datetime, timedelta
+
 from flask import Blueprint, render_template, request
-import logging
 
 care_bp = Blueprint('care', __name__, url_prefix='/care')
+logger = logging.getLogger(__name__)
+garden_db = None
+weather_service = None
 
 
 def init_blueprint(services):
@@ -96,6 +101,6 @@ def index():
             filter_type=filter_type,
             weather=current_weather,
         )
-    except (sqlite3.Error, AttributeError, KeyError, ValueError) as e:
-        logging.error("Care schedule error", exc_info=True)
+    except (sqlite3.Error, AttributeError, KeyError, ValueError):
+        logger.error("Care schedule error", exc_info=True)
         return "<h1>Care Schedule Error</h1><p>An internal error has occurred.</p>"
